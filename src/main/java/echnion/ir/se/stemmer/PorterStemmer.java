@@ -1,3 +1,4 @@
+package echnion.ir.se.stemmer;
 
 /*
 
@@ -20,14 +21,14 @@ import java.io.*;
   * by calling one of the various stem(something) methods.
   */
 
-class Stemmer
+class PorterStemmer
 {  private char[] b;
    private int i,     /* offset into b */
                i_end, /* offset to end of stemmed word */
                j, k;
    private static final int INC = 50;
                      /* unit of size whereby b is increased */
-   public Stemmer()
+   public PorterStemmer()
    {  b = new char[INC];
       i = 0;
       i_end = 0;
@@ -345,7 +346,7 @@ class Stemmer
    public static void main(String[] args)
    {
       char[] w = new char[501];
-      Stemmer s = new Stemmer();
+      PorterStemmer s = new PorterStemmer();
       for (int i = 0; i < args.length; i++)
       try
       {
