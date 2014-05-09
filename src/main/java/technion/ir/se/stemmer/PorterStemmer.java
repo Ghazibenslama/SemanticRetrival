@@ -1,4 +1,4 @@
-package echnion.ir.se.stemmer;
+package technion.ir.se.stemmer;
 
 /*
 
@@ -209,7 +209,9 @@ class PorterStemmer
    {  if (b[k] == 's')
       {  if (ends("sses")) k -= 2; else
          if (ends("ies")) setto("i"); else
-         if (b[k-1] != 's') k--;
+         if (b[k-1] != 's') {
+        	 k--;
+         }
       }
       if (ends("eed")) { if (m() > 0) k--; } else
       if ((ends("ed") || ends("ing")) && vowelinstem())
