@@ -1,5 +1,7 @@
 package technion.ir.se.stemmer;
 
+import java.util.List;
+
 public class DocumentStemmer {
 	private static final int BEGINING_OF_WORD = 0;
 	private PorterStemmer stemmer;
@@ -8,15 +10,23 @@ public class DocumentStemmer {
 	}
 
 
-	public String steamWord (String wordToSteam) {
-		String stemmedWord = wordToSteam;
+	public String stemWord (String wordToStem) {
+		String stemmedWord = wordToStem;
 		stemmer = new PorterStemmer();
-		stemmer.add(wordToSteam.toCharArray(), wordToSteam.length());
+		stemmer.add(wordToStem.toCharArray(), wordToStem.length());
 		stemmer.stem();
-		if (wasWordStemmed(wordToSteam)) {
+		if (wasWordStemmed(wordToStem)) {
 			stemmedWord = createStemmedWord();
 		}
 		return stemmedWord;
+	}
+	
+	public void steamWords(List<String> wordsToStem) {
+		for (int i = 0; i < wordsToStem.size() ; i++) {
+			String wordToStem = wordsToStem.get(i);
+			String stemmedWord = stemWord(wordToStem);
+			wordsToStem.set(i, stemmedWord);
+		}
 	}
 
 
