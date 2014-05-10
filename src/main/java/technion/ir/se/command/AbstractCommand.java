@@ -27,8 +27,7 @@ public abstract class AbstractCommand {
 		readProperties();
 		String property = props.getProperty(commandKey);
 		if (property!=null) {
-//			location = setSystemFileSeperator(property);
-			location = property;
+			location = setSystemFileSeperator(property);
 		} else {
 			String errorMessage = String.format("Couldn't find property with key:[%s]", commandKey);
 			LocationNotFoundException e = new LocationNotFoundException(errorMessage);
