@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import technion.ir.se.exception.LocationNotFoundException;
 
 public abstract class AbstractCommand {
@@ -26,7 +28,7 @@ public abstract class AbstractCommand {
 	protected void setlocation(String commandKey) throws LocationNotFoundException {
 		readProperties();
 		String property = props.getProperty(commandKey);
-		if (property!=null) {
+		if ( !StringUtils.isEmpty(property) ) {
 			location = setSystemFileSeperator(property);
 		} else {
 			String errorMessage = String.format("Couldn't find property with key:[%s]", commandKey);
