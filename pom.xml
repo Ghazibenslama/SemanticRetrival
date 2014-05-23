@@ -3,6 +3,11 @@
 	<groupId>technion.ir.se</groupId>
 	<artifactId>SemanticRetrival</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
+	<properties>
+      <powermock.version>1.5.4</powermock.version>
+      <easymock.version>3.2</easymock.version>
+  	</properties>
 
 	<build>
 
@@ -26,6 +31,44 @@
 		    <groupId>com.indri.org</groupId>
 			<artifactId>indri</artifactId>
 			<version>5.6</version>
+		</dependency>
+		
+		<!-- TEST DEPENDENCIES -->
+		<dependency>
+	    	<groupId>org.powermock</groupId>
+	     	<artifactId>powermock-module-junit4</artifactId>
+	     	<version>${powermock.version}</version>
+	     	<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+	     	<artifactId>powermock-api-easymock</artifactId>
+	     	<version>${powermock.version}</version>
+	     	<scope>test</scope>  
+	    </dependency>  
+		<dependency>
+	      <groupId>org.powermock</groupId>
+	      <artifactId>powermock-api-mockito</artifactId>
+	      <version>${powermock.version}</version>
+	      <scope>test</scope>
+	   </dependency>
+		<dependency>
+		    <groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4-rule</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-classloading-xstream</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
+			<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>${easymock.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

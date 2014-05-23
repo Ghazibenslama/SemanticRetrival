@@ -32,7 +32,8 @@ public class RunQuery {
 		queryEnvironment.setScoringRules(rules);
 		ScoredExtentResult[] results = queryEnvironment.runQuery(query, numOfInitialDocuments);
 		String[] names = queryEnvironment.documentMetadata(results, idField);
-		return results[0].document;
+		int docId = results[0].document;
+		return docId;
 //		return names.length;
 //		Result[] res = new Result[names.length];
 //		for(int i=0;i<names.length;i++){
