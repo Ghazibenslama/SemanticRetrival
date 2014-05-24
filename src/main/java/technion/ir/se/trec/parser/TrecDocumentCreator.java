@@ -65,4 +65,31 @@ public class TrecDocumentCreator {
 		TrecDocument document = new TrecDocument(docno.trim());
 		return document;
 	}
+	
+	
+	/**
+	 * @param pathDir Directory path
+	 * @return  List Of separated TrecDocuments
+	 */
+	public List<File> convertTrecDocumentsToTextDocuments(String pathDir)
+	{
+		List<File> returnedFiles = new ArrayList<File>();
+		try {
+			List<File> allFilesNames = getAllFilesNames(pathDir);
+			for (File file : allFilesNames) {
+				List<File> textFiles = convertTrecDocument(file);
+				returnedFiles.addAll(textFiles);
+			}
+		} catch (FileNotFoundException e) {
+			System.err.println("Directory doesn't exists: " + pathDir);
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.err.println("Filed converting documents into TrecFormat");
+			
+		}
+		
+		
+		return returnedFiles;
+		
+	}
 }

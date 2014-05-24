@@ -103,5 +103,18 @@ public class TrecDocumentCreatorTest {
 	private boolean isTestPhraseAppearsOnce(String fileContnet, String testPhrase) {
 		return StringUtils.lastIndexOf(fileContnet, testPhrase) == fileContnet.indexOf(testPhrase);
 	}
+	
+	@Test 
+	public void testConvertTrecDocumentsToTextDocuments() throws URISyntaxException
+	{
+		File testDocumentsFolder = this.getTestDocumentsFolder();
+		List<File> textDocuments = creator.convertTrecDocumentsToTextDocuments(testDocumentsFolder.getAbsolutePath());
+		assertTrue("Doesn't have 1331 files", textDocuments.size() == 1331);
+		for (File file : textDocuments) {
+			if (file.getName().contains(".txt")) {
+				file.delete();
+			}
+		}
+	}
 
 }
