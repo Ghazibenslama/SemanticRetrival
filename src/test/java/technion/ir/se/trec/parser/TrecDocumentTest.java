@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,15 +32,9 @@ public class TrecDocumentTest {
 		File createdFile = new File("c:/Temp/IR/mockNumber.txt");
 		createdFile.deleteOnExit();
 		BufferedReader br = new BufferedReader(new FileReader(createdFile));
-		String line = br.readLine();
-		StringBuilder builder = new StringBuilder();
-		while (line != null) {
-			builder.append(line);
-			builder.append("\n");
-			line = br.readLine();
-		}
+		String fileContnet = IOUtils.toString(br);
 		
-		Assert.assertTrue("File in disk doesn't contain content", builder.toString().contains("Mocked content"));
+		Assert.assertTrue("File in disk doesn't contain content", fileContnet.contains("Mocked content"));
 		br.close();
 	}
 

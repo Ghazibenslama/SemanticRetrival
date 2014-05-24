@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,6 +27,20 @@ public class TrecDocumentCreatorTest {
 	@Before
 	public void setUp() throws Exception {
 		creator = new TrecDocumentCreator();
+		File dir = getTestDocumentsFolder();
+		
+		List<File> filesNames = creator.getAllFilesNames(dir.getAbsolutePath());
+		for (File file : filesNames) {
+			if (file.getName().contains(".txt")) {
+				file.delete();
+			}
+		}
+	}
+
+	private File getTestDocumentsFolder() throws URISyntaxException {
+		URL dirUrl = getClass().getResource("/TrecDocuments");
+		File dir = new File(dirUrl.toURI());
+		return dir;
 	}
 
 	@After
@@ -34,11 +49,10 @@ public class TrecDocumentCreatorTest {
 
 	@Test
 	public void testGetAllFilesNames() throws FileNotFoundException, URISyntaxException {
-		URL dirUrl = getClass().getResource("/TrecDocuments");
-		File dir = new File(dirUrl.toURI());
+		File dir = getTestDocumentsFolder();
 		
 		List<File> filesNames = creator.getAllFilesNames(dir.getAbsolutePath());
-		assertTrue("didn't get 5 documents", filesNames.size() == 5);
+		assertTrue(String.format("got %s instead of 5 documents",filesNames.size()), filesNames.size() == 5);
 		ArrayList<String> expectedFileNames = new ArrayList<String>(Arrays.asList("FB396001", "FB396002", "FB396003","FB396004", "FB396005"));
 		for (File file : filesNames) {
 			String fileName = file.getName();
@@ -69,29 +83,15 @@ public class TrecDocumentCreatorTest {
 		URL dirUrl = getClass().getResource("/TrecDocuments/FB396001");
 		File fileToConvert = new File(dirUrl.toURI());
 		List<File> trecFiles = creator.convertTrecDocument(fileToConvert);
+		Assert.assertTrue("didn't create all 49 documents", trecFiles.size() == 49);
 		for (File file : trecFiles) {
-			file.deleteOnExit();
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line = br.readLine();
-			StringBuilder builder = new StringBuilder();
-			while (line != null) {
-				builder.append(line);
-				builder.append("\n");
-				line = br.readLine();
+			String fileContnet = IOUtils.toString(br);
+			List<String> list = Arrays.asList("<TEXT>", "</TEXT>","<DOC>", "</DOC>", "<DOCNO>", "</DOCNO>");
+			for (String testPhrase : list) {
+				assertTrue(String.format("%s not exists in document", testPhrase), fileContnet.contains(testPhrase));
+				testPhraseAppeasesOnce(fileContnet, testPhrase);
 			}
-			String fileContnet = br.toString();
-			String testPhrase = "<TEXT>";
-			testPhraseAppeasesOnce(fileContnet, testPhrase);
-			testPhrase = "</TEXT>";
-			testPhraseAppeasesOnce(fileContnet, testPhrase);
-			testPhrase = "<DOC>";
-			testPhraseAppeasesOnce(fileContnet, testPhrase);
-			testPhrase = "</DOC>";
-			testPhraseAppeasesOnce(fileContnet, testPhrase);
-			testPhrase = "<DOCNO>";
-			testPhraseAppeasesOnce(fileContnet, testPhrase);
-			testPhrase = "</DOCNO>";
-			testPhraseAppeasesOnce(fileContnet, testPhrase);
 			br.close();
 		}
 	}
