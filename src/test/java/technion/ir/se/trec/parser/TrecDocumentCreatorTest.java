@@ -29,7 +29,7 @@ public class TrecDocumentCreatorTest {
 		creator = new TrecDocumentCreator();
 		File dir = getTestDocumentsFolder();
 		
-		List<File> filesNames = creator.getAllFilesNames(dir.getAbsolutePath());
+		List<File> filesNames = Whitebox.invokeMethod(creator, "getAllFilesNames", dir.getAbsolutePath());
 		for (File file : filesNames) {
 			if (file.getName().contains(".txt")) {
 				file.delete();
@@ -48,10 +48,10 @@ public class TrecDocumentCreatorTest {
 	}
 
 	@Test
-	public void testGetAllFilesNames() throws FileNotFoundException, URISyntaxException {
+	public void testGetAllFilesNames() throws Exception {
 		File dir = getTestDocumentsFolder();
+		List<File> filesNames = Whitebox.invokeMethod(creator, "getAllFilesNames", dir.getAbsolutePath());
 		
-		List<File> filesNames = creator.getAllFilesNames(dir.getAbsolutePath());
 		assertTrue(String.format("got %s instead of 5 documents",filesNames.size()), filesNames.size() == 5);
 		ArrayList<String> expectedFileNames = new ArrayList<String>(Arrays.asList("FB396001", "FB396002", "FB396003","FB396004", "FB396005"));
 		for (File file : filesNames) {
@@ -61,8 +61,8 @@ public class TrecDocumentCreatorTest {
 	}
 	
 	@Test (expected = FileNotFoundException.class)
-	public void testGetAllFilesNames_throwException() throws FileNotFoundException {
-		creator.getAllFilesNames("c:\\xxxxxxxxxx");
+	public void testGetAllFilesNames_throwException() throws Exception {
+		Whitebox.invokeMethod(creator, "getAllFilesNames", "c:\\xxxxxxxxxx");
 	}
 	
 	@Test

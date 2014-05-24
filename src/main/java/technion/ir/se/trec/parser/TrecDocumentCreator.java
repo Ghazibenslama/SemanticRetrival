@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class TrecDocumentCreator {
 
-	public List<File> getAllFilesNames(String rootDirectory) throws FileNotFoundException {
+	private List<File> getAllFilesNames(String rootDirectory) throws FileNotFoundException {
 		File root = new File(rootDirectory);
 		checkIfDirectoryExists(rootDirectory, root);
 		File[] listFiles = root.listFiles();
