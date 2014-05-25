@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import technion.ir.se.thread.ThreadPool;
+
 public class TrecDocumentCreator {
 
 	private List<File> getAllFilesNames(String rootDirectory) throws FileNotFoundException {
@@ -76,18 +78,16 @@ public class TrecDocumentCreator {
 		List<File> returnedFiles = new ArrayList<File>();
 		try {
 			List<File> allFilesNames = getAllFilesNames(pathDir);
-			for (File file : allFilesNames) {
-				List<File> textFiles = convertTrecDocument(file);
-				returnedFiles.addAll(textFiles);
-			}
+			ThreadPool threadPool = new ThreadPool(allFilesNames, 4);
+			returnedFiles = threadPool.performJobs();
+//			for (File file : allFilesNames) {
+//				List<File> textFiles = convertTrecDocument(file);
+//				returnedFiles.addAll(textFiles);
+//			}
 		} catch (FileNotFoundException e) {
 			System.err.println("Directory doesn't exists: " + pathDir);
 			e.printStackTrace();
-		} catch (IOException e) {
-			System.err.println("Filed converting documents into TrecFormat");
-			
 		}
-		
 		
 		return returnedFiles;
 		
