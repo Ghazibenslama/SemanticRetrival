@@ -11,7 +11,7 @@ import lemurproject.indri.ParsedDocument;
 import lemurproject.indri.QueryEnvironment;
 import lemurproject.indri.ScoredExtentResult;
 
-public class RunQuery {
+public class SearchEngine {
 	
 	//collection name
 	public String COLLECTION;
@@ -22,7 +22,7 @@ public class RunQuery {
 	
 	private QueryEnvironment queryEnvironment;
 	
-	public RunQuery() {
+	public SearchEngine() {
 		queryEnvironment = new QueryEnvironment();
 		try {
 			init();
