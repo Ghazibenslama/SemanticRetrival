@@ -3,17 +3,18 @@ package technion.ir.se.indri;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import technion.ir.se.dao.RetrivalResult;
 
 public class RunQueryTest {
-	private RunQuery runQuery;
+	private SearchEngine runQuery;
 
 	@Before
 	public void setUp() throws Exception {
-		runQuery = new RunQuery();
+		runQuery = new SearchEngine();
 	}
 
 	@After
@@ -36,10 +37,13 @@ public class RunQueryTest {
 	}
 	
 	@Test
-	public void testRunQuery_Okapi() throws Exception {
+	public void testRunQuery_Combine() throws Exception {
 		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
-		List<RetrivalResult> retrivedDocumentId = runQuery.runQuery(1000, rules, "international organized crime");
-//		assertTrue("Didn't retrive document", retrivedDocumentId == 2);
+		List<RetrivalResult> retrivedDocumentIds = runQuery.runQuery(1000, rules, "international organized crime");
+		List<RetrivalResult> retrivedDocumentIdIndriForma = runQuery.runQuery(1000, rules, "#combine(international organized crime)");
+		for (int i = 0; i < retrivedDocumentIds.size(); i++) {
+			Assert.assertEquals(retrivedDocumentIds.get(i).getDocumentId(), retrivedDocumentIdIndriForma.get(i).getDocumentId());
+		}
 	}
 
 }
