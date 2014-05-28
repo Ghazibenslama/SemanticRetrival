@@ -50,7 +50,7 @@ public class TrecDocument {
 
 	private void writeContentToFile(File file) throws IOException {
 		BufferedWriter bufferedWriter = new BufferedWriter( new FileWriter(file) );
-		bufferedWriter.write(content.toString());
+		bufferedWriter.append(content);
 		bufferedWriter.close();
 	}
 }
