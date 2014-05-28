@@ -42,7 +42,7 @@ public class RunQueryTest {
 		List<RetrivalResult> retrivedDocumentIds = runQuery.runQuery(1000, rules, "international organized crime");
 		List<RetrivalResult> retrivedDocumentIdIndriForma = runQuery.runQuery(1000, rules, "#combine(international organized crime)");
 		for (int i = 0; i < retrivedDocumentIds.size(); i++) {
-			Assert.assertEquals(retrivedDocumentIds.get(i).getDocumentId(), retrivedDocumentIdIndriForma.get(i).getDocumentId());
+			Assert.assertEquals(retrivedDocumentIds.get(i).getIndriDocumentId(), retrivedDocumentIdIndriForma.get(i).getIndriDocumentId());
 		}
 	}
 
