@@ -17,7 +17,7 @@ import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
 
 public class Utils {
-	private static final String MAP_FORMAT = "%s Q0 %s %d %d Indri";
+	private static final String MAP_FORMAT = "%s Q0 %d %d %.4f Indri";
 
 
 	public static List<Query> readQueries() throws IOException, URISyntaxException {
