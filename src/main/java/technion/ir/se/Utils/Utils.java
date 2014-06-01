@@ -43,8 +43,8 @@ public class Utils {
 		return builder;
 	}
 
-	public static void writeMapFile(StringBuilder trecMap) throws IOException {
-		File mapFile = new File("baseLineMap.res");
+	public static void writeMapFile(StringBuilder trecMap, String filePrefix) throws IOException {
+		File mapFile = new File(filePrefix + "_baseLineMap.res");
 		if (!mapFile.exists()) {
 			boolean wasFileCreated = mapFile.createNewFile();
 			if (!wasFileCreated) {

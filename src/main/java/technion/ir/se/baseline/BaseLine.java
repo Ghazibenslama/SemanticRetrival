@@ -28,7 +28,8 @@ public class BaseLine {
 				StringBuilder mapFormatForQuery = Utils.createMapFormatForQuery(query.getId(), results);
 				trecMap.append(mapFormatForQuery.toString());
 			}
-			Utils.writeMapFile(trecMap);
+			String fileName = createFileName(rules);
+			Utils.writeMapFile(trecMap, fileName);
 		} catch (IOException e) {
 			System.err.println("failed to read queris or write file");
 			e.printStackTrace();
@@ -41,5 +42,18 @@ public class BaseLine {
 		}
 		
 		
+	}
+	private String createFileName(String[] rules) {
+		StringBuilder builder = new StringBuilder(30);
+		for (int i = 0; i < rules.length; i++) {
+			String token = rules[i];
+			token = token.trim();
+			token = token.replace(":", "-");
+			builder.append(token);
+			builder.append("_");
+		}
+		String fileName = builder.toString();
+		
+		return fileName.substring(0, fileName.length() - 1);
 	}
 }
