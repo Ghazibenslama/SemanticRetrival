@@ -17,7 +17,9 @@ public class BaseLine {
 	public BaseLine() {
 		engine = new SearchEngine();
 	}
+	
 	public void createBaseLine() {
+		//http://iew3.technion.ac.il/~kurland/sigir12-tutorial.pdf
 		String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:50", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
 		List<Query> queries;
 		try {
