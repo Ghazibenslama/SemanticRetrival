@@ -42,7 +42,8 @@ public class TrecDocument {
 	}
 
 	private void writeFileDisk(String dirPath) throws IOException {
-		File file = new File( dirPath + File.separator + docno + ".txt" );
+		File dir = new File(dirPath);
+		File file = new File(dir, docno + ".txt");
 		file.createNewFile();
 		fileInDisk = file;
 		writeContentToFile(file);
