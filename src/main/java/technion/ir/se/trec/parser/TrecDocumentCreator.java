@@ -78,7 +78,7 @@ public class TrecDocumentCreator {
 		List<File> returnedFiles = new ArrayList<File>();
 		try {
 			List<File> allFilesNames = getAllFilesNames(pathDir);
-			ThreadPool threadPool = new ThreadPool(allFilesNames, 4);
+			ThreadPool threadPool = new ThreadPool(allFilesNames);
 			returnedFiles = threadPool.performJobs();
 		} catch (FileNotFoundException e) {
 			System.err.println("Directory doesn't exists: " + pathDir);

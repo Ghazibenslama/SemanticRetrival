@@ -13,8 +13,9 @@ public class ThreadPool {
 	private ExecutorService threadPool;
 	private List<File> filesToConvert;
 	
-	public ThreadPool(List<File> filesToConvert, int noOfThreads) {
+	public ThreadPool(List<File> filesToConvert) {
 		this.filesToConvert = filesToConvert;
+		int noOfThreads = Runtime.getRuntime().availableProcessors();
 		this.threadPool = Executors.newFixedThreadPool(noOfThreads);
 	}
 	
