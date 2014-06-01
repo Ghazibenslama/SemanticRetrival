@@ -45,8 +45,8 @@ public class UtilsTest {
 	public void testwriteMapFile() throws IOException{
 		
 		StringBuilder stringBuilder = new StringBuilder("Hello world");
-		Utils.writeMapFile(stringBuilder);
-		String fileContnet = TestUtils.getFileContent("baseLineMap.res");
+		Utils.writeMapFile(stringBuilder,"prefix");
+		String fileContnet = TestUtils.getFileContent("prefix_baseLineMap.res");
 		assertTrue("file content not correct", fileContnet.equals("Hello world"));
 		
 		

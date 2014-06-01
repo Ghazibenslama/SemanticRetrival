@@ -18,7 +18,7 @@ public class BaseLine {
 		engine = new SearchEngine();
 	}
 	public void createBaseLine() {
-		String[] rules = new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
+		String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:50", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
 		List<Query> queries;
 		try {
 			queries = Utils.readQueries();
