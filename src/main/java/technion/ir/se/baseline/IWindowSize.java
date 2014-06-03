@@ -17,4 +17,10 @@ public interface IWindowSize {
 	 * @return
 	 */
 	public List<TextWidow>getWindows(Feedback feedback, Query query);
+	
+	
+	/**
+	 * @param windowSize - Set hard coded the window size
+	 */
+	public void setWindowSize(int windowSize);
 }

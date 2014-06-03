@@ -9,13 +9,15 @@ import java.util.List;
  *
  */
 public class Feedback {
+	private List<Document> documents;
 	private List<String> terms;
 	
 	/**
-	 * @param terms - {@link List} of Strings that are terms of documents in the feedback
+	 * @param terms - {@link List} of Document that are the documents in the feedback
 	 */
-	public Feedback(List<String> terms) {
-		this.terms = terms;
+	public Feedback(List<Document> documents) {
+		this.documents = documents;
+		this.terms = null;
 	}
 	
 	/**
@@ -27,6 +29,23 @@ public class Feedback {
 	 * </ul>
 	 */
 	public List<String> getTerms() {
+		if (terms==null) {
+			initTerms();
+		}
 		return terms;
 	}
+
+	private void initTerms() {
+		if (terms==null) {
+			for (Document document : documents) {
+				terms.addAll(document.getDocumentContent());
+			}
+		}
+	}
+	
+	public int getNumberOfTerms() {
+		initTerms();
+		return terms.size();
+	}
+	
 }
