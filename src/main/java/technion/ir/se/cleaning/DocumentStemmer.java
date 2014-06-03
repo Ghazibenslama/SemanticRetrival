@@ -1,4 +1,4 @@
-package technion.ir.se.stemmer;
+package technion.ir.se.cleaning;
 
 import java.util.List;
 

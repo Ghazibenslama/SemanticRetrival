@@ -1,4 +1,4 @@
-package technion.ir.se.stopwords;
+package technion.ir.se.cleaning;
 
 import java.util.HashSet;
 
