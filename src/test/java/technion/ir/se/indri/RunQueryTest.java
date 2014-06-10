@@ -1,5 +1,6 @@
 package technion.ir.se.indri;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -44,6 +45,18 @@ public class RunQueryTest {
 		for (int i = 0; i < retrivedDocumentIds.size(); i++) {
 			Assert.assertEquals(retrivedDocumentIds.get(i).getIndriDocumentId(), retrivedDocumentIdIndriForma.get(i).getIndriDocumentId());
 		}
+	}
+	@Test
+	public void testGetDocumentsContet() throws Exception
+	{
+		List<Integer> docIndriIDs = new ArrayList<Integer>() ;
+		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
+		List<RetrivalResult> retrivalResult = runQuery.runQuery(2, rules, "international organized crime");
+		for (RetrivalResult doc : retrivalResult) 
+		{
+			docIndriIDs.add(doc.getIndriDocumentId());
+		}
+		runQuery.getDocumentsContet(docIndriIDs);
 	}
 
 }

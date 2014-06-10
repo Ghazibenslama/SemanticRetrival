@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import technion.ir.se.dao.RetrivalResult;
-import lemurproject.indri.ParsedDocument;
+import lemurproject.indri.DocumentVector;
 import lemurproject.indri.QueryEnvironment;
 import lemurproject.indri.ScoredExtentResult;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import technion.ir.se.dao.Document;
+import technion.ir.se.dao.RetrivalResult;
 
 public class SearchEngine {
 	
@@ -56,18 +58,19 @@ public class SearchEngine {
 		return queryEnvironment.documentMetadata(results, "docno");
 	}
 	
-	private String getDocumentContet(int documentId) throws Exception {
-		List<String> list = this.getDocumentsContet(Arrays.asList(new Integer(documentId)));
+	private Document getDocumentContet(int documentId) throws Exception {
+		List<Document> list = this.getDocumentsContet(Arrays.asList(new Integer(documentId)));
 		return list.get(0);
 	}
 	
-	private List<String> getDocumentsContet(List<Integer> documentIds) throws Exception {
+	public List<Document> getDocumentsContet(List<Integer> documentIds) throws Exception {
 		int[] documentIdsInt = ArrayUtils.toPrimitive(documentIds.toArray(new Integer[documentIds.size()]));
-		ParsedDocument[] documents = queryEnvironment.documents( documentIdsInt );
+		DocumentVector[] documentVectors = queryEnvironment.documentVectors(documentIdsInt);
 		
-		List<String> documentsResult = new ArrayList<String>();
-		for (int i = 0; i < documents.length; i++) {
-			documentsResult.add(documents[i].text);
+		List<Document> documentsResult = new ArrayList<Document>();
+		for (int i = 0; i < documentVectors.length; i++) {
+			List<String> stemedTerms = new ArrayList<String>(Arrays.asList(documentVectors[i].stems));
+			documentsResult.add(new Document(stemedTerms));
 		}
 		return documentsResult;
 		
