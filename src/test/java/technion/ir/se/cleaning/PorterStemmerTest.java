@@ -1,4 +1,4 @@
-package technion.ir.se.stemmer;
+package technion.ir.se.cleaning;
 
 import static org.junit.Assert.assertTrue;
 
@@ -6,7 +6,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import technion.ir.se.cleaning.PorterStemmer;
 
 
 public class PorterStemmerTest {
