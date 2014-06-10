@@ -38,7 +38,7 @@ public class Feedback {
 	private void initTerms() {
 		if (terms==null) {
 			for (Document document : documents) {
-				terms.addAll(document.getDocumentContent());
+				terms.addAll(document.getDocumentTermsStemed());
 			}
 		}
 	}
