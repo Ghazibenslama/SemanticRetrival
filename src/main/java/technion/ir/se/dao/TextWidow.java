@@ -17,7 +17,7 @@ public class TextWidow {
 	}
 	
 	public int getWindowSize() {
-		return windowEnd - windowStart;
+		return windowEnd - windowStart +1;
 	}
 	
 }
