@@ -3,6 +3,7 @@ package technion.ir.se.Utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -10,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 
@@ -18,7 +20,7 @@ import technion.ir.se.dao.RetrivalResult;
 
 public class Utils {
 	private static final String MAP_FORMAT = "%s Q0 %s %d %.4f Indri";
-
+	private static Properties props = null;
 
 	public static List<Query> readQueries() throws IOException, URISyntaxException {
 		URL queriesFileUrl = Utils.class.getResource("/queries.txt");
@@ -52,6 +54,26 @@ public class Utils {
 			}
 		}
 		FileUtils.writeStringToFile(mapFile,trecMap.toString());
-		
+	}
+	
+	public static String readProperty(String propertyName) {
+		String propertyValue = null;
+		if (props == null) {
+			initPropertyFile();
+		}
+		propertyValue = props.getProperty(propertyName);
+		return propertyValue;
+	}
+
+	private static void initPropertyFile() {
+		props = new Properties();
+		InputStream resourceAsStream = Utils.class.getResourceAsStream("/application.properties"); 
+		try {
+			props.load(resourceAsStream);
+			
+		} catch (IOException e) {
+			System.err.println("Failed to load property File");
+			e.printStackTrace();
+		}
 	}
 }
