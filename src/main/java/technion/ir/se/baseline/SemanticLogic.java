@@ -1,13 +1,11 @@
 package technion.ir.se.baseline;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import technion.ir.se.dao.Document;
-import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
 
@@ -38,14 +36,5 @@ public class SemanticLogic {
 		}
 		return termsVector;
 	}
-
-	private List<String> retrieveQueryTerms(Query query) {
-		String queryContent = query.getQueryText();
-		String[] queryTerms = queryContent.split(" ");
-		ArrayList<String> queryTermsList = new ArrayList<String>(Arrays.asList(queryTerms));
-		return queryTermsList;
-	}
-	
-	
 
 }
