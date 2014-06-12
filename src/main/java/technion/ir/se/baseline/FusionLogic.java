@@ -33,7 +33,7 @@ public class FusionLogic
 			}
 		}
 		
-		public List<ResultFormat> MergeResults(HashMap<Integer, List<ResultFormat>> queryVariantsResults)
+		public List<ResultFormat> MergeResults(List<List<ResultFormat>> queryVariantsResults)
 		{
 			List<ResultFormat> mergedResult = new ArrayList<ResultFormat>();
 			
@@ -42,6 +42,7 @@ public class FusionLogic
 			if (queryVariantsResults.size() == 1) return queryVariantsResults.get(0);
 			
 			//size > 1
+			//first element in the HashMap starts with 1 as key
 			for (ResultFormat resFormat : queryVariantsResults.get(0))
 			{
 				mergedResult.add(resFormat);
@@ -70,8 +71,10 @@ public class FusionLogic
 			}
 			
 			Collections.sort(mergedResult);
+			if (mergedResult.size() > 1000) {
+				mergedResult = mergedResult.subList(0, 999);
+			}
 			return mergedResult;
-				
 		}
 		
 		

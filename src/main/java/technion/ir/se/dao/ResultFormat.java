@@ -67,13 +67,13 @@ public class ResultFormat implements Comparable<ResultFormat>{
 	@Override
 	public int compareTo(ResultFormat otherResultFormat) {
 		if (otherResultFormat == null ) {
-			return 1;
+			return -1;
 		}
 		
 		if (this.getScore() < otherResultFormat.getScore()) {
-			return -1;
-		} else if (this.getScore() > otherResultFormat.getScore()){ 
 			return 1;
+		} else if (this.getScore() > otherResultFormat.getScore()){ 
+			return -1;
 		}
 		return 0;
 	}
