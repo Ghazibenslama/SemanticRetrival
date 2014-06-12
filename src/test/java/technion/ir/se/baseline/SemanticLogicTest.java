@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.SortedSet;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -54,9 +53,12 @@ public class SemanticLogicTest {
 		PowerMockito.when( searchEngine.getDocumentsContet(Mockito.anyListOf(Integer.class)) ).thenReturn(documentsList);
 		Whitebox.setInternalState(classUnderTest, "serchEngine", searchEngine);
 
-		SortedSet<String> buildRowTermVector = classUnderTest.buildRowTermVector(retrivalResult);
+		List<String> buildRowTermVector = classUnderTest.buildRowTermVector(retrivalResult);
 		Assert.assertTrue("vector doesn't contain all terms", 
 				buildRowTermVector.containsAll(Arrays.asList("papa","aba","padre")));
+		Assert.assertEquals("1st element is not as expected", "aba", buildRowTermVector.get(0));
+		Assert.assertEquals("2nd element is not as expected", "padre", buildRowTermVector.get(1));
+		Assert.assertEquals("3'd element is not as expected", "papa", buildRowTermVector.get(2));
 	}
 
 }

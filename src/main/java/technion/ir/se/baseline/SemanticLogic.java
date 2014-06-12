@@ -2,7 +2,6 @@ package technion.ir.se.baseline;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import technion.ir.se.dao.Document;
@@ -16,7 +15,8 @@ public class SemanticLogic {
 	public SemanticLogic() {
 		serchEngine = new SearchEngine();
 	}
-	public SortedSet<String> buildRowTermVector (List<RetrivalResult> retrivalResult)
+	
+	public List<String> buildRowTermVector (List<RetrivalResult> retrivalResult)
 	{
 		List<Integer> docIndriIDs = new ArrayList<Integer>() ;
 		TreeSet<String> termsVector = new TreeSet<String>();
@@ -34,7 +34,8 @@ public class SemanticLogic {
 			System.err.println("error getting content by IndriID");
 			e.printStackTrace();
 		}
-		return termsVector;
+		ArrayList<String> resultList = new ArrayList<String>(termsVector);
+		return resultList;
 	}
 
 }
