@@ -1,5 +1,6 @@
 package technion.ir.se.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +38,7 @@ public class Feedback {
 
 	private void initTerms() {
 		if (terms==null) {
+			terms = new ArrayList<String>();
 			for (Document document : documents) {
 				terms.addAll(document.getDocumentTermsStemed());
 			}
