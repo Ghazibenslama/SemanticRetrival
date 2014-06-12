@@ -37,7 +37,7 @@ public class SemanticLogicTest {
 	}
 	
 	@Test
-	public void buildTermVectorTest()
+	public void buildRowTermVectorTest()
 	{
 		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
 		try {
