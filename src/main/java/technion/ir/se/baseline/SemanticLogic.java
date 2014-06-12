@@ -11,12 +11,13 @@ import technion.ir.se.indri.SearchEngine;
 public class SemanticLogic {
 	
 	private SearchEngine serchEngine;
+	private List<String> rowTermVector;
 
 	public SemanticLogic() {
 		serchEngine = new SearchEngine();
 	}
 	
-	public List<String> buildRowTermVector (List<RetrivalResult> retrivalResult)
+	public void buildRowTermVector (List<RetrivalResult> retrivalResult)
 	{
 		List<Integer> docIndriIDs = new ArrayList<Integer>() ;
 		TreeSet<String> termsVector = new TreeSet<String>();
@@ -35,7 +36,7 @@ public class SemanticLogic {
 			e.printStackTrace();
 		}
 		ArrayList<String> resultList = new ArrayList<String>(termsVector);
-		return resultList;
+		this.rowTermVector = resultList;
 	}
-
+	
 }

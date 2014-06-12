@@ -33,15 +33,6 @@ public class SemanticLogicTest {
 	}
 
 	@Test
-	public void retrieveQueryTermsTest() throws Exception {
-		Query query = new Query("1", "Hello World");
-		List<String> list = Whitebox.<List<String>>invokeMethod(classUnderTest, "retrieveQueryTerms", query);//WhiteBox because retrieveQueryTerms is Private func
-		assertTrue("Doesn't contain 2 variables", list.size() == 2);
-		assertTrue("Doesn't contain Hello variable", list.contains("Hello"));
-		assertTrue("Doesn't contain World variable", list.contains("World"));
-	}
-	
-	@Test
 	public void testBuildTermVector() throws Exception
 	{
 		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
@@ -53,7 +44,8 @@ public class SemanticLogicTest {
 		PowerMockito.when( searchEngine.getDocumentsContet(Mockito.anyListOf(Integer.class)) ).thenReturn(documentsList);
 		Whitebox.setInternalState(classUnderTest, "serchEngine", searchEngine);
 
-		List<String> buildRowTermVector = classUnderTest.buildRowTermVector(retrivalResult);
+		classUnderTest.buildRowTermVector(retrivalResult);
+		List<String> buildRowTermVector = Whitebox.getInternalState(classUnderTest, "rowTermVector");
 		Assert.assertTrue("vector doesn't contain all terms", 
 				buildRowTermVector.containsAll(Arrays.asList("papa","aba","padre")));
 		Assert.assertEquals("1st element is not as expected", "aba", buildRowTermVector.get(0));
