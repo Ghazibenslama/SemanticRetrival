@@ -2,25 +2,31 @@ package technion.ir.se.baseline;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.reflect.Whitebox;
 
+import technion.ir.se.dao.Document;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
 
 public class SemanticLogicTest {
 	private SemanticLogic classUnderTest;
-	private SearchEngine runQuery;
+	private SearchEngine searchEngine;
 	@Before
 	public void setUp() throws Exception {
 		classUnderTest = new SemanticLogic();
-		runQuery = new SearchEngine();
+		searchEngine = new SearchEngine();
 	}
 
 	@After
@@ -37,28 +43,20 @@ public class SemanticLogicTest {
 	}
 	
 	@Test
-	public void buildRowTermVectorTest()
+	public void testBuildTermVector() throws Exception
 	{
 		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
-		try {
-			List<RetrivalResult> retrivalResult = runQuery.runQuery(2, rules, "international organized crime");
-			SortedSet<String> buildRowTermVector = classUnderTest.buildRowTermVector(retrivalResult);
-			String first = buildRowTermVector.first();
-			
-			
-		} catch (Exception e) {
-			System.out.println("runQuery failed");
-			e.printStackTrace();
-		}
-		
-		
-		/*
-		Query query = new Query("1", "Hello World");
-		SortedSet<String> resultSet = classUnderTest.buildTermVector(query,null);
-		assertTrue("Doesn't contain 2 variables", resultSet.size() == 2);
-		assertTrue("Doesn't contain Hello variable", resultSet.contains("Hello"));
-		assertTrue("Doesn't contain World variable", resultSet.contains("World"));
-		*/
+		List<RetrivalResult> retrivalResult = searchEngine.runQuery(2, rules, "international organized crime");
+		searchEngine = PowerMockito.mock(SearchEngine.class);
+		ArrayList<Document> documentsList = new ArrayList<Document>();
+		documentsList.add(new Document(Arrays.asList("aba", "papa")));
+		documentsList.add(new Document(Arrays.asList("aba", "padre")));
+		PowerMockito.when( searchEngine.getDocumentsContet(Mockito.anyListOf(Integer.class)) ).thenReturn(documentsList);
+		Whitebox.setInternalState(classUnderTest, "serchEngine", searchEngine);
+
+		SortedSet<String> buildRowTermVector = classUnderTest.buildRowTermVector(retrivalResult);
+		Assert.assertTrue("vector doesn't contain all terms", 
+				buildRowTermVector.containsAll(Arrays.asList("papa","aba","padre")));
 	}
 
 }
