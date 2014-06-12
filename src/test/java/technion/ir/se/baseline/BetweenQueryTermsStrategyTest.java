@@ -53,11 +53,11 @@ public class BetweenQueryTermsStrategyTest {
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("there should be 4 windows", 4l, windows.get(0).getWindowSize());
-		Assert.assertEquals("there should be 5 windows", 5l, windows.get(1).getWindowSize());
-		Assert.assertEquals("there should be 7 windows", 7l, windows.get(2).getWindowSize());
-		Assert.assertEquals("there should be 3 windows", 3l, windows.get(3).getWindowSize());
-		Assert.assertEquals("there should be 10 windows", 10l, windows.get(4).getWindowSize());
-		Assert.assertEquals("there should be 5 windows", 5l, windows.get(5).getWindowSize());
+		Assert.assertEquals("there should be 4 windows", 4l, windows.get(1).getWindowSize());
+		Assert.assertEquals("there should be 6 windows", 6l, windows.get(2).getWindowSize());
+		Assert.assertEquals("there should be 2 windows", 2l, windows.get(3).getWindowSize());
+		Assert.assertEquals("there should be 9 windows", 9l, windows.get(4).getWindowSize());
+		Assert.assertEquals("there should be 4 windows", 4l, windows.get(5).getWindowSize());
 	}
 	
 	@Test
@@ -81,11 +81,11 @@ public class BetweenQueryTermsStrategyTest {
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("last word in window should be my", "my", story.get(windows.get(0).getWindowStart()));
-		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(1).getWindowStart()));
-		Assert.assertEquals("last word in window should be moldova", "moldova", story.get(windows.get(2).getWindowStart()));
-		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(3).getWindowStart()));
-		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(4).getWindowStart()));
-		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(5).getWindowStart()));
+		Assert.assertEquals("last word in window should be i", "i", story.get(windows.get(1).getWindowStart()));
+		Assert.assertEquals("last word in window should be which", "which", story.get(windows.get(2).getWindowStart()));
+		Assert.assertEquals("last word in window should be in", "in", story.get(windows.get(3).getWindowStart()));
+		Assert.assertEquals("last word in window should be i", "i", story.get(windows.get(4).getWindowStart()));
+		Assert.assertEquals("last word in window should be and", "and", story.get(windows.get(5).getWindowStart()));
 	}
 	
 	@Test

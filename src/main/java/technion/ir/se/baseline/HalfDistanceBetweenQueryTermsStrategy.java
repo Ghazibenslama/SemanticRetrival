@@ -8,7 +8,7 @@ import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.TextWidow;
 
-public class HalfDistanceBetweenQueryTermsStrategy implements IWindowSize {
+public class HalfDistanceBetweenQueryTermsStrategy extends AbstractStrategy {
 
 	private static final int DELIMITER = 1;
 

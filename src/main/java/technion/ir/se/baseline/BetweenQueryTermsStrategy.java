@@ -10,7 +10,7 @@ import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.TextWidow;
 
-public class BetweenQueryTermsStrategy implements IWindowSize {
+public class BetweenQueryTermsStrategy extends AbstractStrategy {
 
 	private static final int DELIMITER = 1;
 
@@ -24,7 +24,7 @@ public class BetweenQueryTermsStrategy implements IWindowSize {
 		while (windowEnd != (terms.size()-1)) {
 			windowEnd = calcWindowEnd(queryTerms, terms, windowStart);
 			windows.add(new TextWidow(windowStart, windowEnd));
-			windowStart = windowEnd;
+			windowStart = windowEnd + 1;
 		}
 		return windows;
 	}

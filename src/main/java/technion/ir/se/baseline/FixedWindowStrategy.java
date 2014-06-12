@@ -7,7 +7,7 @@ import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.TextWidow;
 
-public class FixedWindowStrategy implements IWindowSize {
+public class FixedWindowStrategy extends AbstractStrategy {
 
 	private int fixedWindowSize;
 	private int numberOfTerms;
