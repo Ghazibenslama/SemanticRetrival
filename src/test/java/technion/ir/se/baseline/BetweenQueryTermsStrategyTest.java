@@ -23,6 +23,9 @@ public class BetweenQueryTermsStrategyTest {
 	private Query query;
 	private static final String STORY = "my name is alon i come for moldova which was once part of russia in russia i was called alexy" +
 			" but now i'm called alon and i love it";
+	
+	private static final String SENTANCE = "some window without query terms adir";
+	
 	@Before
 	public void setUp() throws Exception {
 		classUnderTest = new BetweenQueryTermsStrategy();
@@ -98,4 +101,34 @@ public class BetweenQueryTermsStrategyTest {
 		Integer windowEnd = Whitebox.<Integer>invokeMethod(classUnderTest, "calcWindowEnd", queryTerms, tokens, 0);
 		Assert.assertEquals("didn't find window end", 3l, windowEnd.longValue());
 	}
+	
+	@Test
+	public void testGetWindows_queryTermIsFirstInFeefback_testFirstWindow() {
+		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
+		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
+		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "adir"));
+		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		
+		TextWidow firstWindow = windows.get(0);
+		Assert.assertEquals("there should be 1 windows", 1l, firstWindow.getWindowSize());
+		Assert.assertEquals("First window should contain a single world", firstWindow.getWindowStart(), firstWindow.getWindowEnd());
+		Assert.assertEquals("'some' should be only word in first window", "some", sentaceTokens.get(firstWindow.getWindowEnd()));
+		Assert.assertEquals("'some' should be only word in first window", "some", sentaceTokens.get(firstWindow.getWindowStart()));
+	}
+	
+	@Test
+	public void testGetWindows_queryTermIsFirstInFeefback_testSecondWindow() {
+		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
+		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
+		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "adir"));
+		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		
+		TextWidow secondWindows = windows.get(1);
+		Assert.assertEquals("there should be 5 windows", 5l, secondWindows.getWindowSize());
+		Assert.assertEquals("second window didn't start correctly", 1l, secondWindows.getWindowStart());
+		Assert.assertEquals("second window didn't end correctly", 5l, secondWindows.getWindowEnd());
+		Assert.assertEquals("'window' should be the starting word in second window", "window", sentaceTokens.get(secondWindows.getWindowStart()) );
+		Assert.assertEquals("'adir' should be the ending word in second window", "adir", sentaceTokens.get(secondWindows.getWindowEnd()) );
+	}
+
 }

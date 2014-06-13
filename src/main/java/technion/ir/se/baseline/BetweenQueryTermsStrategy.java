@@ -12,8 +12,6 @@ import technion.ir.se.dao.TextWidow;
 
 public class BetweenQueryTermsStrategy extends AbstractStrategy {
 
-	private static final int DELIMITER = 1;
-
 	@Override
 	public List<TextWidow> getWindows(Feedback feedback, Query query) {
 		ArrayList<TextWidow> windows = new ArrayList<TextWidow>();
@@ -31,14 +29,23 @@ public class BetweenQueryTermsStrategy extends AbstractStrategy {
 
 	private int calcWindowEnd(Set<String> queryTerms, List<String> terms, int windowStart) {
 		List<Integer> list = new ArrayList<Integer>();
-		int startSerachIndex = windowStart + DELIMITER;
-		List<String> subList = terms.subList(startSerachIndex, terms.size());
+		int startSerachIndex = windowStart;
+		List<String> subList = createSublistStartingCurrentTerm(terms, startSerachIndex);
 		for (String queryTerm : queryTerms) {
-			list.add( subList.indexOf(queryTerm.toLowerCase()) + startSerachIndex );
+			list.add( calculateQueryTermPos(startSerachIndex, subList, queryTerm) );
 		}
 		Integer windowEnd = getIndexNotLessThan(list, windowStart);
 		windowEnd = (windowEnd == null) ? terms.size()-1 : windowEnd;
 		return windowEnd;
+	}
+
+	private int calculateQueryTermPos(int startSerachIndex, List<String> subList,
+			String queryTerm) {
+		return subList.indexOf(queryTerm.toLowerCase()) + startSerachIndex;
+	}
+
+	private List<String> createSublistStartingCurrentTerm(List<String> terms, int startSerachIndex) {
+		return terms.subList(startSerachIndex, terms.size());
 	}
 
 	/**
@@ -54,7 +61,7 @@ public class BetweenQueryTermsStrategy extends AbstractStrategy {
 	private Integer getIndexNotLessThan(List<Integer> list, int windowStart) {
 		Collections.sort(list);
 		for (Integer index : list) {
-			if (index > windowStart) {
+			if (index >= windowStart) {
 				return index;
 			}
 		}
