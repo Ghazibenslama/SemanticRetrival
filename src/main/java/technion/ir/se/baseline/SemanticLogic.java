@@ -1,6 +1,7 @@
 package technion.ir.se.baseline;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,21 +53,78 @@ public class SemanticLogic {
 		AbstractStrategy strategy = StrategyFactory.factory(windowStrategyName, feedback);
 		List<TextWidow> windows = strategy.getWindows(feedback, query);
 		
-		Map<String, int[]> queryVectors  = populateVectorsWithTerms(query, strategy, windows);
+		Map<String, int[]> queryVectors = populateQueryVectors(query, strategy, windows);
 		return queryVectors;
 	}
+	
+	public Map<String, int[]> buildFeedbackTermsVectors(Query query) {
+		Feedback feedback = getFeedback();
+		String windowStrategyName = Utils.readProperty(WINDOW_STRATEGY_KEY);
+		AbstractStrategy strategy = StrategyFactory.factory(windowStrategyName, feedback);
+		List<TextWidow> windows = strategy.getWindows(feedback, query);
+		
+		List<String> terms = getOnlyFeedbackTerms(feedback, query);
+		
+		Map<String, int[]> feedbackTermsVectors = populateFeedbackVectors(terms, strategy, windows);;
+		return feedbackTermsVectors;
+		
+	}
 
-	private Map<String, int[]> populateVectorsWithTerms(Query query, AbstractStrategy strategy,
+	private List<String> getOnlyFeedbackTerms(Feedback feedback, Query query) {
+		ArrayList<String> resultList = new ArrayList<String>(feedback.getTerms());
+		resultList.removeAll(query.getQueryTerms());
+		return resultList;
+	}
+
+	private Map<String, int[]> populateFeedbackVectors(
+			List<String> terms, AbstractStrategy strategy, List<TextWidow> windows) {
+		
+		Map<String, int[]> feedbackTermsVectors = createTermsMap(terms);
+		
+		for (TextWidow textWidow : windows) {
+			List<String> termsInWindow = strategy.getTermsInWindow(textWidow);
+			List<String> uniqueTerms = Utils.getUniqueValues(termsInWindow);
+			for (String uniqueTerm : uniqueTerms) {
+				if(doesTermAppearsInTerms(terms, uniqueTerm)) {
+					for (int i = 0; i < uniqueTerms.size(); i++) {
+						String otherTerm = uniqueTerms.get(i);
+						if (!uniqueTerm.equals(otherTerm)) {
+							int index = findIndexOfOtherTerm(otherTerm);
+							int frequency = findFrequencyOfOtherTerm(termsInWindow, otherTerm);
+							
+							feedbackTermsVectors.get(uniqueTerm)[index]+=frequency;
+						}
+					}
+				}
+			}
+		}
+
+		return feedbackTermsVectors;
+	}
+
+	private boolean doesTermAppearsInTerms(List<String> terms, String uniqueTerm) {
+		return terms.contains(uniqueTerm);
+	}
+
+	private int findFrequencyOfOtherTerm(List<String> termsInWindow, String otherTerm) {
+		return Collections.frequency(termsInWindow, otherTerm);
+	}
+
+	private int findIndexOfOtherTerm(String otherTerm) {
+		return rowTermVector.indexOf(otherTerm);
+	}
+
+	private Map<String, int[]> populateQueryVectors(Query query, AbstractStrategy strategy,
 			List<TextWidow> windows) {
 		
-		Map<String, int[]> queryVectors = createQueryTermsMap(query.getQueryTerms());
+		Map<String, int[]> queryVectors = createTermsMap(query.getQueryTerms());
 		
 		for (TextWidow textWidow : windows) {
 			List<String> termsInWindow = strategy.getTermsInWindow(textWidow);
 			for (String queryTerm : query.getQueryTerms()) {
 				if (termsInWindow.contains(queryTerm)) {
 					for (String term : termsInWindow) {
-						int index = rowTermVector.indexOf(term);
+						int index = findIndexOfOtherTerm(term);
 						queryVectors.get(queryTerm)[index]++;
 					}
 				}
@@ -79,11 +137,13 @@ public class SemanticLogic {
 		return new Feedback(documents);
 	}
 
-	private Map<String, int[]> createQueryTermsMap(List<String> queryTerms) {
+	private Map<String, int[]> createTermsMap(List<String> terms) {
+		List<String> uniqueTerms = Utils.getUniqueValues(terms);
 		HashMap<String, int[]> queryVectorsMap = new HashMap<String, int[]>();
-		for (String queryTerm : queryTerms) {
-			queryVectorsMap.put(queryTerm, new int[rowTermVector.size()]);
+		for (String term : uniqueTerms) {
+			queryVectorsMap.put(term, new int[rowTermVector.size()]);
 		}
 		return queryVectorsMap;
 	}
+
 }

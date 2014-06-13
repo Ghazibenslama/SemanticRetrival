@@ -2,6 +2,8 @@ package technion.ir.se.baseline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,7 @@ import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Document;
+import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.dao.TextWidow;
@@ -27,6 +30,10 @@ import technion.ir.se.indri.SearchEngine;
 
 @PrepareForTest(Utils.class)
 public class SemanticLogicTest {
+	private static final String DOC_ONE_CONTENT = "some window without query terms";
+	private static final String DOC_TWO_CONTENT = "adir is amzing!";
+	private static final String DOC_THREE_CONTENT = "I saw show last night in bordway";
+	private static final String DOC_FOUR_CONTENT = "some window some query some king some burger some cloud ate burger";
 	private SemanticLogic classUnderTest;
 	private SearchEngine searchEngine;
 	
@@ -45,8 +52,6 @@ public class SemanticLogicTest {
 
 	@Test
 	public void testBuildTermVector() throws Exception {
-		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
-		List<RetrivalResult> retrivalResult = searchEngine.runQuery(2, rules, "international organized crime");
 		searchEngine = PowerMockito.mock(SearchEngine.class);
 		ArrayList<Document> documentsList = new ArrayList<Document>();
 		documentsList.add(new Document(Arrays.asList("aba", "papa")));
@@ -54,7 +59,7 @@ public class SemanticLogicTest {
 		PowerMockito.when( searchEngine.getDocumentsContet(Mockito.anyListOf(Integer.class)) ).thenReturn(documentsList);
 		Whitebox.setInternalState(classUnderTest, "serchEngine", searchEngine);
 
-		classUnderTest.buildRowTermVector(retrivalResult);
+		classUnderTest.buildRowTermVector(new ArrayList<RetrivalResult>());
 		List<String> buildRowTermVector = Whitebox.getInternalState(classUnderTest, "rowTermVector");
 		Assert.assertTrue("vector doesn't contain all terms", 
 				buildRowTermVector.containsAll(Arrays.asList("papa","aba","padre")));
@@ -67,7 +72,7 @@ public class SemanticLogicTest {
 	public void testBuildQueryVectors_BetweenQueryTermsStrategy() {
 		prepareForBuildQueryVectorsTest();
 		
-		PowerMock.mockStatic(Utils.class);
+		PowerMock.mockStaticPartial(Utils.class, "readProperty");
 		EasyMock.expect(Utils.readProperty(EasyMock.anyString())).andReturn("BetweenQueryTermsStrategy");
 		PowerMock.replay(Utils.class);
 		
@@ -76,16 +81,16 @@ public class SemanticLogicTest {
 		Map<String, int[]> queryVectors = classUnderTest.buildQueryVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
-		int[] someTrueVector = new int[]{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		int[] someTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0};
 		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, queryVectors.get("some"));
 
-		int[] adirTrueVector = new int[]{0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		int[] adirTrueVector = new int[]{0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1};
 		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, queryVectors.get("adir"));
 		
-		int[] nightTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0};
+		int[] nightTrueVector = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0};
 		Assert.assertArrayEquals("vector of 'night' is not as expected", nightTrueVector, queryVectors.get("night"));
 		
-		int[] showTrueVector = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0};
+		int[] showTrueVector = new int[]{1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0};
 		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, queryVectors.get("show"));
 	}
 	
@@ -93,7 +98,7 @@ public class SemanticLogicTest {
 	public void testBuildQueryVectors_HalfDistanceBetweenQueryTermsStrategy() {
 		prepareForBuildQueryVectorsTest();
 		
-		PowerMock.mockStatic(Utils.class);
+		PowerMock.mockStaticPartial(Utils.class, "readProperty");
 		EasyMock.expect(Utils.readProperty(EasyMock.anyString())).andReturn("HalfDistanceBetweenQueryTermsStrategy");
 		PowerMock.replay(Utils.class);
 		
@@ -102,16 +107,16 @@ public class SemanticLogicTest {
 		Map<String, int[]> queryVectors = classUnderTest.buildQueryVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
-		int[] someTrueVector =  new int[]{1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		int[] someTrueVector =  new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1};
 		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, queryVectors.get("some"));
 
-		int[] adirTrueVector =  new int[]{0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0};
+		int[] adirTrueVector =  new int[]{0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0};
 		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, queryVectors.get("adir"));
 		
-		int[] showTrueVector =  new int[]{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0};
+		int[] showTrueVector =  new int[]{1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0};
 		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, queryVectors.get("show"));
 		
-		int[] nightTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0};
+		int[] nightTrueVector = new int[]{0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0};
 		Assert.assertArrayEquals("vector of 'night' is not as expected", nightTrueVector, queryVectors.get("night"));
 		
 	}
@@ -120,7 +125,7 @@ public class SemanticLogicTest {
 	public void testBuildQueryVectors_FixedWindowStrategy() {
 		prepareForBuildQueryVectorsTest();
 		
-		PowerMock.mockStatic(Utils.class);
+		PowerMock.mockStaticPartial(Utils.class, "readProperty");
 		EasyMock.expect(Utils.readProperty("window.strategy")).andReturn("FixedWindowStrategy");
 		EasyMock.expect(Utils.readProperty("window.size")).andReturn("7");
 		
@@ -131,38 +136,87 @@ public class SemanticLogicTest {
 		Map<String, int[]> queryVectors = classUnderTest.buildQueryVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
-		int[] someTrueVector  = new int[]{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+		int[] someTrueVector  = new int[]{0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1};
 		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, queryVectors.get("some"));
 
-		int[] adirTrueVector  = new int[]{1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+		int[] adirTrueVector  = new int[]{0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1};
 		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, queryVectors.get("adir"));
 		
-		int[] showTrueVector  = new int[]{0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0};
+		int[] showTrueVector  = new int[]{1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0};
 		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, queryVectors.get("show"));
 		
-		int[] nightTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0};
+		int[] nightTrueVector = new int[]{1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0};
 		Assert.assertArrayEquals("vector of 'night' is not as expected", nightTrueVector, queryVectors.get("night"));
-	}
-
-	private void prepareForBuildQueryVectorsTest() {
-		String docOneContent = "some window without query terms";
-		String docTwoContent = "adir is amzing!";
-		String docThreeContent = "I saw show last night in bordway";
-		Document documentOne = new Document(Arrays.asList(docOneContent.split(" ")));
-		Document documentTwo = new Document(Arrays.asList(docTwoContent.split(" ")));
-		Document documentThree = new Document(Arrays.asList(docThreeContent.split(" ")));
-		Whitebox.setInternalState(classUnderTest, "documents", Arrays.asList(documentOne, documentTwo, documentThree));
-		
-		List<String> rowTermVector = Arrays.asList((docOneContent + " " + docTwoContent +  " " + docThreeContent).split(" "));
-		Whitebox.setInternalState(classUnderTest, "rowTermVector", rowTermVector);
 	}
 	
 	@Test
-	public void testCreateQueryTermsList() throws Exception {
-		List<String> quertTerms = Arrays.asList("russia", "adir", "putin");
+	public void testBuildFeedbackTermsVector() {
+		prepareForBuildQueryVectorsTest();
+		
+		PowerMock.mockStaticPartial(Utils.class, "readProperty");
+		EasyMock.expect(Utils.readProperty(EasyMock.anyString())).andReturn("HalfDistanceBetweenQueryTermsStrategy");
+		PowerMock.replay(Utils.class);
+		
+		Query query = new Query(String.valueOf(0), "some adir night show");
+
+		Map<String, int[]> map = classUnderTest.buildFeedbackTermsVectors(query);
+		Assert.assertTrue(!map.isEmpty());
+		
+		int[] withoutTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0};
+		Assert.assertArrayEquals("vector of 'without' is not as expected", withoutTrueVector, map.get("without"));
+
+		int[] windowTrueVector  = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1};
+		Assert.assertArrayEquals("vector of 'window' is not as expected", windowTrueVector, map.get("window"));
+		
+		for (String queryTerm : query.getQueryTerms()) {
+			Assert.assertNull("query term should not have vector", map.get(queryTerm));
+		}
+		
+	}
+	
+	private void initDocumentsField(){
+		Document documentOne = new Document(Arrays.asList(DOC_ONE_CONTENT.split(" ")));
+		Document documentTwo = new Document(Arrays.asList(DOC_TWO_CONTENT.split(" ")));
+		Document documentThree = new Document(Arrays.asList(DOC_THREE_CONTENT.split(" ")));
+		Whitebox.setInternalState(classUnderTest, "documents", Arrays.asList(documentOne, documentTwo, documentThree));
+	}
+	
+	private void initDocumentsField(String... args){
+		List<Document> documentList = new ArrayList<Document>();
+		for (int i = 0; i < args.length; i++) {
+			String document = args[i];
+			documentList.add( new Document(Arrays.asList(document.split(" "))) );
+		}
+		Whitebox.setInternalState(classUnderTest, "documents", documentList);
+	}
+	
+	private void initRowTermVectorField() {
+		initRowTermVectorField(DOC_ONE_CONTENT, DOC_TWO_CONTENT, DOC_THREE_CONTENT);
+	}
+	
+	private void initRowTermVectorField(String... args) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < args.length; i++) {
+			builder.append(args[i]);
+			builder.append(" ");
+		}
+		List<String> rowTermsVector = Arrays.asList(builder.toString().split(" "));
+		List<String> uniqueValues = Utils.getUniqueValues(rowTermsVector);
+		Collections.sort(uniqueValues);
+		Whitebox.setInternalState(classUnderTest, "rowTermVector", uniqueValues );
+	}
+	
+	private void prepareForBuildQueryVectorsTest() {
+		initDocumentsField();
+		initRowTermVectorField();
+	}
+
+	@Test
+	public void testCreateTermsMap() throws Exception {
+		List<String> terms = Arrays.asList("russia", "adir", "putin", "adir");
 		String[] rowTermVector = "a b c d e f r g".split(" ");
 		Whitebox.setInternalState(classUnderTest, "rowTermVector", Arrays.asList(rowTermVector));
-		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "createQueryTermsMap", quertTerms);
+		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "createTermsMap", terms);
 		Assert.assertEquals("didn't create array for all query terms", 3l, map.size());
 	
 		for (Map.Entry<String, int[]> entry : map.entrySet()) {
@@ -176,44 +230,105 @@ public class SemanticLogicTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
+	public void testPopulateFeedbackVectors_testNumberOfCreatedVectors() throws Exception {
+		initRowTermVectorField();
+		initDocumentsField();
+		Feedback feedback = Whitebox.<Feedback>invokeMethod(classUnderTest, "getFeedback");
+		
+		List<String> listNoQuery = Arrays.asList(DOC_ONE_CONTENT.split(" "));
+		List<String> listWithAdir = Arrays.asList(DOC_TWO_CONTENT.split(" "));
+		List<String> listWithShow = Arrays.asList(DOC_THREE_CONTENT.split(" "));
+		
+		AbstractStrategy strategy = PowerMockito.mock(AbstractStrategy.class);
+		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWidow.class)))
+			.thenReturn(listNoQuery,listWithAdir,listWithShow);
+		
+		List<TextWidow> windows = Arrays.asList(new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0));
+
+		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateFeedbackVectors", feedback.getTerms(), strategy, windows);
+		
+		HashSet<String> set = new HashSet<String>();
+		set.addAll(listNoQuery);
+		set.addAll(listWithAdir);
+		set.addAll(listWithShow);
+		Assert.assertEquals("map of feedback terms vector doesn't contain vector for each term", set.size(), map.size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testPopulateFeedbackVectors_testContentOfCreatedVectors() throws Exception {
+		initRowTermVectorField(DOC_FOUR_CONTENT);
+		initDocumentsField(DOC_FOUR_CONTENT);
+		Feedback feedback = Whitebox.<Feedback>invokeMethod(classUnderTest, "getFeedback");
+		
+		
+		List<String> docFourList = Arrays.asList(DOC_FOUR_CONTENT.split(" "));
+		
+		AbstractStrategy strategy = PowerMockito.mock(AbstractStrategy.class);
+		
+		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWidow.class)))
+			.thenReturn(docFourList.subList(0, 3), docFourList.subList(3, 5), 
+					docFourList.subList(5, 8), docFourList.subList(8, 12));
+		
+		//creating a list with the same number of elements as in the strategy mocked return statement
+		List<TextWidow> windows = Arrays.asList(new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0));
+
+		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateFeedbackVectors", feedback.getTerms(), strategy, windows);
+		
+		//order is: ate, burger, cloud, king, query, some, window
+		int[] kingTrueVector  = new int[]{0, 1, 0, 0, 0, 1, 0};
+		Assert.assertArrayEquals("vector of 'king' is not as expected", kingTrueVector, map.get("king"));
+		
+		int[] queryTrueVector  = new int[]{0, 0, 0, 0, 0, 1, 0};
+		Assert.assertArrayEquals("vector of 'query' is not as expected", queryTrueVector, map.get("query"));
+		
+		int[] someTrueVector  = new int[]{1, 2, 1, 1, 1, 0, 1};
+		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, map.get("some"));
+		
+		int[] burgerTrueVector  = new int[]{1, 0, 1, 1, 0, 2, 0};
+		Assert.assertArrayEquals("vector of 'burger' is not as expected", burgerTrueVector, map.get("burger"));
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testPopulateVectorsWithTerms() throws Exception {
-		String doc1 = "some window without query terms";
-		String doc2 = "adir is amzing!";
-		String doc3 = "I saw show last night in bordway";
-		List<String> rowTermVector = Arrays.asList((doc1 + " " + doc2 +  " " + doc3).split(" "));
-		Whitebox.setInternalState(classUnderTest, "rowTermVector", rowTermVector);
+		initRowTermVectorField();
 		
-		List<String> listNoQuery = Arrays.asList(doc1.split(" "));
-		List<String> listWithAdir = Arrays.asList(doc2.split(" "));
-		List<String> listWithShow = Arrays.asList(doc3.split(" "));
+		List<String> listNoQuery = Arrays.asList(DOC_ONE_CONTENT.split(" "));
+		List<String> listWithAdir = Arrays.asList(DOC_TWO_CONTENT.split(" "));
+		List<String> listWithShow = Arrays.asList(DOC_THREE_CONTENT.split(" "));
 		
-		Query query = new Query(String.valueOf(0), "adir show miller");
 		AbstractStrategy strategy = PowerMockito.mock(AbstractStrategy.class);
 		int windowSize = 4;
 		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWidow.class)))
 			.thenReturn(listNoQuery,listWithAdir,listWithShow.subList(0, windowSize));
 		
+		Query query = new Query(String.valueOf(0), "adir show miller");
+		
 		List<TextWidow> windows = Arrays.asList(new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0));
-		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateVectorsWithTerms", query, strategy, windows);
+		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateQueryVectors", query, strategy, windows);
 		
 		int[] vectorOfMiller = map.get("miller");
 		for (int i = 0; i < vectorOfMiller.length; i++) {
 			Assert.assertEquals("There should be now value", 0, vectorOfMiller[i]);
 		}
 		
-		int[] vectorOfAdir = map.get("adir");
-		for (int i = 5 ; i <= 7; i++) {
-			Assert.assertEquals("There should be 1 value", 1, vectorOfAdir[i]);
-			
-		}
+		int[] adirTrueVector = new int[]{0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, map.get("adir"));
+
+		int[] showTrueVector = new int[]{1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0};
+		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, map.get("show"));
+	}
+	
+	@Test
+	public void testGetOnlyFeedbackTerms() throws Exception {
+		Query query = new Query(String.valueOf(0), "adir show miller");
+		initDocumentsField("some string that contain one query term: adir");
+		Feedback feedback = Whitebox.<Feedback>invokeMethod(classUnderTest, "getFeedback");
 		
-		int[] vectorOfShow = map.get("show");
-		int window3FirstWord = 8;
-		int windows3LastWord = window3FirstWord + windowSize;
-		for (int i = window3FirstWord ; i < windows3LastWord; i++) {
-			Assert.assertEquals("There should be 1 value", 1, vectorOfShow[i]);
-			
-		}
-		
+		List<String> noQueryTerms = Whitebox.<List<String>>invokeMethod(classUnderTest, "getOnlyFeedbackTerms", feedback, query);
+		Assert.assertTrue("list should not contain query term", !noQueryTerms.contains("adir"));
+		Assert.assertTrue("Original list should not be affected", feedback.getTerms().contains("adir"));
 	}
 }
