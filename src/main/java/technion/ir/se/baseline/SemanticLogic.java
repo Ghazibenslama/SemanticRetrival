@@ -47,28 +47,20 @@ public class SemanticLogic {
 		this.rowTermVector = resultList;
 	}
 	
-	public Map<String, int[]> buildQueryVectors(Query query) {
+	public Map<String, int[]> buildVectors(Query query) {
 		Feedback feedback = getFeedback();
 		String windowStrategyName = Utils.readProperty(WINDOW_STRATEGY_KEY);
 		AbstractStrategy strategy = StrategyFactory.factory(windowStrategyName, feedback);
 		List<TextWidow> windows = strategy.getWindows(feedback, query);
 		
-		Map<String, int[]> queryVectors = populateQueryVectors(query, strategy, windows);
-		return queryVectors;
-	}
-	
-	public Map<String, int[]> buildFeedbackTermsVectors(Query query) {
-		Feedback feedback = getFeedback();
-		String windowStrategyName = Utils.readProperty(WINDOW_STRATEGY_KEY);
-		AbstractStrategy strategy = StrategyFactory.factory(windowStrategyName, feedback);
-		List<TextWidow> windows = strategy.getWindows(feedback, query);
+		Map<String, int[]> vectors = populateQueryVectors(query, strategy, windows);
 		
 		List<String> terms = getOnlyFeedbackTerms(feedback, query);
-		
-		Map<String, int[]> feedbackTermsVectors = populateFeedbackVectors(terms, strategy, windows);;
-		return feedbackTermsVectors;
-		
+		Map<String, int[]> feedbackTermsVectors = populateFeedbackVectors(terms, strategy, windows);
+		vectors.putAll(feedbackTermsVectors);
+		return vectors;
 	}
+	
 
 	private List<String> getOnlyFeedbackTerms(Feedback feedback, Query query) {
 		ArrayList<String> resultList = new ArrayList<String>(feedback.getTerms());

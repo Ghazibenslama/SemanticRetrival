@@ -78,7 +78,7 @@ public class SemanticLogicTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 		
-		Map<String, int[]> queryVectors = classUnderTest.buildQueryVectors(query);
+		Map<String, int[]> queryVectors = classUnderTest.buildVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
 		int[] someTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0};
@@ -104,7 +104,7 @@ public class SemanticLogicTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 		
-		Map<String, int[]> queryVectors = classUnderTest.buildQueryVectors(query);
+		Map<String, int[]> queryVectors = classUnderTest.buildVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
 		int[] someTrueVector =  new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1};
@@ -133,7 +133,7 @@ public class SemanticLogicTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 		
-		Map<String, int[]> queryVectors = classUnderTest.buildQueryVectors(query);
+		Map<String, int[]> queryVectors = classUnderTest.buildVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
 		int[] someTrueVector  = new int[]{0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1};
@@ -159,7 +159,7 @@ public class SemanticLogicTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 
-		Map<String, int[]> map = classUnderTest.buildFeedbackTermsVectors(query);
+		Map<String, int[]> map = classUnderTest.buildVectors(query);
 		Assert.assertTrue(!map.isEmpty());
 		
 		int[] withoutTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0};
@@ -167,10 +167,6 @@ public class SemanticLogicTest {
 
 		int[] windowTrueVector  = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1};
 		Assert.assertArrayEquals("vector of 'window' is not as expected", windowTrueVector, map.get("window"));
-		
-		for (String queryTerm : query.getQueryTerms()) {
-			Assert.assertNull("query term should not have vector", map.get(queryTerm));
-		}
 		
 	}
 	
