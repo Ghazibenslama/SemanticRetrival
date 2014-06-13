@@ -91,7 +91,9 @@ public class HalfDistanceBetweenQueryTermsStrategy extends AbstractStrategy {
 				set.add(workingFeedbackTerms.indexOf(queryTerm.toLowerCase()));
 			}
 			queryIndex = getNextIndexPositionInFeedback(set, startSearchPos);
-			resultList.add(queryIndex);
+			if (queryIndex != null) {
+				resultList.add(queryIndex);
+			}
 			startSearchPos = updateStartSearchPos(queryIndex);
 		}
 		return resultList;
