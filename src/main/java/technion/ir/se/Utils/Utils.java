@@ -10,8 +10,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 
@@ -75,5 +77,10 @@ public class Utils {
 			System.err.println("Failed to load property File");
 			e.printStackTrace();
 		}
+	}
+
+	public static List<String> getUniqueValues(List<String> rowTermVector) {
+		Set<String> set = new HashSet<String>(rowTermVector);
+		return new ArrayList<String>(set);
 	}
 }
