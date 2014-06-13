@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,5 +53,19 @@ public class UtilsTest {
 		
 		
 	}
+	
+	@Test
+	public void testreadProperty()
+	{
+		String result;
+		result = Utils.readProperty("Eilon");
+		assertTrue("The returned result key property is not correct", result.equals("King"));
+		
+	}
+ 
+	
+	
+	
+	
 
 }
