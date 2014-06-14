@@ -14,7 +14,7 @@ public class FusionLogic
 		 * @param resultFormat - for only 1 queryID variation
 		 * return normalised ResultFormat for each queryID
 		 */
-		private void NormalizeMaxMin(List<ResultFormat> resultFormat) 
+		private void normalizeMaxMin(List<ResultFormat> resultFormat) 
 		{
 			double maxScore = resultFormat.get(0).getScore();
 			double minScore = resultFormat.get(resultFormat.size() - 1).getScore();
@@ -27,7 +27,7 @@ public class FusionLogic
 			}
 		}
 		
-		public List<ResultFormat> MergeResults(List<List<ResultFormat>> queryVariantsResults)
+		public List<ResultFormat> mergeResults(List<List<ResultFormat>> queryVariantsResults)
 		{
 			List<ResultFormat> mergedResult = new ArrayList<ResultFormat>();
 			
@@ -38,7 +38,7 @@ public class FusionLogic
 			
 			for (List<ResultFormat> resFormatList : queryVariantsResults)
 			{
-				NormalizeMaxMin(resFormatList);
+				normalizeMaxMin(resFormatList);
 			}
 			
 			//size > 1
@@ -76,6 +76,4 @@ public class FusionLogic
 			}
 			return mergedResult;
 		}
-		
-		
 	}

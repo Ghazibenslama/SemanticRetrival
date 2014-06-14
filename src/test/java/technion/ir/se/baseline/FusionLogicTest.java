@@ -43,7 +43,7 @@ public class FusionLogicTest {
 		List<List<ResultFormat>> queryVariantsResults = new ArrayList<List<ResultFormat>>();
 		queryVariantsResults.add(firstListResultFormat);
 		queryVariantsResults.add(secondListResultFormat);
-		mergedResults = classUnderTest.MergeResults(queryVariantsResults);
+		mergedResults = classUnderTest.mergeResults(queryVariantsResults);
 		Assert.assertEquals("size of merged list is not correct", 5, mergedResults.size());
 		Assert.assertEquals("1", mergedResults.get(0).getDocumentID());
 		Assert.assertEquals("2", mergedResults.get(1).getDocumentID());
