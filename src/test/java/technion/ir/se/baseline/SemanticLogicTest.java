@@ -15,13 +15,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.Query;
+import technion.ir.se.dao.ResultFormat;
+import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.dao.SemanticTermScore;
+import technion.ir.se.indri.SearchEngine;
 
 @PrepareForTest(SemanticLogic.class)
 public class SemanticLogicTest {
@@ -142,6 +147,43 @@ public class SemanticLogicTest {
 			assertEquals("new query id is not the same as original", originalQuery.getId(), alternativeQueire.getId());
 			i++;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSubmitAlternatives() throws Exception {
+		List<RetrivalResult> q1List = createRetrivalResultList();
+		List<RetrivalResult> q2List = createRetrivalResultList();
+		
+		SearchEngine engine = PowerMockito.mock(SearchEngine.class);
+		PowerMockito.when(engine.runQuery(Mockito.anyInt(), Mockito.any(String[].class), Mockito.anyString()))
+			.thenReturn(q1List, q2List);
+		Whitebox.setInternalState(classUnderTest, "engine", engine);
+		
+		List<Query> alternativeQueries = Arrays.asList(new Query("001", "q1"), new Query("002", "q2"));
+		List<List<ResultFormat>> list = Whitebox.<List<List<ResultFormat>>>invokeMethod(classUnderTest, "submitAlternatives", alternativeQueries);
+		assertEquals("There should be two lists in result", 2l, list.size());
+		List<ResultFormat> q1Results = list.get(0);
+		assertEquals("number of results is not matched", q1List.size(), q1Results.size());
+		for (ResultFormat resultFormat : q1Results) {
+			assertEquals("queryId doesn't match", "001", resultFormat.getQueryID());
+		}
+		List<ResultFormat> q2Results = list.get(1);
+		assertEquals("number of results is not matched", q2List.size(), q2Results.size());
+		for (ResultFormat resultFormat : q2Results) {
+			assertEquals("queryId doesn't match", "002", resultFormat.getQueryID());
+		}
+	}
+
+	private List<RetrivalResult> createRetrivalResultList() {
+		List<RetrivalResult> resultList = new ArrayList<RetrivalResult>();
+		int numberOfresults = (int) Math.ceil(Math.random() * (-10));
+		for (int i = 0; i < numberOfresults; i++) {
+			double score = Math.random() * (-10); 
+			RetrivalResult result = new RetrivalResult(score, i, 0, 0, 0, 0, 0, "doc_" + String.valueOf(i));
+			resultList.add(result);
+		}
+		return resultList;
 	}
 
 }

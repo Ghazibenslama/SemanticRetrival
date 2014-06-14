@@ -8,14 +8,17 @@ import java.util.Map.Entry;
 
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Query;
+import technion.ir.se.dao.ResultFormat;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.dao.SemanticTermScore;
 import technion.ir.se.exception.VectorLengthException;
+import technion.ir.se.indri.SearchEngine;
 
 public class SemanticLogic {
 	
 	private static final int NUMBER_OF_ALTERNATIVES_PER_QUERT_TERM = 1;
 	private int numberOfAlternativesPerTerm;
+	private SearchEngine engine;
 
 	public SemanticLogic() {
 		this.numberOfAlternativesPerTerm = NUMBER_OF_ALTERNATIVES_PER_QUERT_TERM;
@@ -26,6 +29,45 @@ public class SemanticLogic {
 		similarityVectors.buildRowTermVector(retrivalResult);
 		Map<String, int[]> vectors = similarityVectors.buildVectors(query);
 		return vectors;
+	}
+	
+	public List<Query> createAlternativeQuries(Map<String, int[]> vectors, Query query) {
+		List<Query> alternativeQuries = new ArrayList<Query>();
+		List<String> queryTerms = query.getQueryTerms();
+		
+		removeTermsFromVectors(vectors, queryTerms);
+		alternativeQuries = findQueryAlternatives(vectors, query);
+		
+		return alternativeQuries;
+	}
+	
+	public void submitAlternativeQuries(List<Query> alternativeQueries) throws Exception {
+		List<List<ResultFormat>> alternativesResult = submitAlternatives(alternativeQueries);
+		
+	}
+
+	private List<List<ResultFormat>> submitAlternatives(List<Query> alternativeQueries) throws Exception {
+		List<List<ResultFormat>> alternativesResults = new ArrayList<List<ResultFormat>>();
+		for (Query query : alternativeQueries) {
+			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:50", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
+			List<RetrivalResult> queryResults = engine.runQuery(BaseLine.NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
+			List<ResultFormat> list = Utils.convertRetrivalResultListToResultFormatList(queryResults, query);
+			alternativesResults.add(list);
+		}
+		return alternativesResults;
+	}
+
+	private List<Query> findQueryAlternatives(Map<String, int[]> vectors, Query query) {
+		List<String> queryTerms = query.getQueryTerms();
+		List<Query> alternatives = new ArrayList<Query>();
+		
+		for (String queryTermToReplace : queryTerms) {
+			List<SemanticTermScore> similarity = this.findSimilarity(vectors, queryTermToReplace);
+			List<String> termAlternatives = this.getTermAlternatives(similarity);
+			List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
+			alternatives.addAll(queryAlternatives);
+		}
+		return alternatives;
 	}
 	
 	private List<SemanticTermScore> findSimilarity(Map<String, int[]> vectors, String queryTerm) {
@@ -41,29 +83,6 @@ public class SemanticLogic {
 			e.printStackTrace();
 		}
 		return similarVectors;
-	}
-	
-	public List<Query> createAlternativeQuries(Map<String, int[]> vectors, Query query) {
-		List<Query> alternativeQuries = new ArrayList<Query>();
-		List<String> queryTerms = query.getQueryTerms();
-		
-		removeTermsFromVectors(vectors, queryTerms);
-		alternativeQuries = findQueryAlternatives(vectors, query);
-		
-		return alternativeQuries;
-	}
-
-	private List<Query> findQueryAlternatives(Map<String, int[]> vectors, Query query) {
-		List<String> queryTerms = query.getQueryTerms();
-		List<Query> alternatives = new ArrayList<Query>();
-		
-		for (String queryTermToReplace : queryTerms) {
-			List<SemanticTermScore> similarity = this.findSimilarity(vectors, queryTermToReplace);
-			List<String> termAlternatives = this.getTermAlternatives(similarity);
-			List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
-			alternatives.addAll(queryAlternatives);
-		}
-		return alternatives;
 	}
 	
 	private List<Query> createQueryAlternatives(Query originalQuery,
