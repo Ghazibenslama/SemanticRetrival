@@ -1,4 +1,4 @@
-package technion.ir.se.baseline;
+package technion.ir.se.windows;
 
 import static org.junit.Assert.assertTrue;
 
@@ -12,6 +12,7 @@ import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.TextWidow;
+import technion.ir.se.windows.FixedWindowStrategy;
 
 public class FixedWindowStrategyTest {
 

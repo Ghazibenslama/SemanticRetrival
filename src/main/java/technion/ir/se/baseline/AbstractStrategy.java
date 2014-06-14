@@ -5,6 +5,7 @@ import java.util.List;
 
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.TextWidow;
+import technion.ir.se.windows.IWindowSize;
 
 public abstract class AbstractStrategy implements IWindowSize {
 

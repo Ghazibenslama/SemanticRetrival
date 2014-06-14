@@ -1,4 +1,4 @@
-package technion.ir.se.baseline;
+package technion.ir.se.windows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +15,7 @@ import org.powermock.reflect.Whitebox;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.TextWidow;
+import technion.ir.se.windows.BetweenQueryTermsStrategy;
 
 public class BetweenQueryTermsStrategyTest {
 
