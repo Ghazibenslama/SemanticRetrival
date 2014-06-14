@@ -17,14 +17,14 @@ import technion.ir.se.indri.SearchEngine;
 import technion.ir.se.windows.AbstractStrategy;
 import technion.ir.se.windows.StrategyFactory;
 
-public class SemanticLogic {
+public class SimilarityVectors {
 	
 	private static final String WINDOW_STRATEGY_KEY = "window.strategy";
 	private SearchEngine serchEngine;
 	private List<String> rowTermVector;
 	private List<Document> documents;
 
-	public SemanticLogic() {
+	public SimilarityVectors() {
 		serchEngine = new SearchEngine();
 	}
 	

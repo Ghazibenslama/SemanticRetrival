@@ -30,12 +30,12 @@ import technion.ir.se.indri.SearchEngine;
 import technion.ir.se.windows.AbstractStrategy;
 
 @PrepareForTest(Utils.class)
-public class SemanticLogicTest {
+public class SimilarityVectorsTest {
 	private static final String DOC_ONE_CONTENT = "some window without query terms";
 	private static final String DOC_TWO_CONTENT = "adir is amzing!";
 	private static final String DOC_THREE_CONTENT = "I saw show last night in bordway";
 	private static final String DOC_FOUR_CONTENT = "some window some query some king some burger some cloud ate burger";
-	private SemanticLogic classUnderTest;
+	private SimilarityVectors classUnderTest;
 	private SearchEngine searchEngine;
 	
 	@Rule
@@ -43,7 +43,7 @@ public class SemanticLogicTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		classUnderTest = new SemanticLogic();
+		classUnderTest = new SimilarityVectors();
 		searchEngine = new SearchEngine();
 	}
 
