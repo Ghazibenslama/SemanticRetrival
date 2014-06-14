@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Query {
 	private String id;
 	private String content;
@@ -13,6 +15,12 @@ public class Query {
 		this.id = id;
 		this.content = content;
 		this.terms = null;
+	}
+
+	public Query(String id, List<String> terms) {
+		this.id = id;
+		this.terms = terms;
+		this.content = StringUtils.join(terms, " ");
 	}
 
 	public String getId() {
