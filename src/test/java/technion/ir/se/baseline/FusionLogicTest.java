@@ -22,7 +22,7 @@ public class FusionLogicTest {
 	public void setUp() throws Exception {
 		classUnderTest = new FusionLogic();
 		firstListResultFormat = new ArrayList<ResultFormat>();
-		firstListResultFormat.add(new ResultFormat("1", "2", 1, 4));
+		firstListResultFormat.add(new ResultFormat("1","2", 1, 4));
 		firstListResultFormat.add(new ResultFormat("1","4", 2, 3));
 		firstListResultFormat.add(new ResultFormat("1","1", 3, 2));
 		firstListResultFormat.add(new ResultFormat("1","3", 4, 1));
@@ -39,19 +39,6 @@ public class FusionLogicTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void testNormalizeMaxMin() {
-		classUnderTest.NormalizeMaxMin(firstListResultFormat);
-		Assert.assertEquals("Socre of first element not normilized correctly", 
-				Double.valueOf(1), Double.valueOf(firstListResultFormat.get(0).getScore()));
-		Assert.assertEquals("Socre of second element not normilized correctly", 
-				Double.valueOf(2.0/3), Double.valueOf(firstListResultFormat.get(1).getScore()));
-		Assert.assertEquals("Socre of third element not normilized correctly", 
-				Double.valueOf(1.0/3), Double.valueOf(firstListResultFormat.get(2).getScore()));
-		Assert.assertEquals("Socre of forth element not normilized correctly", 
-				Double.valueOf(0), Double.valueOf(firstListResultFormat.get(3).getScore()));
-		
-	}
 
 	@Test
 	public void testMergeResults() {
@@ -62,12 +49,23 @@ public class FusionLogicTest {
 		mergedResults = classUnderTest.MergeResults(queryVariantsResults);
 		Assert.assertEquals("size of merged list is not correct", 5, mergedResults.size());
 		Assert.assertEquals("1", mergedResults.get(0).getDocumentID());
-		Assert.assertEquals("4", mergedResults.get(1).getDocumentID());
+		Assert.assertEquals("2", mergedResults.get(1).getDocumentID());
 		Assert.assertEquals("5", mergedResults.get(4).getDocumentID());
-		Assert.assertEquals("Socre of first element not correct", 
+/*		Assert.assertEquals("Socre of first element not correct", 
 				Double.valueOf(6), Double.valueOf(mergedResults.get(0).getScore()));
 		Assert.assertEquals("Socre of Last element not correct", 
-				Double.valueOf(1), Double.valueOf(mergedResults.get(4).getScore()));
+				Double.valueOf(1), Double.valueOf(mergedResults.get(4).getScore()));*/
+		
+		Assert.assertEquals("Socre of first element not normilized correctly", 
+				Double.valueOf(4.0/3), Double.valueOf(mergedResults.get(0).getScore()));
+		Assert.assertEquals("Socre of second element not normilized correctly", 
+				Double.valueOf(1.0), Double.valueOf(mergedResults.get(1).getScore()));
+		Assert.assertEquals("Socre of third element not normilized correctly", 
+				Double.valueOf(1.0), Double.valueOf(mergedResults.get(2).getScore()));
+		Assert.assertEquals("Socre of forth element not normilized correctly", 
+				Double.valueOf(2.0/3), Double.valueOf(mergedResults.get(3).getScore()));
+		Assert.assertEquals("Socre of last element not normilized correctly", 
+				Double.valueOf(0), Double.valueOf(mergedResults.get(4).getScore()));
 	}
 
 }
