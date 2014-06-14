@@ -43,7 +43,15 @@ public class SemanticLogic {
 	
 	public void submitAlternativeQuries(List<Query> alternativeQueries) throws Exception {
 		List<List<ResultFormat>> alternativesResult = submitAlternatives(alternativeQueries);
+		List<ResultFormat> alternativesResultMerged = mergeResults(alternativesResult);
 		
+	}
+
+	private List<ResultFormat> mergeResults(
+			List<List<ResultFormat>> alternativesResult) {
+		FusionLogic fusionLogic = new FusionLogic();
+		List<ResultFormat> mergeResults = fusionLogic.mergeResults(alternativesResult);
+		return mergeResults;
 	}
 
 	private List<List<ResultFormat>> submitAlternatives(List<Query> alternativeQueries) throws Exception {

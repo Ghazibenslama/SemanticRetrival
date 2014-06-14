@@ -14,23 +14,22 @@ public class FusionLogic
 		 * @param resultFormat - for only 1 queryID variation
 		 * return normalised ResultFormat for each queryID
 		 */
-		private void normalizeMaxMin(List<ResultFormat> resultFormat) 
-		{
-			double maxScore = resultFormat.get(0).getScore();
-			double minScore = resultFormat.get(resultFormat.size() - 1).getScore();
-			double normalisedScore;
-			
-			for (ResultFormat resFormat : resultFormat) 
-			{
-				normalisedScore = (resFormat.getScore() - minScore) / (maxScore - minScore);
-				resFormat.setScore(normalisedScore);
+		private void normalizeMaxMin(List<ResultFormat> resultFormat) {
+			if (!resultFormat.isEmpty()) {
+				double maxScore = resultFormat.get(0).getScore();
+				double minScore = resultFormat.get(resultFormat.size() - 1).getScore();
+				double normalisedScore;
+				
+				for (ResultFormat resFormat : resultFormat) {
+					normalisedScore = (resFormat.getScore() - minScore) / (maxScore - minScore);
+					resFormat.setScore(normalisedScore);
+				}
 			}
 		}
 		
 		public List<ResultFormat> mergeResults(List<List<ResultFormat>> queryVariantsResults)
 		{
 			List<ResultFormat> mergedResult = new ArrayList<ResultFormat>();
-			
 			
 			// size = 0 || 1 - no merge is needed
 			if (queryVariantsResults.size() == 0) return null;
