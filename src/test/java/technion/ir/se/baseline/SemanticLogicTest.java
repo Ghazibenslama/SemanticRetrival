@@ -3,6 +3,7 @@ package technion.ir.se.baseline;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
+import technion.ir.se.dao.Query;
 import technion.ir.se.dao.SemanticTermScore;
 
 public class SemanticLogicTest {
@@ -58,7 +60,47 @@ public class SemanticLogicTest {
 		List<String> list = Whitebox.<List<String>>invokeMethod(classUnderTest, "getTermAlternatives", termScores);
 		assertEquals("list size not as expected", 1l, list.size());
 		assertEquals("list doesn't contain expected element", "first", list.get(0));
+	}
+	
+	@Test
+	public void testRemoveTermsFromVectors() throws Exception {
+		HashMap<String, int[]> map = new HashMap<String, int[]>();
+		map.put("a", new int[] {1,2,3,4});
+		map.put("b", new int[] {1,2,3,4});
+		map.put("c", new int[] {1,2,3,4});
+		map.put("d", new int[] {1,2,3,4});
+		Whitebox.invokeMethod(classUnderTest, "removeTermsFromVectors", map, Arrays.asList("b","d"));
 		
+		assertTrue("map contains element that should have been removed", !map.containsKey("b"));
+		assertTrue("map contains element that should have been removed", !map.containsKey("d"));
+	}
+	
+	@Test
+	public void testFindQueryAlternatives() throws Exception {
+		fail("Method 'testFindQueryAlternatives' was not tested");
+		Query query = new Query("00", "alef bet gimel daled hei");
+		Map<String, int[]> map = null;
+		Whitebox.<List<Query>>invokeMethod(classUnderTest, "findQueryAlternatives", map, query);
+	}
+	
+	@Test
+	public void testCreateQueryAlternatives() throws Exception {
+		
+		Query originalQuery = new Query("01", "q a z");
+		String queryTermToReplace = "z";
+		List<String> alternativesTerms = new ArrayList<String>( Arrays.asList("z1", "z2", "z3") );
+		List<Query> alternativeQueires = Whitebox.<List<Query>>invokeMethod(classUnderTest, "createQueryAlternatives", 
+				originalQuery, queryTermToReplace, alternativesTerms);
+		
+		assertEquals("Number of created alternatives is not as expected", 3l, alternativeQueires.size());
+		int i = 1;
+		for (Query alternativeQueire : alternativeQueires) {
+			List<String> queryTerms = alternativeQueire.getQueryTerms();
+			assertTrue("alternativeQueire contains term that should have been replaced", !queryTerms.contains("z"));
+			assertTrue("alternativeQueire not contains term that should be inserted", queryTerms.contains("z"+i));
+			assertEquals("new query id is not the same as original", originalQuery.getId(), alternativeQueire.getId());
+			i++;
+		}
 	}
 
 }

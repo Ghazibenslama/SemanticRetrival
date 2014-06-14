@@ -23,7 +23,7 @@ public class SemanticLogic {
 		return vectors;
 	}
 	
-	public List<SemanticTermScore> findSimilarity(Map<String, int[]> vectors, String queryTerm) {
+	private List<SemanticTermScore> findSimilarity(Map<String, int[]> vectors, String queryTerm) {
 		TermEquivalentLogic equivalentLogic = new TermEquivalentLogic();
 		List<SemanticTermScore> similarVectors = null;
 		
@@ -38,6 +38,51 @@ public class SemanticLogic {
 		return similarVectors;
 	}
 	
+	public List<Query> createAlternativeQuries(Map<String, int[]> vectors, Query query) {
+		List<Query> alternativeQuries = new ArrayList<Query>();
+		List<String> queryTerms = query.getQueryTerms();
+		
+		removeTermsFromVectors(vectors, queryTerms);
+		alternativeQuries = findQueryAlternatives(vectors, query);
+		
+		return alternativeQuries;
+	}
+
+	private List<Query> findQueryAlternatives(Map<String, int[]> vectors, Query query) {
+		List<String> queryTerms = query.getQueryTerms();
+		List<Query> alternatives = new ArrayList<Query>();
+		
+		for (String queryTermToReplace : queryTerms) {
+			List<SemanticTermScore> similarity = this.findSimilarity(vectors, queryTermToReplace);
+			List<String> termAlternatives = this.getTermAlternatives(similarity);
+			List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
+			alternatives.addAll(queryAlternatives);
+		}
+		return alternatives;
+	}
+	
+	private List<Query> createQueryAlternatives(Query originalQuery,
+			String queryTermToReplace, List<String> alternativesTerms) {
+		List<Query> result = new ArrayList<Query>();
+		
+		for (String term : alternativesTerms) {
+			List<String> newQueryTerms = new ArrayList<String>(originalQuery.getQueryTerms());
+			int replacmentIndex = newQueryTerms.indexOf(queryTermToReplace);
+			newQueryTerms.set(replacmentIndex, term);
+			Query q = new Query(originalQuery.getId(), newQueryTerms);
+			result.add(q);
+		}
+		return result;
+		
+	}
+
+	private void removeTermsFromVectors(Map<String, int[]> map,
+			List<String> queryTerms) {
+		for (String term : queryTerms) {
+			map.remove(term);
+		}
+	}
+
 	private List<String> getTermAlternatives(List<SemanticTermScore> termScores) {
 		ArrayList<String> resultList = new ArrayList<String>(numberOfAlternativesPerTerm);
 		List<SemanticTermScore> subList = termScores.subList(0, numberOfAlternativesPerTerm);
@@ -47,8 +92,6 @@ public class SemanticLogic {
 		return resultList;
 	}
 	
-	
-
 	private Map<String, double[]> convertMaps(Map<String, int[]> intMap) {
 		
 		HashMap<String, double[]> doubleMap = new HashMap<String, double[]>();
