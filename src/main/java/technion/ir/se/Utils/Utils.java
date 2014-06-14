@@ -18,6 +18,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 
 import technion.ir.se.dao.Query;
+import technion.ir.se.dao.ResultFormat;
 import technion.ir.se.dao.RetrivalResult;
 
 public class Utils {
@@ -82,5 +83,21 @@ public class Utils {
 	public static List<String> getUniqueValues(List<String> rowTermVector) {
 		Set<String> set = new HashSet<String>(rowTermVector);
 		return new ArrayList<String>(set);
+	}
+	
+	public static List<ResultFormat> convertRetrivalResultListToResultFormatList 
+									(List<RetrivalResult> retrievalResult, Query query)
+	{
+		List<ResultFormat> resultFormatList = new ArrayList<ResultFormat>();
+		int i=1;
+		for (RetrivalResult retResult : retrievalResult)
+		{
+			ResultFormat retFormat = new ResultFormat(query.getId(),
+														retResult.getDocumentId(),i,
+																	retResult.getScore());
+			resultFormatList.add(retFormat);
+			i++;
+		}
+		return resultFormatList;
 	}
 }

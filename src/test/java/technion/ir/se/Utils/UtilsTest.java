@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -17,6 +18,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import technion.ir.se.TestUtils;
 import technion.ir.se.dao.Query;
+import technion.ir.se.dao.ResultFormat;
+import technion.ir.se.dao.RetrivalResult;
 
 @PrepareForTest(Utils.class)
 @RunWith(PowerMockRunner.class)
@@ -60,6 +63,32 @@ public class UtilsTest {
 		String result;
 		result = Utils.readProperty("Eilon");
 		assertTrue("The returned result key property is not correct", result.equals("King"));
+		
+	}
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testconvertRetrivalResultListToResultFormatList()
+	{
+		RetrivalResult retResult1 = new RetrivalResult(1, 2, 0, 30, 5, 5, 5, "\\SecondDoc.txt");
+		RetrivalResult retResult2 = new RetrivalResult(0.5, 2, 0, 30, 5, 5, 5, "\\FirstDoc.txt");
+		RetrivalResult retResult3 = new RetrivalResult(0.3, 2, 0, 30, 5, 5, 5, "\\ThirdDoc.txt");
+		RetrivalResult retResult4 = new RetrivalResult(0, 2, 0, 30, 5, 5, 5, "\\LastDoc.txt");
+		List<RetrivalResult> retResultList = new ArrayList<RetrivalResult>();
+		retResultList.add(retResult1);
+		retResultList.add(retResult2);
+		retResultList.add(retResult3);
+		retResultList.add(retResult4);
+		
+		Query query = new Query("1","bla");
+		
+		List<ResultFormat> retFormat = new ArrayList <ResultFormat>();
+		retFormat = Utils.convertRetrivalResultListToResultFormatList(retResultList, query);
+		Assert.assertEquals("first Doc is not correct", "SecondDoc", retFormat.get(0).getDocumentID());
+		Assert.assertEquals("Second Doc is not correct", "FirstDoc", retFormat.get(1).getDocumentID());
+		Assert.assertEquals("Third Doc is not correct", "ThirdDoc", retFormat.get(2).getDocumentID());
+		Assert.assertEquals("Last Doc is not correct", "LastDoc", retFormat.get(3).getDocumentID());
+		Assert.assertEquals("queryId is not correct", "1", retFormat.get(0).getQueryID());
+		Assert.assertEquals("Score of second doc not correct", 0.5, retFormat.get(1).getScore());
 		
 	}
  
