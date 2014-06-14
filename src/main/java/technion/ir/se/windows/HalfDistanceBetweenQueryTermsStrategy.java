@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-import technion.ir.se.baseline.AbstractStrategy;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.TextWindow;

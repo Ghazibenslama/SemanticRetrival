@@ -27,6 +27,7 @@ import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.dao.TextWindow;
 import technion.ir.se.indri.SearchEngine;
+import technion.ir.se.windows.AbstractStrategy;
 
 @PrepareForTest(Utils.class)
 public class SemanticLogicTest {

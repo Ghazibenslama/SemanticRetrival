@@ -1,11 +1,10 @@
-package technion.ir.se.baseline;
+package technion.ir.se.windows;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.TextWindow;
-import technion.ir.se.windows.IWindowSize;
 
 public abstract class AbstractStrategy implements IWindowSize {
 

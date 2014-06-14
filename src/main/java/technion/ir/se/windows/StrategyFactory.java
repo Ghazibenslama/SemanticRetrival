@@ -1,7 +1,6 @@
 package technion.ir.se.windows;
 
 import technion.ir.se.Utils.Utils;
-import technion.ir.se.baseline.AbstractStrategy;
 import technion.ir.se.dao.Feedback;
 
 public class StrategyFactory {
