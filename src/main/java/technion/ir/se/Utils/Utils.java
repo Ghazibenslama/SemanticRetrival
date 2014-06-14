@@ -100,8 +100,7 @@ public class Utils {
 		int i=1;
 		for (RetrivalResult retResult : retrievalResult) {
 			ResultFormat retFormat = new ResultFormat(query.getId(),
-														retResult.getDocumentId(),i,
-																	retResult.getScore());
+							retResult.getDocumentId(), i, retResult.getScore());
 			resultFormatList.add(retFormat);
 			i++;
 		}
