@@ -1,6 +1,7 @@
 package technion.ir.se.baseline;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,17 +10,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.SemanticTermScore;
 
+@PrepareForTest(SemanticLogic.class)
 public class SemanticLogicTest {
 
 	private SemanticLogic classUnderTest;
+	
+	@Rule
+	public PowerMockRule rule = new PowerMockRule();
 	
 	@Before
 	public void setUp() throws Exception {
@@ -77,10 +87,41 @@ public class SemanticLogicTest {
 	
 	@Test
 	public void testFindQueryAlternatives() throws Exception {
-		fail("Method 'testFindQueryAlternatives' was not tested");
-		Query query = new Query("00", "alef bet gimel daled hei");
+		Query originalQuery = new Query("00", "alef bet gimel");
+		List<SemanticTermScore> alefList = new ArrayList<SemanticTermScore>();
+		alefList.addAll(Arrays.asList(new SemanticTermScore("alef1", 0.9), new SemanticTermScore("alef2", 0.2) ));
+		List<SemanticTermScore> bethList = new ArrayList<SemanticTermScore>();
+		bethList.addAll(Arrays.asList(new SemanticTermScore("beth1", 0.8), new SemanticTermScore("beth2", 0.5) ));
+		List<SemanticTermScore> gimelList = new ArrayList<SemanticTermScore>();
+		gimelList.addAll(Arrays.asList(new SemanticTermScore("gimel2", 0.9), new SemanticTermScore("gimel1", 0.0) ));
+		
 		Map<String, int[]> map = null;
-		Whitebox.<List<Query>>invokeMethod(classUnderTest, "findQueryAlternatives", map, query);
+		SemanticLogic partialMock = PowerMock.createPartialMockAndInvokeDefaultConstructor(SemanticLogic.class, "findSimilarity");
+		PowerMock.expectPrivate(partialMock, "findSimilarity", EasyMock.anyObject(Map.class), EasyMock.anyString()).
+			andReturn(alefList).andReturn(bethList).andReturn(gimelList);
+		PowerMock.replay(partialMock);
+		
+		
+		List<Query> alternativeQueries = Whitebox.<List<Query>>invokeMethod(partialMock, "findQueryAlternatives", map, originalQuery);
+		
+		assertEquals("Number of created alternatives is not as expected", 3l, alternativeQueries.size());
+		for (Query alternativeQuery : alternativeQueries) {
+			assertEquals("new query id is not the same as original", originalQuery.getId(), alternativeQuery.getId());
+		}
+		Query q1 = alternativeQueries.get(0);
+		assertTrue("query doesn't contain 'alef1", q1.getQueryTerms().contains("alef1"));
+		assertTrue("query does contain 'alef2'", !q1.getQueryTerms().contains("alef2"));
+		assertTrue("query doest contain 'alef'", !q1.getQueryTerms().contains("alef"));
+		
+		Query q2 = alternativeQueries.get(1);
+		assertTrue("query doesn't contain 'beth1'", q2.getQueryTerms().contains("beth1"));
+		assertTrue("query does contain 'beth2'", !q2.getQueryTerms().contains("beth2"));
+		assertTrue("query doest contain 'beth'", !q2.getQueryTerms().contains("beth"));
+		
+		Query q3 = alternativeQueries.get(2);
+		assertTrue("query doesn't contain 'gimel2'", q3.getQueryTerms().contains("gimel2"));
+		assertTrue("query does contain 'gimel1'", !q3.getQueryTerms().contains("gimel1"));
+		assertTrue("query doest contain 'gimel'", !q3.getQueryTerms().contains("gimel"));
 	}
 	
 	@Test

@@ -14,8 +14,13 @@ import technion.ir.se.exception.VectorLengthException;
 
 public class SemanticLogic {
 	
-	private int numberOfAlternativesPerTerm = 1;
+	private static final int NUMBER_OF_ALTERNATIVES_PER_QUERT_TERM = 1;
+	private int numberOfAlternativesPerTerm;
 
+	public SemanticLogic() {
+		this.numberOfAlternativesPerTerm = NUMBER_OF_ALTERNATIVES_PER_QUERT_TERM;
+	}
+	
 	public Map<String, int[]> createSimilarityVectors(List<RetrivalResult> retrivalResult, Query query) {
 		SimilarityVectors similarityVectors = new SimilarityVectors();
 		similarityVectors.buildRowTermVector(retrivalResult);
