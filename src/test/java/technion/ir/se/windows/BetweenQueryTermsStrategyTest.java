@@ -14,7 +14,7 @@ import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 import technion.ir.se.windows.BetweenQueryTermsStrategy;
 
 public class BetweenQueryTermsStrategyTest {
@@ -47,7 +47,7 @@ public class BetweenQueryTermsStrategyTest {
 	public void testGetWindows_hasSixWindows() {
 		PowerMockito.when(feedback.getTerms()).thenReturn(Arrays.asList(STORY.split(" ")));
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("there should be 6 windows", 6l, windows.size());
 	}
 	
@@ -55,7 +55,7 @@ public class BetweenQueryTermsStrategyTest {
 	public void testGetWindows_checkWindowsSizes() {
 		PowerMockito.when(feedback.getTerms()).thenReturn(Arrays.asList(STORY.split(" ")));
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("there should be 4 windows", 4l, windows.get(0).getWindowSize());
 		Assert.assertEquals("there should be 4 windows", 4l, windows.get(1).getWindowSize());
 		Assert.assertEquals("there should be 6 windows", 6l, windows.get(2).getWindowSize());
@@ -69,7 +69,7 @@ public class BetweenQueryTermsStrategyTest {
 		List<String> story = Arrays.asList(STORY.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(story);
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(0).getWindowEnd()));
 		Assert.assertEquals("last word in window should be moldova", "moldova", story.get(windows.get(1).getWindowEnd()));
 		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(2).getWindowEnd()));
@@ -83,7 +83,7 @@ public class BetweenQueryTermsStrategyTest {
 		List<String> story = Arrays.asList(STORY.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(story);
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("last word in window should be my", "my", story.get(windows.get(0).getWindowStart()));
 		Assert.assertEquals("last word in window should be i", "i", story.get(windows.get(1).getWindowStart()));
 		Assert.assertEquals("last word in window should be which", "which", story.get(windows.get(2).getWindowStart()));
@@ -108,9 +108,9 @@ public class BetweenQueryTermsStrategyTest {
 		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "adir"));
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		
-		TextWidow firstWindow = windows.get(0);
+		TextWindow firstWindow = windows.get(0);
 		Assert.assertEquals("there should be 1 windows", 1l, firstWindow.getWindowSize());
 		Assert.assertEquals("First window should contain a single world", firstWindow.getWindowStart(), firstWindow.getWindowEnd());
 		Assert.assertEquals("'some' should be only word in first window", "some", sentaceTokens.get(firstWindow.getWindowEnd()));
@@ -122,9 +122,9 @@ public class BetweenQueryTermsStrategyTest {
 		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "adir"));
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		
-		TextWidow secondWindows = windows.get(1);
+		TextWindow secondWindows = windows.get(1);
 		Assert.assertEquals("there should be 5 windows", 5l, secondWindows.getWindowSize());
 		Assert.assertEquals("second window didn't start correctly", 1l, secondWindows.getWindowStart());
 		Assert.assertEquals("second window didn't end correctly", 5l, secondWindows.getWindowEnd());

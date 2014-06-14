@@ -11,7 +11,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.Feedback;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 import technion.ir.se.windows.FixedWindowStrategy;
 
 public class FixedWindowStrategyTest {
@@ -53,7 +53,7 @@ public class FixedWindowStrategyTest {
 	@Test
 	public void testAddWindow() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 18);
-		TextWidow textWidow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createWindow", 0, 4);
+		TextWindow textWidow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createWindow", 0, 4);
 		assertTrue("window should have start at index 0", textWidow.getWindowStart() == 0);
 		assertTrue("window should have end at index 4", textWidow.getWindowEnd() == 4);
 		assertTrue("window size should be 5", textWidow.getWindowSize() == 5);
@@ -62,7 +62,7 @@ public class FixedWindowStrategyTest {
 	@Test
 	public void testAddWindow_exeddedNumberOfTerms() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 18);
-		TextWidow textWidow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createWindow", 17, 18);
+		TextWindow textWidow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createWindow", 17, 18);
 		assertTrue("window should have start at index 17", textWidow.getWindowStart() == 17);
 		assertTrue("window should have end at index 17", textWidow.getWindowEnd() == 17);
 		assertTrue("window size should be 1", textWidow.getWindowSize() == 1);
@@ -72,7 +72,7 @@ public class FixedWindowStrategyTest {
 	public void testCreateFirstWindow() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 30);
 		Whitebox.setInternalState(classUnderTest, "fixedWindowSize", 8);
-		TextWidow textWidow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createFirstWindow");
+		TextWindow textWidow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createFirstWindow");
 		assertTrue("window should have start at index 0", textWidow.getWindowStart() == 0);
 		assertTrue("window should have end at index 7", textWidow.getWindowEnd() == 7);
 		assertTrue("window size should be 8", textWidow.getWindowSize() == 8);
@@ -82,7 +82,7 @@ public class FixedWindowStrategyTest {
 	public void testCreateFirstWindow_fewTerms() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 5);
 		Whitebox.setInternalState(classUnderTest, "fixedWindowSize", 8);
-		TextWidow textWidow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createFirstWindow");
+		TextWindow textWidow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createFirstWindow");
 		assertTrue("window should have start at index 0", textWidow.getWindowStart() == 0);
 		assertTrue("window should have end at index 4", textWidow.getWindowEnd() == 4);
 		assertTrue("window size should be 5", textWidow.getWindowSize() == 5);
@@ -92,7 +92,7 @@ public class FixedWindowStrategyTest {
 	public void testCreateLastWindow() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 6);
 		Whitebox.setInternalState(classUnderTest, "fixedWindowSize", 5);
-		TextWidow textWidow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createLastWindow");
+		TextWindow textWidow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createLastWindow");
 		assertTrue("window should have start at index 5", textWidow.getWindowStart() == 5);
 		assertTrue("window should have end at index 5", textWidow.getWindowEnd() == 5);
 		assertTrue("window size should be 1", textWidow.getWindowSize() == 1);
@@ -102,7 +102,7 @@ public class FixedWindowStrategyTest {
 	public void testCreateLastWindow_onlyFirstWindowExists() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 3);
 		Whitebox.setInternalState(classUnderTest, "fixedWindowSize", 5);
-		TextWidow textWidow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createLastWindow");
+		TextWindow textWidow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createLastWindow");
 		assertTrue("last window should not have been created", textWidow == null);
 	}
 	
@@ -110,7 +110,7 @@ public class FixedWindowStrategyTest {
 	public void testCreateLastWindow_noLastWindowNeeded() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 10);
 		Whitebox.setInternalState(classUnderTest, "fixedWindowSize", 5);
-		TextWidow textWidow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createLastWindow");
+		TextWindow textWidow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createLastWindow");
 		assertTrue("window should have start at index 5", textWidow.getWindowStart() == 5);
 		assertTrue("window should have end at index 9", textWidow.getWindowEnd() == 9);
 		assertTrue("window size should be 5", textWidow.getWindowSize() == 5);
@@ -120,16 +120,16 @@ public class FixedWindowStrategyTest {
 	public void testCreateOtherWindows() throws Exception {
 		Whitebox.setInternalState(classUnderTest, "numberOfTerms", 21);
 		Whitebox.setInternalState(classUnderTest, "fixedWindowSize", 5);
-		List<TextWidow> textWidows = Whitebox.<List<TextWidow>>invokeMethod(classUnderTest, "createOtherWindows", 5);
+		List<TextWindow> textWidows = Whitebox.<List<TextWindow>>invokeMethod(classUnderTest, "createOtherWindows", 5);
 		assertTrue("there should have been 4 windows", textWidows.size() == 4);
 		for (int windowsIndex = 0; windowsIndex < 3; windowsIndex++) {
 			int i = windowsIndex + 1;
-			TextWidow textWidow = textWidows.get(windowsIndex);
+			TextWindow textWidow = textWidows.get(windowsIndex);
 			assertTrue("window should have start at position " + String.valueOf(i*5), textWidow.getWindowStart() == i*5);
 			assertTrue("window should have end at position " + String.valueOf((i+1)*5-1), textWidow.getWindowEnd() == (i+1)*5-1);
 			assertTrue("window size should be 5", textWidow.getWindowSize() == 5);
 		}
-		TextWidow textWidow = textWidows.get(3);
+		TextWindow textWidow = textWidows.get(3);
 		assertTrue("window should have start at index 20", textWidow.getWindowStart() == 20);
 		assertTrue("window should have end at index 20", textWidow.getWindowEnd() == 20);
 		assertTrue("window size should be 1", textWidow.getWindowSize() == 1);
@@ -142,8 +142,8 @@ public class FixedWindowStrategyTest {
 		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(38);
 		Whitebox.setInternalState(classUnderTest, "fixedWindowSize", 7);
 		
-		TextWidow textWidow;
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, null);
+		TextWindow textWidow;
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, null);
 		assertTrue("Didn't get all windows", windows.size() == 6);
 		for (int i = 0; i < windows.size() - 1; i++) {
 			textWidow = windows.get(i);

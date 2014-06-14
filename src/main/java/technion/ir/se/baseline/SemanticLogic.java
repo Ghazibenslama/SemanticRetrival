@@ -12,7 +12,7 @@ import technion.ir.se.dao.Document;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 import technion.ir.se.indri.SearchEngine;
 import technion.ir.se.windows.StrategyFactory;
 
@@ -52,7 +52,7 @@ public class SemanticLogic {
 		Feedback feedback = getFeedback();
 		String windowStrategyName = Utils.readProperty(WINDOW_STRATEGY_KEY);
 		AbstractStrategy strategy = StrategyFactory.factory(windowStrategyName, feedback);
-		List<TextWidow> windows = strategy.getWindows(feedback, query);
+		List<TextWindow> windows = strategy.getWindows(feedback, query);
 		
 		Map<String, int[]> vectors = populateQueryVectors(query, strategy, windows);
 		
@@ -70,11 +70,11 @@ public class SemanticLogic {
 	}
 
 	private Map<String, int[]> populateFeedbackVectors(
-			List<String> terms, AbstractStrategy strategy, List<TextWidow> windows) {
+			List<String> terms, AbstractStrategy strategy, List<TextWindow> windows) {
 		
 		Map<String, int[]> feedbackTermsVectors = createTermsMap(terms);
 		
-		for (TextWidow textWidow : windows) {
+		for (TextWindow textWidow : windows) {
 			List<String> termsInWindow = strategy.getTermsInWindow(textWidow);
 			List<String> uniqueTerms = Utils.getUniqueValues(termsInWindow);
 			for (String uniqueTerm : uniqueTerms) {
@@ -108,11 +108,11 @@ public class SemanticLogic {
 	}
 
 	private Map<String, int[]> populateQueryVectors(Query query, AbstractStrategy strategy,
-			List<TextWidow> windows) {
+			List<TextWindow> windows) {
 		
 		Map<String, int[]> queryVectors = createTermsMap(query.getQueryTerms());
 		
-		for (TextWidow textWidow : windows) {
+		for (TextWindow textWidow : windows) {
 			List<String> termsInWindow = strategy.getTermsInWindow(textWidow);
 			for (String queryTerm : query.getQueryTerms()) {
 				if (termsInWindow.contains(queryTerm)) {

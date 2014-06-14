@@ -25,7 +25,7 @@ import technion.ir.se.dao.Document;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 import technion.ir.se.indri.SearchEngine;
 
 @PrepareForTest(Utils.class)
@@ -236,10 +236,10 @@ public class SemanticLogicTest {
 		List<String> listWithShow = Arrays.asList(DOC_THREE_CONTENT.split(" "));
 		
 		AbstractStrategy strategy = PowerMockito.mock(AbstractStrategy.class);
-		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWidow.class)))
+		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWindow.class)))
 			.thenReturn(listNoQuery,listWithAdir,listWithShow);
 		
-		List<TextWidow> windows = Arrays.asList(new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0));
+		List<TextWindow> windows = Arrays.asList(new TextWindow(0, 0), new TextWindow(0, 0), new TextWindow(0, 0));
 
 		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateFeedbackVectors", feedback.getTerms(), strategy, windows);
 		
@@ -262,12 +262,12 @@ public class SemanticLogicTest {
 		
 		AbstractStrategy strategy = PowerMockito.mock(AbstractStrategy.class);
 		
-		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWidow.class)))
+		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWindow.class)))
 			.thenReturn(docFourList.subList(0, 3), docFourList.subList(3, 5), 
 					docFourList.subList(5, 8), docFourList.subList(8, 12));
 		
 		//creating a list with the same number of elements as in the strategy mocked return statement
-		List<TextWidow> windows = Arrays.asList(new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0));
+		List<TextWindow> windows = Arrays.asList(new TextWindow(0, 0), new TextWindow(0, 0), new TextWindow(0, 0), new TextWindow(0, 0));
 
 		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateFeedbackVectors", feedback.getTerms(), strategy, windows);
 		
@@ -297,12 +297,12 @@ public class SemanticLogicTest {
 		
 		AbstractStrategy strategy = PowerMockito.mock(AbstractStrategy.class);
 		int windowSize = 4;
-		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWidow.class)))
+		PowerMockito.when(strategy.getTermsInWindow(Mockito.any(TextWindow.class)))
 			.thenReturn(listNoQuery,listWithAdir,listWithShow.subList(0, windowSize));
 		
 		Query query = new Query(String.valueOf(0), "adir show miller");
 		
-		List<TextWidow> windows = Arrays.asList(new TextWidow(0, 0), new TextWidow(0, 0), new TextWidow(0, 0));
+		List<TextWindow> windows = Arrays.asList(new TextWindow(0, 0), new TextWindow(0, 0), new TextWindow(0, 0));
 		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateQueryVectors", query, strategy, windows);
 		
 		int[] vectorOfMiller = map.get("miller");

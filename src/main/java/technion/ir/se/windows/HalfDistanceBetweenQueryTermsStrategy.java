@@ -7,15 +7,15 @@ import java.util.TreeSet;
 import technion.ir.se.baseline.AbstractStrategy;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 
 public class HalfDistanceBetweenQueryTermsStrategy extends AbstractStrategy {
 
 	private static final int DELIMITER = 1;
 
 	@Override
-	public List<TextWidow> getWindows(Feedback feedback, Query query) {
-		ArrayList<TextWidow> list = new ArrayList<TextWidow>();
+	public List<TextWindow> getWindows(Feedback feedback, Query query) {
+		ArrayList<TextWindow> list = new ArrayList<TextWindow>();
 		List<String> queryTerms = query.getQueryTerms();
 		List<String> terms = feedback.getTerms();
 		
@@ -27,8 +27,8 @@ public class HalfDistanceBetweenQueryTermsStrategy extends AbstractStrategy {
 		return list;
 	}
 
-	private List<TextWidow> createWindows(List<Integer> occurrencesIndex, List<String> terms) {
-		ArrayList<TextWidow> resultList = new ArrayList<TextWidow>();
+	private List<TextWindow> createWindows(List<Integer> occurrencesIndex, List<String> terms) {
+		ArrayList<TextWindow> resultList = new ArrayList<TextWindow>();
 		
 		int leftGap = calcWindowGap(occurrencesIndex.get(0), occurrencesIndex.get(1));
 		resultList.add(createFirstWindow(occurrencesIndex.get(0), leftGap));
@@ -42,22 +42,22 @@ public class HalfDistanceBetweenQueryTermsStrategy extends AbstractStrategy {
 		return resultList;
 	}
 
-	private TextWidow createFirstWindow(Integer centerPos, int gap) {
-		TextWidow window = null;
+	private TextWindow createFirstWindow(Integer centerPos, int gap) {
+		TextWindow window = null;
 		//when windows gap is too big
 		if (centerPos - gap < 0) {
-			window = new TextWidow(0, centerPos + gap);
+			window = new TextWindow(0, centerPos + gap);
 		} else {
 			window = createWindow(centerPos, gap, gap);
 		}
 		return window;
 	}
 
-	private TextWidow createLastWindow(Integer centerPos, int gap, int numberOfterms) {
-		TextWidow widow = null;
+	private TextWindow createLastWindow(Integer centerPos, int gap, int numberOfterms) {
+		TextWindow widow = null;
 		//when windows gap is too big
 		if (centerPos + gap > numberOfterms) {
-			widow = new TextWidow(centerPos - gap, numberOfterms);
+			widow = new TextWindow(centerPos - gap, numberOfterms);
 		} else {
 			widow = createWindow(centerPos, gap, gap);
 		}
@@ -70,8 +70,8 @@ public class HalfDistanceBetweenQueryTermsStrategy extends AbstractStrategy {
 	 * @param rightGap - right gap from center.
 	 * @return
 	 */
-	private TextWidow createWindow(Integer centerPos, int leftGap, int rightGap) {
-		return new TextWidow(centerPos-leftGap, centerPos+rightGap);
+	private TextWindow createWindow(Integer centerPos, int leftGap, int rightGap) {
+		return new TextWindow(centerPos-leftGap, centerPos+rightGap);
 	}
 
 	private int calcWindowGap(Integer left, Integer right) {

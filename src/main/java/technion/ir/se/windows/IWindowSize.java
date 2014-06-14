@@ -4,7 +4,7 @@ import java.util.List;
 
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 
 public interface IWindowSize {
 
@@ -16,7 +16,7 @@ public interface IWindowSize {
 	 * @param queryTerms
 	 * @return
 	 */
-	public List<TextWidow>getWindows(Feedback feedback, Query query);
+	public List<TextWindow>getWindows(Feedback feedback, Query query);
 	
 	
 	/**

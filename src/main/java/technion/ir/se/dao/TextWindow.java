@@ -1,10 +1,10 @@
 package technion.ir.se.dao;
 
-public class TextWidow {
+public class TextWindow {
 	private int windowStart;
 	private int windowEnd;
 	
-	public TextWidow(int windowStart, int windowEnd) {
+	public TextWindow(int windowStart, int windowEnd) {
 		this.windowStart = windowStart;
 		this.windowEnd = windowEnd;
 	}

@@ -9,20 +9,20 @@ import java.util.TreeSet;
 import technion.ir.se.baseline.AbstractStrategy;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 
 public class BetweenQueryTermsStrategy extends AbstractStrategy {
 
 	@Override
-	public List<TextWidow> getWindows(Feedback feedback, Query query) {
-		ArrayList<TextWidow> windows = new ArrayList<TextWidow>();
+	public List<TextWindow> getWindows(Feedback feedback, Query query) {
+		ArrayList<TextWindow> windows = new ArrayList<TextWindow>();
 		TreeSet<String> queryTerms = new TreeSet<String>(query.getQueryTerms());
 		List<String> terms = feedback.getTerms();
 		int windowStart = 0, windowEnd = 0; 
 		
 		while (windowEnd != (terms.size()-1)) {
 			windowEnd = calcWindowEnd(queryTerms, terms, windowStart);
-			windows.add(new TextWidow(windowStart, windowEnd));
+			windows.add(new TextWindow(windowStart, windowEnd));
 			windowStart = windowEnd + 1;
 		}
 		return windows;

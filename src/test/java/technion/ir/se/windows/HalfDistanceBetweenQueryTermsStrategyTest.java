@@ -22,7 +22,7 @@ import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
-import technion.ir.se.dao.TextWidow;
+import technion.ir.se.dao.TextWindow;
 import technion.ir.se.windows.HalfDistanceBetweenQueryTermsStrategy;
 
 @PrepareForTest(HalfDistanceBetweenQueryTermsStrategy.class)
@@ -51,7 +51,7 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 	@Ignore
 	@Test
 	public void testGetWindows() {
-		List<TextWidow> windows = classUnderTest.getWindows(feedback, query);
+		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		assertEquals("There should have been 6 windows", 6l, windows.size());
 		
 	}
@@ -60,10 +60,10 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 	public void testGetWindows_NoQueryTermExistsInFeedback() throws Exception {
 		HalfDistanceBetweenQueryTermsStrategy partialMock = PowerMock.createPartialMock(HalfDistanceBetweenQueryTermsStrategy.class, "findQueryTermsOccurrences");
 		PowerMock.expectPrivate(partialMock, "findQueryTermsOccurrences", EasyMock.anyObject(), EasyMock.anyObject())
-			.andReturn(new ArrayList<TextWidow>());
+			.andReturn(new ArrayList<TextWindow>());
 		PowerMock.replay(partialMock);
 		
-		List<TextWidow> windows = partialMock.getWindows(feedback, query);
+		List<TextWindow> windows = partialMock.getWindows(feedback, query);
 		Assert.assertTrue("there should be now windows", windows.isEmpty());
 	}
 	
@@ -71,18 +71,18 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 	public void testGetWindows_LessThanOneQueryTermExistsInFeedback() throws Exception {
 		HalfDistanceBetweenQueryTermsStrategy partialMock = PowerMock.createPartialMock(HalfDistanceBetweenQueryTermsStrategy.class, "findQueryTermsOccurrences");
 		PowerMock.expectPrivate(partialMock, "findQueryTermsOccurrences", EasyMock.anyObject(), EasyMock.anyObject())
-			.andAnswer(new IAnswer<List<TextWidow>>() {
+			.andAnswer(new IAnswer<List<TextWindow>>() {
 		        @Override
-		        public List<TextWidow> answer() throws Throwable {
-		        	ArrayList<TextWidow> list = new ArrayList<TextWidow>();
-		        	list.add(new TextWidow(0, 0));
+		        public List<TextWindow> answer() throws Throwable {
+		        	ArrayList<TextWindow> list = new ArrayList<TextWindow>();
+		        	list.add(new TextWindow(0, 0));
 		            return list;
 		        }
 		    });
 		
 		PowerMock.replay(partialMock);
 		
-		List<TextWidow> windows = partialMock.getWindows(feedback, query);
+		List<TextWindow> windows = partialMock.getWindows(feedback, query);
 		Assert.assertTrue("there should be now windows", windows.isEmpty());
 	}
 
@@ -113,7 +113,7 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 		ArrayList<String> tokens = new ArrayList<String>();
 		tokens.addAll(Arrays.asList(STORY.split(" ")));
 		
-		List<TextWidow> list = Whitebox.<List<TextWidow>>invokeMethod(classUnderTest, "createWindows", indexs, tokens);
+		List<TextWindow> list = Whitebox.<List<TextWindow>>invokeMethod(classUnderTest, "createWindows", indexs, tokens);
 		assertEquals("list doesn't contain 5 windows", 5l, list.size());
 	}
 	
@@ -123,7 +123,7 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 		ArrayList<String> tokens = new ArrayList<String>();
 		tokens.addAll(Arrays.asList(STORY.split(" ")));
 		
-		List<TextWidow> list = Whitebox.<List<TextWidow>>invokeMethod(classUnderTest, "createWindows", indexs, tokens);
+		List<TextWindow> list = Whitebox.<List<TextWindow>>invokeMethod(classUnderTest, "createWindows", indexs, tokens);
 		assertEquals("first word of window is not right", "name", tokens.get( list.get(0).getWindowStart() ));
 		assertEquals("first word of window is not right", "come", tokens.get( list.get(1).getWindowStart() ));
 		assertEquals("first word of window is not right", "once", tokens.get( list.get(2).getWindowStart() ));
@@ -138,7 +138,7 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 		ArrayList<String> tokens = new ArrayList<String>();
 		tokens.addAll(Arrays.asList(STORY.split(" ")));
 		
-		List<TextWidow> list = Whitebox.<List<TextWidow>>invokeMethod(classUnderTest, "createWindows", indexs, tokens);
+		List<TextWindow> list = Whitebox.<List<TextWindow>>invokeMethod(classUnderTest, "createWindows", indexs, tokens);
 		assertEquals("first word of window is not right", "come", tokens.get( list.get(0).getWindowEnd() ));
 		assertEquals("first word of window is not right", "once", tokens.get( list.get(1).getWindowEnd() ));
 		assertEquals("first word of window is not right", "in", tokens.get( list.get(2).getWindowEnd() ));
@@ -149,28 +149,28 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 	
 	@Test
 	public void testCreateLastWindow_gapTooSmall() throws Exception {
-		TextWidow widow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createLastWindow", 30, 3, 32);
+		TextWindow widow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createLastWindow", 30, 3, 32);
 		assertEquals("Windows did start on right location", 27l, widow.getWindowStart());
 		assertEquals("Windows did end on right location", 32l, widow.getWindowEnd());
 	}
 	
 	@Test
 	public void testCreateLastWindow() throws Exception {
-		TextWidow widow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createLastWindow", 30, 3, 40);
+		TextWindow widow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createLastWindow", 30, 3, 40);
 		assertEquals("Windows did start on right location", 27l, widow.getWindowStart());
 		assertEquals("Windows did end on right location", 33l, widow.getWindowEnd());
 	}
 	
 	@Test
 	public void testCreateFirstWindow_gapTooSmall() throws Exception {
-		TextWidow widow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createFirstWindow", 3, 5);
+		TextWindow widow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createFirstWindow", 3, 5);
 		assertEquals("Windows did start on right location", 0l, widow.getWindowStart());
 		assertEquals("Windows did end on right location", 8l, widow.getWindowEnd());
 	}
 	
 	@Test
 	public void testCreateFirstWindow() throws Exception {
-		TextWidow widow = Whitebox.<TextWidow>invokeMethod(classUnderTest, "createFirstWindow", 9, 5);
+		TextWindow widow = Whitebox.<TextWindow>invokeMethod(classUnderTest, "createFirstWindow", 9, 5);
 		assertEquals("Windows did start on right location", 4l, widow.getWindowStart());
 		assertEquals("Windows did end on right location", 14l, widow.getWindowEnd());
 	}
