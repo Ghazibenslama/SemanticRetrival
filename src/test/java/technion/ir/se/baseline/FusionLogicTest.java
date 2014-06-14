@@ -22,16 +22,16 @@ public class FusionLogicTest {
 	public void setUp() throws Exception {
 		classUnderTest = new FusionLogic();
 		firstListResultFormat = new ArrayList<ResultFormat>();
-		firstListResultFormat.add(new ResultFormat("1", "q0", "2", 1, 4, "indri"));
-		firstListResultFormat.add(new ResultFormat("1", "q0", "4", 2, 3, "indri"));
-		firstListResultFormat.add(new ResultFormat("1", "q0", "1", 3, 2, "indri"));
-		firstListResultFormat.add(new ResultFormat("1", "q0", "3", 4, 1, "indri"));
+		firstListResultFormat.add(new ResultFormat("1", "2", 1, 4));
+		firstListResultFormat.add(new ResultFormat("1","4", 2, 3));
+		firstListResultFormat.add(new ResultFormat("1","1", 3, 2));
+		firstListResultFormat.add(new ResultFormat("1","3", 4, 1));
 		
 		secondListResultFormat = new ArrayList<ResultFormat>();
-		secondListResultFormat.add(new ResultFormat("1", "q0", "1", 1, 4, "indri"));
-		secondListResultFormat.add(new ResultFormat("1", "q0", "3", 2, 3, "indri"));
-		secondListResultFormat.add(new ResultFormat("1", "q0", "4", 3, 2, "indri"));
-		secondListResultFormat.add(new ResultFormat("1", "q0", "5", 4, 1, "indri"));
+		secondListResultFormat.add(new ResultFormat("1","1", 1, 4));
+		secondListResultFormat.add(new ResultFormat("1","3", 2, 3));
+		secondListResultFormat.add(new ResultFormat("1","4", 3, 2));
+		secondListResultFormat.add(new ResultFormat("1","5", 4, 1));
 		
 	}
 
