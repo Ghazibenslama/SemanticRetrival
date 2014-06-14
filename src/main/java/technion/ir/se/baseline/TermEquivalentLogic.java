@@ -10,6 +10,14 @@ import technion.ir.se.exception.VectorLengthException;
 
 public class TermEquivalentLogic 
 {
+	/**
+	 * Returns a list of {@link SemanticTermScore}. The list is sorted, so the first element in it 
+	 * has the highest similarity score.
+	 * @param termVectors
+	 * @param qTermVector
+	 * @return
+	 * @throws VectorLengthException
+	 */
 	public List<SemanticTermScore> similarVectors (Map<String,double[]> 
 		termVectors, double[] qTermVector) throws VectorLengthException
 	
