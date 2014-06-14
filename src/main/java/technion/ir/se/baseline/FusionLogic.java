@@ -71,7 +71,7 @@ public class FusionLogic
 			
 			Collections.sort(mergedResult);
 			if (mergedResult.size() > 1000) {
-				mergedResult = mergedResult.subList(0, 999);
+				mergedResult = mergedResult.subList(0, 1000);
 			}
 			return mergedResult;
 		}
