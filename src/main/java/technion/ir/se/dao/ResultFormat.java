@@ -2,6 +2,8 @@ package technion.ir.se.dao;
 
 public class ResultFormat implements Comparable<ResultFormat>{
 	
+	private static final String INDRI = "indri";
+	private static final String Q0 = "q0";
 	private String queryID;
 	private String q0;// default value Q0
 	private String documentID;
@@ -9,14 +11,15 @@ public class ResultFormat implements Comparable<ResultFormat>{
 	private double score;
 	private String indri;// default value Indri
 	
-	public ResultFormat(String queryID, String q0, String documentID, int rank, double score, String indri)
+	public ResultFormat(String queryID, String documentID, int rank, double score)
 	{
 		this.queryID = queryID;
-		this.q0 = q0;
 		this.documentID = documentID;
 		this.rank = rank;
 		this.score = score;
-		this.indri = indri;
+		
+		this.q0 = Q0;
+		this.indri = INDRI;
 	}
 	
 	public ResultFormat()
