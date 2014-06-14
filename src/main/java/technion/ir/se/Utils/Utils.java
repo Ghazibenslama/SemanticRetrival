@@ -85,13 +85,20 @@ public class Utils {
 		return new ArrayList<String>(set);
 	}
 	
+	public static double[] convertIntArrtoDoubleArr(int[] intArr) {
+		double[] dest = new double[intArr.length];
+		for (int i=0; i< intArr.length; i++) {
+			dest[i] = intArr[i];
+		}
+		return dest;
+	}
+
 	public static List<ResultFormat> convertRetrivalResultListToResultFormatList 
-									(List<RetrivalResult> retrievalResult, Query query)
-	{
+				(List<RetrivalResult> retrievalResult, Query query) {
+
 		List<ResultFormat> resultFormatList = new ArrayList<ResultFormat>();
 		int i=1;
-		for (RetrivalResult retResult : retrievalResult)
-		{
+		for (RetrivalResult retResult : retrievalResult) {
 			ResultFormat retFormat = new ResultFormat(query.getId(),
 														retResult.getDocumentId(),i,
 																	retResult.getScore());

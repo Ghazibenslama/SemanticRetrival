@@ -1,7 +1,5 @@
 package technion.ir.se.baseline;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import technion.ir.se.dao.ResultFormat;
+import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.SemanticTermScore;
 import technion.ir.se.exception.VectorLengthException;
 
@@ -24,16 +22,6 @@ public class TermEquivalentLogicTest {
 	private int[] thirdTermVector;
 	Map <String,double[]> documentTerms;
 	
-	public double[] copyFromIntArray(int[] source)
-	{
-		double[] dest = new double[source.length];
-		for (int i=0; i< source.length; i++)
-		{
-			dest[i] = source[i];
-		}
-		return dest;
-	}
-	
 	@Before
 	public void setUp() throws Exception 
 	{
@@ -43,9 +31,9 @@ public class TermEquivalentLogicTest {
 		secondTermVector = new int[] {2,1,1};
 		thirdTermVector = new int[] {1,1,1};
 		documentTerms = new TreeMap<String, double[]>();
-		documentTerms.put("t1", copyFromIntArray(firstTermVector));
-		documentTerms.put("t2", copyFromIntArray(secondTermVector));
-		documentTerms.put("t3", copyFromIntArray(thirdTermVector));
+		documentTerms.put("t1", Utils.convertIntArrtoDoubleArr(firstTermVector));
+		documentTerms.put("t2", Utils.convertIntArrtoDoubleArr(secondTermVector));
+		documentTerms.put("t3", Utils.convertIntArrtoDoubleArr(thirdTermVector));
 		
 	}
 
