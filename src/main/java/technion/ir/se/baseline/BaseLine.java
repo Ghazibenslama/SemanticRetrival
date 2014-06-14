@@ -11,7 +11,7 @@ import technion.ir.se.indri.SearchEngine;
 
 public class BaseLine {
 	
-	private static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 1000;
+	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 1000;
 	private SearchEngine engine;
 	
 	public BaseLine() {
