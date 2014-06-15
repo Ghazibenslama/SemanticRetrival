@@ -10,6 +10,8 @@ import technion.ir.se.dao.ResultFormat;
 public class FusionLogic
 	{
 		
+		private static final int MAX_RESULTS = 1000;
+
 		/**
 		 * @param resultFormat - for only 1 queryID variation
 		 * return normalised ResultFormat for each queryID
@@ -69,9 +71,14 @@ public class FusionLogic
 				}
 			}
 			
+			mergedResult = SortAndTrimResultsSize(mergedResult);
+			return mergedResult;
+		}
+
+		private List<ResultFormat> SortAndTrimResultsSize(List<ResultFormat> mergedResult) {
 			Collections.sort(mergedResult);
-			if (mergedResult.size() > 1000) {
-				mergedResult = mergedResult.subList(0, 1000);
+			if (mergedResult.size() > MAX_RESULTS) {
+				mergedResult = mergedResult.subList(0, MAX_RESULTS);
 			}
 			return mergedResult;
 		}
