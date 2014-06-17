@@ -47,16 +47,31 @@ public class Utils {
 		}
 		return builder;
 	}
+	
+	public static StringBuilder createMapFormatForQuery(List<ResultFormat> results){
+		StringBuilder builder = new StringBuilder();
+		for (ResultFormat resultFormat : results) {
+			String querySingleResult = String.format(MAP_FORMAT, resultFormat.getQueryID(), resultFormat.getDocumentID(), resultFormat.getRank(), resultFormat.getScore());
+			builder.append(querySingleResult);
+			builder.append("\n");
+		}
+		return builder;
+	}
 
 	public static void writeMapFile(StringBuilder trecMap, String filePrefix) throws IOException {
 		File mapFile = new File(filePrefix + "_baseLineMap.res");
+		verifyFileWasCreated(mapFile);
+		FileUtils.writeStringToFile(mapFile,trecMap.toString());
+	}
+
+	private static void verifyFileWasCreated(File mapFile) throws IOException,
+			FileNotFoundException {
 		if (!mapFile.exists()) {
 			boolean wasFileCreated = mapFile.createNewFile();
 			if (!wasFileCreated) {
 				throw new FileNotFoundException("Failed to create MAP file");
 			}
 		}
-		FileUtils.writeStringToFile(mapFile,trecMap.toString());
 	}
 	
 	public static String readProperty(String propertyName) {
