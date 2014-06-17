@@ -3,24 +3,49 @@
 	<groupId>technion.ir.se</groupId>
 	<artifactId>SemanticRetrival</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	
+
 	<properties>
-      <powermock.version>1.5.4</powermock.version>
-      <easymock.version>3.2</easymock.version>
-  	</properties>
+		<powermock.version>1.5.4</powermock.version>
+		<easymock.version>3.2</easymock.version>
+	</properties>
 
 	<build>
-	    <plugins>
-	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-compiler-plugin</artifactId>
-	        <version>3.1</version>
-	        <configuration>
-	          <source>1.7</source>
-	          <target>1.7</target>
-	        </configuration>
-	      </plugin>
-	    </plugins>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<excludes>
+						<exclude>**/*IndriSearchEngine.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>main.ParseTrecDocuments</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -41,35 +66,35 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-		
+
 		<!-- JARS that were installed manually -->
 		<dependency>
-		    <groupId>com.indri.org</groupId>
+			<groupId>com.indri.org</groupId>
 			<artifactId>indri</artifactId>
 			<version>5.6</version>
 		</dependency>
-		
+
 		<!-- TEST DEPENDENCIES -->
 		<dependency>
-	    	<groupId>org.powermock</groupId>
-	     	<artifactId>powermock-module-junit4</artifactId>
-	     	<version>${powermock.version}</version>
-	     	<scope>test</scope>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
-	     	<artifactId>powermock-api-easymock</artifactId>
-	     	<version>${powermock.version}</version>
-	     	<scope>test</scope>  
-	    </dependency>  
+			<artifactId>powermock-api-easymock</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>  
+		</dependency>  
 		<dependency>
-	      <groupId>org.powermock</groupId>
-	      <artifactId>powermock-api-mockito</artifactId>
-	      <version>${powermock.version}</version>
-	      <scope>test</scope>
-	   </dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>${powermock.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
-		    <groupId>org.powermock</groupId>
+			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4-rule</artifactId>
 			<version>${powermock.version}</version>
 			<scope>test</scope>
@@ -80,7 +105,7 @@
 			<version>${powermock.version}</version>
 			<scope>test</scope>
 		</dependency>
-			<dependency>
+		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 			<version>${easymock.version}</version>
