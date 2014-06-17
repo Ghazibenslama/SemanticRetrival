@@ -59,7 +59,7 @@ public class Utils {
 	}
 
 	public static void writeMapFile(StringBuilder trecMap, String filePrefix) throws IOException {
-		File mapFile = new File(filePrefix + "_baseLineMap.res");
+		File mapFile = new File(filePrefix + ".res");
 		verifyFileWasCreated(mapFile);
 		FileUtils.writeStringToFile(mapFile,trecMap.toString());
 	}

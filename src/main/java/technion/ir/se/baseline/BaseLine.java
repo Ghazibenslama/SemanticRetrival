@@ -33,7 +33,7 @@ public class BaseLine {
 				StringBuilder mapFormatForQuery = Utils.createMapFormatForQuery(query.getId(), results);
 				trecMap.append(mapFormatForQuery.toString());
 			}
-			String fileName = createFileName(rules);
+			String fileName = "baseLineMap";
 			Utils.writeMapFile(trecMap, fileName);
 		} catch (IOException e) {
 			System.err.println("failed to read queris or write file");
