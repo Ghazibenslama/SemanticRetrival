@@ -10,12 +10,12 @@ import org.junit.Test;
 
 import technion.ir.se.dao.RetrivalResult;
 
-public class RunQueryTest {
-	private SearchEngine runQuery;
+public class SearchEngineTest {
+	private SearchEngine searchEngine;
 
 	@Before
 	public void setUp() throws Exception {
-		runQuery = new SearchEngine();
+		searchEngine = SearchEngine.getInstance();
 	}
 
 	@After
@@ -25,7 +25,7 @@ public class RunQueryTest {
 	@Test
 	public void testRunQuery() throws Exception {
 		String[] rules= new String[]{ "method:linear","collectionLambda:0.2","field:title" };
-		List<RetrivalResult> retrivedDocumentId = runQuery.runQuery(1, rules, "cocaine police");
+		List<RetrivalResult> retrivedDocumentId = searchEngine.runQuery(1, rules, "cocaine police");
 //		assertTrue("Didn't retrive document", retrivedDocumentId == 2);
 		
 	}
@@ -33,15 +33,15 @@ public class RunQueryTest {
 	@Test
 	public void testRunQuery_TFIDF() throws Exception {
 		String[] rules= new String[]{ "tfidf", "k1:1.0", "b:0.3" };
-		List<RetrivalResult> retrivedDocumentId = runQuery.runQuery(1, rules, "Frank aircraft");
+		List<RetrivalResult> retrivedDocumentId = searchEngine.runQuery(1, rules, "Frank aircraft");
 //		assertTrue("Didn't retrive document", retrivedDocumentId == 2);
 	}
 	
 	@Test
 	public void testRunQuery_Combine() throws Exception {
 		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
-		List<RetrivalResult> retrivedDocumentIds = runQuery.runQuery(1000, rules, "international organized crime");
-		List<RetrivalResult> retrivedDocumentIdIndriForma = runQuery.runQuery(1000, rules, "#combine(international organized crime)");
+		List<RetrivalResult> retrivedDocumentIds = searchEngine.runQuery(1000, rules, "international organized crime");
+		List<RetrivalResult> retrivedDocumentIdIndriForma = searchEngine.runQuery(1000, rules, "#combine(international organized crime)");
 		for (int i = 0; i < retrivedDocumentIds.size(); i++) {
 			Assert.assertEquals(retrivedDocumentIds.get(i).getIndriDocumentId(), retrivedDocumentIdIndriForma.get(i).getIndriDocumentId());
 		}
@@ -51,12 +51,12 @@ public class RunQueryTest {
 	{
 		List<Integer> docIndriIDs = new ArrayList<Integer>() ;
 		String[] rules= new String[]{ "Okapi", "k1:1.2", "b:0.75", "k3:7" };
-		List<RetrivalResult> retrivalResult = runQuery.runQuery(2, rules, "international organized crime");
+		List<RetrivalResult> retrivalResult = searchEngine.runQuery(2, rules, "international organized crime");
 		for (RetrivalResult doc : retrivalResult) 
 		{
 			docIndriIDs.add(doc.getIndriDocumentId());
 		}
-		runQuery.getDocumentsContet(docIndriIDs);
+		searchEngine.getDocumentsContet(docIndriIDs);
 	}
 
 }

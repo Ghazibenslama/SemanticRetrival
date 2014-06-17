@@ -23,8 +23,9 @@ public class SearchEngine {
 	public String ENTITIES_INDEX_DIR;
 	
 	private QueryEnvironment queryEnvironment;
+	private static SearchEngine instance = null;
 	
-	public SearchEngine() {
+	private SearchEngine() {
 		queryEnvironment = new QueryEnvironment();
 		try {
 			init();
@@ -33,6 +34,14 @@ public class SearchEngine {
 			System.err.println("Failed to init QueryEnvironment");
 		}
 	}
+	
+	public static synchronized SearchEngine getInstance() {
+		if (instance == null) {
+			instance  = new SearchEngine();
+		}
+		return instance;
+	}
+	
 	private void init() throws Exception {
 		queryEnvironment.setMemory(1);
 		queryEnvironment.addIndex(DOCUMENTS_INDEX_DIR);

@@ -18,7 +18,7 @@ public class BaseLine {
 	private List<Query> queries;
 	
 	public BaseLine() {
-		engine = new SearchEngine();
+		engine = SearchEngine.getInstance();
 		queries = null;
 	}
 	

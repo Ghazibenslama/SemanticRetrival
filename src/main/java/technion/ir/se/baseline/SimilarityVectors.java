@@ -25,7 +25,7 @@ public class SimilarityVectors {
 	private List<Document> documents;
 
 	public SimilarityVectors() {
-		serchEngine = new SearchEngine();
+		serchEngine = SearchEngine.getInstance();
 	}
 	
 	public void buildRowTermVector (List<RetrivalResult> retrivalResult)

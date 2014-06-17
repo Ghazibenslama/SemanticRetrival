@@ -44,7 +44,7 @@ public class SimilarityVectorsTest {
 	@Before
 	public void setUp() throws Exception {
 		classUnderTest = new SimilarityVectors();
-		searchEngine = new SearchEngine();
+		searchEngine = SearchEngine.getInstance();
 	}
 
 	@After
