@@ -41,10 +41,10 @@ public class SemanticLogic {
 		return alternativeQuries;
 	}
 	
-	public void submitAlternativeQuries(List<Query> alternativeQueries) throws Exception {
+	public List<ResultFormat> submitAlternativeQuries(List<Query> alternativeQueries) throws Exception {
 		List<List<ResultFormat>> alternativesResult = submitAlternatives(alternativeQueries);
 		List<ResultFormat> alternativesResultMerged = mergeResults(alternativesResult);
-		
+		return alternativesResultMerged;
 	}
 
 	private List<ResultFormat> mergeResults(
