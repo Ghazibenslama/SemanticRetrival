@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.powermock.reflect.Whitebox;
@@ -30,6 +31,7 @@ import technion.ir.se.indri.SearchEngine;
 import technion.ir.se.windows.AbstractStrategy;
 
 @PrepareForTest(Utils.class)
+@PowerMockIgnore({"lemurproject.*"})
 public class SimilarityVectorsTest {
 	private static final String DOC_ONE_CONTENT = "some window without query terms";
 	private static final String DOC_TWO_CONTENT = "adir is amzing!";
