@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>technion.ir.se</groupId>
 	<artifactId>SemanticRetrival</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 
 	<properties>
 		<powermock.version>1.5.4</powermock.version>
@@ -28,7 +28,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>main.ParseTrecDocuments</mainClass>
+							<mainClass>main.RunExperiments</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
