@@ -122,21 +122,35 @@ public class SimilarityVectorsTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 		
-		Map<String, int[]> queryVectors = classUnderTest.buildVectors(query);
+		Map<String, Map<String, Short>> queryVectors = classUnderTest.buildVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
-		int[] someTrueVector =  new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1};
-		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, queryVectors.get("some"));
+		Map<String, Short> mapOfSome = queryVectors.get("some");
+		Assert.assertEquals("size of map of 'some' is not as expected", 3, mapOfSome.size());
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("window"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("without"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("some"));
 
-		int[] adirTrueVector =  new int[]{0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0};
-		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, queryVectors.get("adir"));
-		
-		int[] showTrueVector =  new int[]{1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, queryVectors.get("show"));
-		
-		int[] nightTrueVector = new int[]{0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'night' is not as expected", nightTrueVector, queryVectors.get("night"));
-		
+		Map<String, Short> mapOfAdir = queryVectors.get("adir");
+		Assert.assertEquals("size of map of 'adir' is not as expected", 5, mapOfAdir.size());
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("is"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("query"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("terms"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("adir"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("amzing!"));
+
+		Map<String, Short> mapOfNight = queryVectors.get("night");
+		Assert.assertEquals("size of map of 'night' is not as expected", 3, mapOfNight.size());
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("night"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("last"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("in"));
+
+		Map<String, Short> mapOfShow = queryVectors.get("show");
+		Assert.assertEquals("size of map of 'show' is not as expected", 4, mapOfShow.size());
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("I"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("saw"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("show"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("last"));
 	}
 
 	@Test
@@ -151,20 +165,49 @@ public class SimilarityVectorsTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 		
-		Map<String, int[]> queryVectors = classUnderTest.buildVectors(query);
+		Map<String, Map<String, Short>> queryVectors = classUnderTest.buildVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
-		int[] someTrueVector  = new int[]{0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1};
-		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, queryVectors.get("some"));
+		Map<String, Short> mapOfSome = queryVectors.get("some");
+		Assert.assertEquals("size of map of 'some' is not as expected", 7, mapOfSome.size());
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("is"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("window"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("query"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("terms"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("without"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("some"));
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("adir"));
 
-		int[] adirTrueVector  = new int[]{0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1};
-		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, queryVectors.get("adir"));
+		Map<String, Short> mapOfAdir = queryVectors.get("adir");
+		Assert.assertEquals("size of map of 'adir' is not as expected", 7, mapOfAdir.size());
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("is"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("window"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("query"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("terms"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("without"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("some"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("adir"));
+
+		Map<String, Short> mapOfNight = queryVectors.get("night");
+		Assert.assertEquals("size of map of 'night' is not as expected", 7, mapOfNight.size());
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("night"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("amzing!"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("show"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("last"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("saw"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("I"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("in"));
 		
-		int[] showTrueVector  = new int[]{1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, queryVectors.get("show"));
-		
-		int[] nightTrueVector = new int[]{1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'night' is not as expected", nightTrueVector, queryVectors.get("night"));
+
+		Map<String, Short> mapOfShow = queryVectors.get("show");
+		Assert.assertEquals("size of map of 'show' is not as expected", 7, mapOfShow.size());
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("night"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("amzing!"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("show"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("last"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("saw"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("I"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("in"));
 	}
 	
 	@Test
@@ -177,15 +220,18 @@ public class SimilarityVectorsTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 
-		Map<String, int[]> map = classUnderTest.buildVectors(query);
+		Map<String, Map<String, Short>> map = classUnderTest.buildVectors(query);
 		Assert.assertTrue(!map.isEmpty());
 		
-		int[] withoutTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0};
-		Assert.assertArrayEquals("vector of 'without' is not as expected", withoutTrueVector, map.get("without"));
-
-		int[] windowTrueVector  = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1};
-		Assert.assertArrayEquals("vector of 'window' is not as expected", windowTrueVector, map.get("window"));
+		Map<String, Short> mapOfWithout = map.get("without");
+		Assert.assertEquals("size of map of 'without' is not as expected", 2, mapOfWithout.size());
+		Assert.assertEquals("map of 'without' is not as expected", Short.valueOf( (short)1 ), mapOfWithout.get("some"));
+		Assert.assertEquals("map of 'without' is not as expected", Short.valueOf( (short)1 ), mapOfWithout.get("window"));
 		
+		Map<String, Short> mapOfWindow = map.get("window");
+		Assert.assertEquals("size of map of 'window' is not as expected", 2, mapOfWindow.size());
+		Assert.assertEquals("map of 'window' is not as expected", Short.valueOf( (short)1 ), mapOfWindow.get("some"));
+		Assert.assertEquals("map of 'window' is not as expected", Short.valueOf( (short)1 ), mapOfWindow.get("without"));
 	}
 	
 	private void initDocumentsField(){
