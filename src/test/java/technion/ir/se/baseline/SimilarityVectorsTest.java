@@ -83,20 +83,33 @@ public class SimilarityVectorsTest {
 		
 		Query query = new Query(String.valueOf(0), "some adir night show");
 		
-		Map<String, int[]> queryVectors = classUnderTest.buildVectors(query);
+		Map<String, Map<String, Short>> queryVectors = classUnderTest.buildVectors(query);
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
-		int[] someTrueVector = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, queryVectors.get("some"));
+		Map<String, Short> mapOfSome = queryVectors.get("some");
+		Assert.assertEquals("size of map of 'some' is not as expected", 1, mapOfSome.size());
+		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("some"));
 
-		int[] adirTrueVector = new int[]{0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1};
-		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, queryVectors.get("adir"));
+		Map<String, Short> mapOfAdir = queryVectors.get("adir");
+		Assert.assertEquals("size of map of 'adir' is not as expected", 5, mapOfAdir.size());
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("query"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("window"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("without"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("adir"));
+		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("terms"));
+
+		Map<String, Short> mapOfNight = queryVectors.get("night");
+		Assert.assertEquals("size of map of 'night' is not as expected", 2, mapOfNight.size());
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("last"));
+		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("night"));
 		
-		int[] nightTrueVector = new int[]{0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'night' is not as expected", nightTrueVector, queryVectors.get("night"));
-		
-		int[] showTrueVector = new int[]{1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, queryVectors.get("show"));
+		Map<String, Short> mapOfShow = queryVectors.get("show");
+		Assert.assertEquals("size of map of 'show' is not as expected", 5, mapOfShow.size());
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("I"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("saw"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("show"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("is"));
+		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("amzing!"));
 	}
 	
 	@Test
@@ -289,7 +302,7 @@ public class SimilarityVectorsTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testPopulateVectorsWithTerms() throws Exception {
+	public void testPopulateQueryVectors() throws Exception {
 		initRowTermVectorField();
 		
 		List<String> listNoQuery = Arrays.asList(DOC_ONE_CONTENT.split(" "));
@@ -304,18 +317,24 @@ public class SimilarityVectorsTest {
 		Query query = new Query(String.valueOf(0), "adir show miller");
 		
 		List<TextWindow> windows = Arrays.asList(new TextWindow(0, 0), new TextWindow(0, 0), new TextWindow(0, 0));
-		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateQueryVectors", query, strategy, windows);
+		Map<String, Map<String, Short>> map = Whitebox.<Map<String, Map<String, Short>>>invokeMethod(classUnderTest, "populateQueryVectors", query, strategy, windows);
 		
-		int[] vectorOfMiller = map.get("miller");
-		for (int i = 0; i < vectorOfMiller.length; i++) {
-			Assert.assertEquals("There should be now value", 0, vectorOfMiller[i]);
-		}
+		Map<String, Short> vectorOfMiller = map.get("miller");
+		Assert.assertTrue("There map should be empty", vectorOfMiller.isEmpty());
 		
-		int[] adirTrueVector = new int[]{0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'adir' is not as expected", adirTrueVector, map.get("adir"));
+		Map<String, Short> mapOfAdir = map.get("adir");
+		Assert.assertEquals("Map should contain 3 elements", (short)3, mapOfAdir.size());
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfAdir.get("adir"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfAdir.get("is"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfAdir.get("amzing!"));
+		
+		Map<String, Short> mapOfShow = map.get("show");
+		Assert.assertEquals("Map should contain 4 elements", (short)4, mapOfShow.size());
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfShow.get("I"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfShow.get("saw"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfShow.get("show"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfShow.get("last"));
 
-		int[] showTrueVector = new int[]{1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0};
-		Assert.assertArrayEquals("vector of 'show' is not as expected", showTrueVector, map.get("show"));
 	}
 	
 	@Test
@@ -330,7 +349,7 @@ public class SimilarityVectorsTest {
 	}
 	
 	@Test
-	public void testUpdateTermFrequency_newTerm() throws Exception{
+	public void testUpdateTermFrequency_forQueryTerm_newTerm() throws Exception{
 		HashMap<String, Map<String, Short>> outerMap = new HashMap<String, Map<String, Short>>();
 		HashMap<String, Short> innerMap = new HashMap<String, Short>();
 		String outerKey = "qTerm1";
@@ -342,7 +361,7 @@ public class SimilarityVectorsTest {
 	}
 	
 	@Test
-	public void testUpdateTermFrequency_newExisitng() throws Exception{
+	public void testUpdateTermFrequency_forQueryTerm_newExisitng() throws Exception{
 		HashMap<String, Map<String, Short>> outerMap = new HashMap<String, Map<String, Short>>();
 		HashMap<String, Short> innerMap = new HashMap<String, Short>();
 		String outerKey = "qTerm1";
@@ -352,6 +371,31 @@ public class SimilarityVectorsTest {
 		Whitebox.invokeMethod(classUnderTest, "updateTermFrequency", outerMap, outerKey, innerKey);
 		Short actual = outerMap.get(outerKey).get(innerKey);
 		Assert.assertEquals("Frequency of a new term is not set to 1", Short.valueOf((short) 6), actual);
+	}
+	
+	@Test
+	public void testUpdateTermFrequency_forTextTerm_newTerm() throws Exception{
+		HashMap<String, Map<String, Short>> outerMap = new HashMap<String, Map<String, Short>>();
+		HashMap<String, Short> innerMap = new HashMap<String, Short>();
+		String outerKey = "qTerm1";
+		outerMap.put(outerKey, innerMap);
+		String innerKey = "term";
+		Whitebox.invokeMethod(classUnderTest, "updateTermFrequency", outerMap, outerKey, innerKey, (short)4);
+		Short actual = outerMap.get(outerKey).get(innerKey);
+		Assert.assertEquals("Frequency of a new term is not set to 1", Short.valueOf((short) 4), actual);
+	}
+	
+	@Test
+	public void testUpdateTermFrequency_forTextTerm_newExisitng() throws Exception{
+		HashMap<String, Map<String, Short>> outerMap = new HashMap<String, Map<String, Short>>();
+		HashMap<String, Short> innerMap = new HashMap<String, Short>();
+		String outerKey = "qTerm1";
+		outerMap.put(outerKey, innerMap);
+		String innerKey = "term";
+		innerMap.put(innerKey, (short) 5);
+		Whitebox.invokeMethod(classUnderTest, "updateTermFrequency", outerMap, outerKey, innerKey, (short)4);
+		Short actual = outerMap.get(outerKey).get(innerKey);
+		Assert.assertEquals("Frequency of a new term is not set to 1", Short.valueOf((short) 9), actual);
 	}
 	
 }
