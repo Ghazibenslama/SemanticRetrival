@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -216,15 +217,11 @@ public class SimilarityVectorsTest {
 		List<String> terms = Arrays.asList("russia", "adir", "putin", "adir");
 		String[] rowTermVector = "a b c d e f r g".split(" ");
 		Whitebox.setInternalState(classUnderTest, "rowTermVector", Arrays.asList(rowTermVector));
-		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "createTermsMap", terms);
-		Assert.assertEquals("didn't create array for all query terms", 3l, map.size());
+		Map<String,Map<String,Short>> map = Whitebox.<HashMap<String, Map<String, Short>>>invokeMethod(classUnderTest, "createTermsMap", terms);
+		Assert.assertEquals("Didn't create map for all query terms", 3l, map.size());
 	
-		for (Map.Entry<String, int[]> entry : map.entrySet()) {
-			Assert.assertEquals("vector size is not as expected", rowTermVector.length, entry.getValue().length);
-			for (int i = 0; i < entry.getValue().length; i++) {
-				int content = entry.getValue()[i];
-				Assert.assertEquals("content sould be 0", 0, content);
-			}
+		for (Entry<String, Map<String, Short>> entry : map.entrySet()) {
+			Assert.assertTrue("Map of each term should be empty", entry.getValue().isEmpty());
 		}
 	}
 	
