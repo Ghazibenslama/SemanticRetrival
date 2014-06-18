@@ -7,9 +7,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,7 +88,13 @@ public class UtilsTest {
 		Assert.assertEquals("Last Doc is not correct", "LastDoc", retFormat.get(3).getDocumentID());
 		Assert.assertEquals("queryId is not correct", "1", retFormat.get(0).getQueryID());
 		Assert.assertEquals("Score of second doc not correct", 0.5, retFormat.get(1).getScore());
-		
+	}
+	
+	@Test
+	public void testConvertPathToExistingPath() {
+		String path = "jar:file:/C:/Users/XPS_Sapir/Documents/GitHub/SemanticRetrival/target/SemanticRetrival-0.0.1-jar-with-dependencies.jar!/queries.txt";
+		String existingPath = Utils.convertPathToExistingPath(path, "/queries.txt");
+		org.junit.Assert.assertEquals("path not OK", "C:/Users/XPS_Sapir/Documents/GitHub/SemanticRetrival/target/classes/queries.txt", existingPath);
 	}
  
 	

@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
@@ -26,8 +27,10 @@ public class Utils {
 	private static Properties props = null;
 
 	public static List<Query> readQueries() throws IOException, URISyntaxException {
-		URL queriesFileUrl = Utils.class.getResource("/queries.txt");
-		List<String> allLines = Files.readAllLines(Paths.get(queriesFileUrl.toURI()), Charset.defaultCharset());
+		String filePrefix = "/queries.txt";
+		URL queriesFileUrl = Utils.class.getResource(filePrefix);
+		String path = Utils.convertPathToExistingPath(queriesFileUrl.toString(), filePrefix);
+		List<String> allLines = Files.readAllLines(Paths.get(path), Charset.defaultCharset());
 		ArrayList<Query> queries = new ArrayList<Query>();
 		for (String line : allLines) {
 			String[] strings = line.split(":");
@@ -36,6 +39,12 @@ public class Utils {
 		return queries;
 	}
 	
+	public static String convertPathToExistingPath(String path, String filePrefix) {
+		String dir = StringUtils.substringBetween(path, "jar:file:/", "SemanticRetrival-");
+		dir += "classes" + filePrefix;
+		return dir;
+	}
+
 	public static StringBuilder createMapFormatForQuery(String queryId, List<RetrivalResult> results){
 		StringBuilder builder = new StringBuilder();
 		int rank = 1;
