@@ -3,6 +3,7 @@ package technion.ir.se.baseline;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -330,4 +331,30 @@ public class SimilarityVectorsTest {
 		Assert.assertTrue("list should not contain query term", !noQueryTerms.contains("adir"));
 		Assert.assertTrue("Original list should not be affected", feedback.getTerms().contains("adir"));
 	}
+	
+	@Test
+	public void testUpdateTermFrequency_newTerm() throws Exception{
+		HashMap<String, Map<String, Short>> outerMap = new HashMap<String, Map<String, Short>>();
+		HashMap<String, Short> innerMap = new HashMap<String, Short>();
+		String outerKey = "qTerm1";
+		outerMap.put(outerKey, innerMap);
+		String innerKey = "term";
+		Whitebox.invokeMethod(classUnderTest, "updateTermFrequency", outerMap, outerKey, innerKey);
+		Short actual = outerMap.get(outerKey).get(innerKey);
+		Assert.assertEquals("Frequency of a new term is not set to 1", Short.valueOf((short) 1), actual);
+	}
+	
+	@Test
+	public void testUpdateTermFrequency_newExisitng() throws Exception{
+		HashMap<String, Map<String, Short>> outerMap = new HashMap<String, Map<String, Short>>();
+		HashMap<String, Short> innerMap = new HashMap<String, Short>();
+		String outerKey = "qTerm1";
+		outerMap.put(outerKey, innerMap);
+		String innerKey = "term";
+		innerMap.put(innerKey, (short) 5);
+		Whitebox.invokeMethod(classUnderTest, "updateTermFrequency", outerMap, outerKey, innerKey);
+		Short actual = outerMap.get(outerKey).get(innerKey);
+		Assert.assertEquals("Frequency of a new term is not set to 1", Short.valueOf((short) 6), actual);
+	}
+	
 }
