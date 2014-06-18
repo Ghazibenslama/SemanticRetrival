@@ -73,7 +73,7 @@ public class SimilarityVectors {
 	private Map<String, int[]> populateFeedbackVectors(
 			List<String> terms, AbstractStrategy strategy, List<TextWindow> windows) {
 		
-		Map<String, int[]> feedbackTermsVectors = createTermsMap(terms);
+		Map<String, Map<String, Short>> feedbackTermsVectors = createTermsMap(terms);
 		
 		for (TextWindow textWidow : windows) {
 			List<String> termsInWindow = strategy.getTermsInWindow(textWidow);
@@ -108,18 +108,17 @@ public class SimilarityVectors {
 		return rowTermVector.indexOf(otherTerm);
 	}
 
-	private Map<String, int[]> populateQueryVectors(Query query, AbstractStrategy strategy,
+	private Map<String, Map<String, Short>> populateQueryVectors(Query query, AbstractStrategy strategy,
 			List<TextWindow> windows) {
 		
-		Map<String, int[]> queryVectors = createTermsMap(query.getQueryTerms());
+		Map<String, Map<String, Short>> queryVectors = createTermsMap(query.getQueryTerms());
 		
 		for (TextWindow textWidow : windows) {
 			List<String> termsInWindow = strategy.getTermsInWindow(textWidow);
 			for (String queryTerm : query.getQueryTerms()) {
 				if (termsInWindow.contains(queryTerm)) {
 					for (String term : termsInWindow) {
-						int index = findIndexOfOtherTerm(term);
-						queryVectors.get(queryTerm)[index]++;
+						updateTermFrequency(queryVectors, queryTerm, term);
 					}
 				}
 			}
@@ -127,15 +126,25 @@ public class SimilarityVectors {
 		return queryVectors;
 	}
 
+	private void updateTermFrequency(
+			Map<String, Map<String, Short>> queryMap, String outerKey,
+			String innerKey) {
+
+		Map<String, Short> mapOfQueryTerm = queryMap.get(outerKey);
+		Short frequency = mapOfQueryTerm.get(innerKey);
+		short newFrequency = frequency == null ? 1 : ++frequency;
+		mapOfQueryTerm.put(innerKey, newFrequency);
+	}
+
 	private Feedback getFeedback() {
 		return new Feedback(documents);
 	}
 
-	private Map<String, int[]> createTermsMap(List<String> terms) {
+	private HashMap<String, Map<String, Short>> createTermsMap(List<String> terms) {
 		List<String> uniqueTerms = Utils.getUniqueValues(terms);
-		HashMap<String, int[]> queryVectorsMap = new HashMap<String, int[]>();
+		HashMap<String, Map<String, Short>> queryVectorsMap = new HashMap<String, Map<String, Short>>();
 		for (String term : uniqueTerms) {
-			queryVectorsMap.put(term, new int[rowTermVector.size()]);
+			queryVectorsMap.put(term, new HashMap<String, Short>());
 		}
 		return queryVectorsMap;
 	}
