@@ -329,21 +329,33 @@ public class SimilarityVectorsTest {
 		//creating a list with the same number of elements as in the strategy mocked return statement
 		List<TextWindow> windows = Arrays.asList(new TextWindow(0, 0), new TextWindow(0, 0), new TextWindow(0, 0), new TextWindow(0, 0));
 
-		Map<String, int[]> map = Whitebox.<Map<String, int[]>>invokeMethod(classUnderTest, "populateFeedbackVectors", feedback.getTerms(), strategy, windows);
+		Map<String, Map<String, Short>> map = Whitebox.<Map<String, Map<String, Short>>>invokeMethod(classUnderTest, "populateFeedbackVectors", feedback.getTerms(), strategy, windows);
 		
 		//order is: ate, burger, cloud, king, query, some, window
-		int[] kingTrueVector  = new int[]{0, 1, 0, 0, 0, 1, 0};
-		Assert.assertArrayEquals("vector of 'king' is not as expected", kingTrueVector, map.get("king"));
+		Map<String, Short> mapOfKing = map.get("king");
+		Assert.assertEquals("Map should contain 2 elements", (short)2, mapOfKing.size());
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfKing.get("burger"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfKing.get("some"));
 		
-		int[] queryTrueVector  = new int[]{0, 0, 0, 0, 0, 1, 0};
-		Assert.assertArrayEquals("vector of 'query' is not as expected", queryTrueVector, map.get("query"));
+		Map<String, Short> mapOfQuery = map.get("query");
+		Assert.assertEquals("Map should contain 1 elements", (short)1, mapOfQuery.size());
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfQuery.get("some"));
 		
-		int[] someTrueVector  = new int[]{1, 2, 1, 1, 1, 0, 1};
-		Assert.assertArrayEquals("vector of 'some' is not as expected", someTrueVector, map.get("some"));
-		
-		int[] burgerTrueVector  = new int[]{1, 0, 1, 1, 0, 2, 0};
-		Assert.assertArrayEquals("vector of 'burger' is not as expected", burgerTrueVector, map.get("burger"));
-		
+		Map<String, Short> mapOfSome = map.get("some");
+		Assert.assertEquals("Map should contain 6 elements", (short)6, mapOfSome.size());
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 2), mapOfSome.get("burger"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfSome.get("window"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfSome.get("query"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfSome.get("ate"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfSome.get("cloud"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfSome.get("king"));
+
+		Map<String, Short> mapOfBurger = map.get("burger");
+		Assert.assertEquals("Map should contain 4 elements", (short)4, mapOfBurger.size());
+		Assert.assertEquals("frequency should be 2", Short.valueOf((short) 2), mapOfBurger.get("some"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfBurger.get("king"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfBurger.get("cloud"));
+		Assert.assertEquals("frequency should be 1", Short.valueOf((short) 1), mapOfBurger.get("ate"));
 	}
 	
 	@SuppressWarnings("unchecked")
