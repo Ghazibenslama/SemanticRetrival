@@ -80,7 +80,7 @@ public class BaseLine {
 			for (Query query : queries) {
 				
 				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
-				Map<String, int[]> similarityVectors = logic.createSimilarityVectors(results, query);
+				Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
 				List<Query> alternativeQuries = logic.createAlternativeQuries(similarityVectors, query);
 				List<ResultFormat> resultFormatsList = logic.submitAlternativeQuries(alternativeQuries);
 				

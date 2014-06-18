@@ -24,19 +24,19 @@ public class SemanticLogic {
 		this.numberOfAlternativesPerTerm = NUMBER_OF_ALTERNATIVES_PER_QUERT_TERM;
 	}
 	
-	public Map<String, int[]> createSimilarityVectors(List<RetrivalResult> retrivalResult, Query query) {
+	public Map<String, Map<String, Short>> createSimilarityVectors(List<RetrivalResult> retrivalResult, Query query) {
 		SimilarityVectors similarityVectors = new SimilarityVectors();
 		similarityVectors.buildRowTermVector(retrivalResult);
-		Map<String, int[]> vectors = similarityVectors.buildVectors(query);
+		Map<String, Map<String, Short>> vectors = similarityVectors.buildVectors(query);
 		return vectors;
 	}
 	
-	public List<Query> createAlternativeQuries(Map<String, int[]> vectors, Query query) {
+	public List<Query> createAlternativeQuries(Map<String, Map<String, Short>> similarityVectors, Query query) {
 		List<Query> alternativeQuries = new ArrayList<Query>();
 		List<String> queryTerms = query.getQueryTerms();
 		
-		removeTermsFromVectors(vectors, queryTerms);
-		alternativeQuries = findQueryAlternatives(vectors, query);
+		removeTermsFromVectors(similarityVectors, queryTerms);
+		alternativeQuries = findQueryAlternatives(similarityVectors, query);
 		
 		return alternativeQuries;
 	}
@@ -65,12 +65,12 @@ public class SemanticLogic {
 		return alternativesResults;
 	}
 
-	private List<Query> findQueryAlternatives(Map<String, int[]> vectors, Query query) {
+	private List<Query> findQueryAlternatives(Map<String, Map<String, Short>> similarityVectors, Query query) {
 		List<String> queryTerms = query.getQueryTerms();
 		List<Query> alternatives = new ArrayList<Query>();
 		
 		for (String queryTermToReplace : queryTerms) {
-			List<SemanticTermScore> similarity = this.findSimilarity(vectors, queryTermToReplace);
+			List<SemanticTermScore> similarity = this.findSimilarity(similarityVectors, queryTermToReplace);
 			List<String> termAlternatives = this.getTermAlternatives(similarity);
 			List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
 			alternatives.addAll(queryAlternatives);
@@ -78,14 +78,14 @@ public class SemanticLogic {
 		return alternatives;
 	}
 	
-	private List<SemanticTermScore> findSimilarity(Map<String, int[]> vectors, String queryTerm) {
+	private List<SemanticTermScore> findSimilarity(Map<String, Map<String, Short>> similarityVectors, String queryTerm) {
 		TermEquivalentLogic equivalentLogic = new TermEquivalentLogic();
 		List<SemanticTermScore> similarVectors = null;
 		
-		Map<String, double[]> termVectors = convertMaps(vectors);
-		double[] queryTermVector = termVectors.get(queryTerm);
+//		Map<String, double[]> termVectors = convertMaps(similarityVectors);
+//		double[] queryTermVector = termVectors.get(queryTerm);
 		try {
-			similarVectors = equivalentLogic.similarVectors(termVectors , queryTermVector);
+			similarVectors = equivalentLogic.similarVectors(similarityVectors , queryTerm);
 		} catch (VectorLengthException e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
@@ -108,10 +108,10 @@ public class SemanticLogic {
 		
 	}
 
-	private void removeTermsFromVectors(Map<String, int[]> map,
+	private void removeTermsFromVectors(Map<String, Map<String, Short>> similarityVectors,
 			List<String> queryTerms) {
 		for (String term : queryTerms) {
-			map.remove(term);
+			similarityVectors.remove(term);
 		}
 	}
 
