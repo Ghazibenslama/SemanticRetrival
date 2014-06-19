@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import technion.ir.se.Model.Model;
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
@@ -26,7 +27,8 @@ public class SemanticLogic {
 	
 	public Map<String, Map<String, Short>> createSimilarityVectors(List<RetrivalResult> retrivalResult, Query query) {
 		SimilarityVectors similarityVectors = new SimilarityVectors();
-		similarityVectors.buildRowTermVector(retrivalResult);
+		List<String> rowTermVector = similarityVectors.buildRowTermVector(retrivalResult);
+		Model.getInstance().setModel(rowTermVector);
 		Map<String, Map<String, Short>> vectors = similarityVectors.buildVectors(query);
 		return vectors;
 	}

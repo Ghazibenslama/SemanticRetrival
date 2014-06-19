@@ -1,6 +1,7 @@
 package technion.ir.se.baseline;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -9,6 +10,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.SemanticTermScore;
@@ -20,7 +22,7 @@ public class TermEquivalentLogicTest {
 	private int[] firstTermVector;
 	private int[] secondTermVector;
 	private int[] thirdTermVector;
-	Map <String,double[]> documentTerms;
+	Map<String, Map<String, Short>> documentTerms;
 	
 	@Before
 	public void setUp() throws Exception 
@@ -30,7 +32,7 @@ public class TermEquivalentLogicTest {
 		firstTermVector = new int[] {3,0,0};
 		secondTermVector = new int[] {2,1,1};
 		thirdTermVector = new int[] {1,1,1};
-		documentTerms = new TreeMap<String, double[]>();
+		documentTerms = new TreeMap<String, Map<String, Short>>();
 		documentTerms.put("t1", Utils.convertIntArrtoDoubleArr(firstTermVector));
 		documentTerms.put("t2", Utils.convertIntArrtoDoubleArr(secondTermVector));
 		documentTerms.put("t3", Utils.convertIntArrtoDoubleArr(thirdTermVector));
@@ -57,9 +59,17 @@ public class TermEquivalentLogicTest {
 		
 		Assert.assertFalse("Thirs Score not in range", termScore.get(2).getSemanticScore() < 0.77 ||
 														termScore.get(2).getSemanticScore() > 0.775 );
-		
-		
 
 	}
+	
+	@Test
+	public void testConvertMapToVector () throws Exception {
+		
+		Map<String, Short> map = new HashMap<String, Short>();
+		map.put("alef", (short) 5);
+		map.put("gimel", (short) 2);
+		double[] vectorOfTerm = Whitebox.<double[]>invokeMethod(classUnderTest, "convertMapToVector", map);
+	}
+	
 
 }

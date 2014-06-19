@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import technion.ir.se.Model.Model;
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Document;
 import technion.ir.se.dao.Feedback;
@@ -28,7 +27,7 @@ public class SimilarityVectors {
 		serchEngine = SearchEngine.getInstance();
 	}
 	
-	public void buildRowTermVector (List<RetrivalResult> retrivalResult)
+	public List<String> buildRowTermVector (List<RetrivalResult> retrivalResult)
 	{
 		List<Integer> docIndriIDs = new ArrayList<Integer>() ;
 		TreeSet<String> termsVector = new TreeSet<String>();
@@ -46,9 +45,7 @@ public class SimilarityVectors {
 			e.printStackTrace();
 		}
 		ArrayList<String> resultList = new ArrayList<String>(termsVector);
-		Model model = Model.getInstance();
-		model.setModel(resultList);
-//		this.rowTermVector = resultList;
+		return resultList;
 	}
 	
 	public Map<String, Map<String, Short>> buildVectors(Query query) {
