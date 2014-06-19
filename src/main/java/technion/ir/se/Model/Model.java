@@ -1,6 +1,5 @@
 package technion.ir.se.Model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
@@ -19,7 +18,7 @@ public class Model {
 		return instance;
 	}
 
-	public void setModel(ArrayList<String> model) {
+	public void setModel(List<String> model) {
 		this.model = model;
 	}
 	

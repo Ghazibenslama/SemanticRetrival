@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import technion.ir.se.Model.Model;
 import technion.ir.se.dao.SemanticTermScore;
@@ -27,11 +28,13 @@ public class TermEquivalentLogic
 		SimilarityLogic logic = new SimilarityLogic();
 		
 		double[] queryVector = convertMapToVector(map.get(queryTerm));
-		for (Map.Entry<String, double[]> entry : map.entrySet())
+		for (Entry<String, Map<String, Short>> entry : map.entrySet())
 		{
 			try {
-				double similarityScore = logic.calculateSimilarity(queryTerm, entry.getValue());
-				SemanticTermScore semanticTermScore = new SemanticTermScore(entry.getKey(),similarityScore);
+				Map<String, Short> innerMap = entry.getValue();
+				double[] termVector = convertMapToVector(innerMap);
+				double similarityScore = logic.calculateSimilarity(queryVector, termVector);
+				SemanticTermScore semanticTermScore = new SemanticTermScore(entry.getKey(), similarityScore);
 				sortedSimilarityList.add(semanticTermScore);
 			} catch (VectorLengthException e) {
 				String message = e.getMessage() + "\n";
