@@ -67,11 +67,6 @@ public class SearchEngine {
 		return queryEnvironment.documentMetadata(results, "docno");
 	}
 	
-	private Document getDocumentContet(int documentId) throws Exception {
-		List<Document> list = this.getDocumentsContet(Arrays.asList(new Integer(documentId)));
-		return list.get(0);
-	}
-	
 	public List<Document> getDocumentsContet(List<Integer> documentIds) throws Exception {
 		int[] documentIdsInt = ArrayUtils.toPrimitive(documentIds.toArray(new Integer[documentIds.size()]));
 		DocumentVector[] documentVectors = queryEnvironment.documentVectors(documentIdsInt);
