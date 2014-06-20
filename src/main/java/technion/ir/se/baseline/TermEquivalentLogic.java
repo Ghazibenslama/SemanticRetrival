@@ -31,11 +31,14 @@ public class TermEquivalentLogic
 		for (Entry<String, Map<String, Short>> entry : map.entrySet())
 		{
 			try {
-				Map<String, Short> innerMap = entry.getValue();
-				double[] termVector = convertMapToVector(innerMap);
-				double similarityScore = logic.calculateSimilarity(queryVector, termVector);
-				SemanticTermScore semanticTermScore = new SemanticTermScore(entry.getKey(), similarityScore);
-				sortedSimilarityList.add(semanticTermScore);
+				//Do not compare vector of query Term to it self
+				if (!entry.getKey().equals(queryTerm)) {
+					Map<String, Short> innerMap = entry.getValue();
+					double[] termVector = convertMapToVector(innerMap);
+					double similarityScore = logic.calculateSimilarity(queryVector, termVector);
+					SemanticTermScore semanticTermScore = new SemanticTermScore(entry.getKey(), similarityScore);
+					sortedSimilarityList.add(semanticTermScore);
+				}
 			} catch (VectorLengthException e) {
 				String message = e.getMessage() + "\n";
 				message+= String.format("vector of '%s' is not in same size as query vector", entry.getKey());
