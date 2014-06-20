@@ -87,7 +87,7 @@ public class UtilsTest {
 		Assert.assertEquals("Third Doc is not correct", "ThirdDoc", retFormat.get(2).getDocumentID());
 		Assert.assertEquals("Last Doc is not correct", "LastDoc", retFormat.get(3).getDocumentID());
 		Assert.assertEquals("queryId is not correct", "1", retFormat.get(0).getQueryID());
-		Assert.assertEquals("Score of second doc not correct", 0.5, retFormat.get(1).getScore());
+		Assert.assertEquals("Score of second doc not correct", 0.5, retFormat.get(1).getScore(), 0);
 	}
 	
 	@Test
