@@ -23,6 +23,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.powermock.reflect.Whitebox;
 
+import technion.ir.se.Model.Model;
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Document;
 import technion.ir.se.dao.Feedback;
@@ -64,13 +65,12 @@ public class SimilarityVectorsTest {
 		PowerMockito.when( searchEngine.getDocumentsContet(Mockito.anyListOf(Integer.class)) ).thenReturn(documentsList);
 		Whitebox.setInternalState(classUnderTest, "serchEngine", searchEngine);
 
-		classUnderTest.buildRowTermVector(new ArrayList<RetrivalResult>());
-		List<String> buildRowTermVector = Whitebox.getInternalState(classUnderTest, "rowTermVector");
+		List<String> termVector = classUnderTest.buildRowTermVector(new ArrayList<RetrivalResult>());
 		Assert.assertTrue("vector doesn't contain all terms", 
-				buildRowTermVector.containsAll(Arrays.asList("papa","aba","padre")));
-		Assert.assertEquals("1st element is not as expected", "aba", buildRowTermVector.get(0));
-		Assert.assertEquals("2nd element is not as expected", "padre", buildRowTermVector.get(1));
-		Assert.assertEquals("3'd element is not as expected", "papa", buildRowTermVector.get(2));
+				termVector.containsAll(Arrays.asList("papa","aba","padre")));
+		Assert.assertEquals("1st element is not as expected", "aba", termVector.get(0));
+		Assert.assertEquals("2nd element is not as expected", "padre", termVector.get(1));
+		Assert.assertEquals("3'd element is not as expected", "papa", termVector.get(2));
 	}
 
 	@Test
@@ -263,7 +263,7 @@ public class SimilarityVectorsTest {
 		List<String> rowTermsVector = Arrays.asList(builder.toString().split(" "));
 		List<String> uniqueValues = Utils.getUniqueValues(rowTermsVector);
 		Collections.sort(uniqueValues);
-		Whitebox.setInternalState(classUnderTest, "rowTermVector", uniqueValues );
+		Model.getInstance().setModel(uniqueValues);
 	}
 	
 	private void prepareForBuildQueryVectorsTest() {
@@ -275,7 +275,8 @@ public class SimilarityVectorsTest {
 	public void testCreateTermsMap() throws Exception {
 		List<String> terms = Arrays.asList("russia", "adir", "putin", "adir");
 		String[] rowTermVector = "a b c d e f r g".split(" ");
-		Whitebox.setInternalState(classUnderTest, "rowTermVector", Arrays.asList(rowTermVector));
+		Model.getInstance().setModel(Arrays.asList(rowTermVector));
+//		Whitebox.setInternalState(classUnderTest, "rowTermVector", Arrays.asList(rowTermVector));
 		Map<String,Map<String,Short>> map = Whitebox.<HashMap<String, Map<String, Short>>>invokeMethod(classUnderTest, "createTermsMap", terms);
 		Assert.assertEquals("Didn't create map for all query terms", 3l, map.size());
 	
