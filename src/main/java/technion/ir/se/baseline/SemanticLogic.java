@@ -1,10 +1,8 @@
 package technion.ir.se.baseline;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import technion.ir.se.Model.Model;
 import technion.ir.se.Utils.Utils;
@@ -126,14 +124,4 @@ public class SemanticLogic {
 		return resultList;
 	}
 	
-	private Map<String, double[]> convertMaps(Map<String, int[]> intMap) {
-		
-		HashMap<String, double[]> doubleMap = new HashMap<String, double[]>();
-		for (Entry<String, int[]> entry : intMap.entrySet()) {
-			String key = entry.getKey();
-			double[] value = Utils.convertIntArrtoDoubleArr(entry.getValue()); 
-			doubleMap.put(key, value);
-		}
-		return doubleMap;
-	}
 }
