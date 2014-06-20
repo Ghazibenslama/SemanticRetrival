@@ -48,14 +48,6 @@ public class HalfDistanceBetweenQueryTermsStrategyTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Ignore
-	@Test
-	public void testGetWindows() {
-		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
-		assertEquals("There should have been 6 windows", 6l, windows.size());
-		
-	}
-	
 	@Test
 	public void testGetWindows_NoQueryTermExistsInFeedback() throws Exception {
 		HalfDistanceBetweenQueryTermsStrategy partialMock = PowerMock.createPartialMock(HalfDistanceBetweenQueryTermsStrategy.class, "findQueryTermsOccurrences");
