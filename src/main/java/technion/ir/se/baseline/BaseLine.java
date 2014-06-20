@@ -74,11 +74,11 @@ public class BaseLine {
 			if (queries == null) {
 				queries = Utils.readQueries();
 			}
-			SemanticLogic logic = new SemanticLogic();
 			StringBuilder trecMap = new StringBuilder();
-			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:50", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
+			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:5", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
 			for (Query query : queries) {
 				
+				SemanticLogic logic = new SemanticLogic();
 				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
 				Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
 				List<Query> alternativeQuries = logic.createAlternativeQuries(similarityVectors, query);
