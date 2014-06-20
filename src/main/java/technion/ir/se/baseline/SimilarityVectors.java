@@ -1,7 +1,6 @@
 package technion.ir.se.baseline;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +97,13 @@ public class SimilarityVectors {
 	}
 
 	private short findFrequencyOfOtherTerm(List<String> termsInWindow, String otherTerm) {
-		return (short)Collections.frequency(termsInWindow, otherTerm);
+		short counter = 0;
+		for (String termInWindow : termsInWindow) {
+			if (termInWindow.equals(otherTerm)) {
+				counter++;
+			}
+		}
+		return counter;
 	}
 
 	private Map<String, Map<String, Short>> populateQueryVectors(Query query, AbstractStrategy strategy,
