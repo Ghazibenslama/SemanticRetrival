@@ -1,6 +1,7 @@
 package technion.ir.se.baseline;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
+import technion.ir.se.Model.Model;
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.SemanticTermScore;
 import technion.ir.se.exception.VectorLengthException;
@@ -28,15 +30,6 @@ public class TermEquivalentLogicTest {
 	public void setUp() throws Exception 
 	{
 		classUnderTest = new TermEquivalentLogic();
-		qTermVector = new double[] {2.0,1.0,0.0};
-		firstTermVector = new int[] {3,0,0};
-		secondTermVector = new int[] {2,1,1};
-		thirdTermVector = new int[] {1,1,1};
-		documentTerms = new TreeMap<String, Map<String, Short>>();
-		documentTerms.put("t1", Utils.convertIntArrtoDoubleArr(firstTermVector));
-		documentTerms.put("t2", Utils.convertIntArrtoDoubleArr(secondTermVector));
-		documentTerms.put("t3", Utils.convertIntArrtoDoubleArr(thirdTermVector));
-		
 	}
 
 	@After
@@ -46,6 +39,15 @@ public class TermEquivalentLogicTest {
 	@Test
 	public void testTermEquivalentLogic() throws VectorLengthException 
 	{
+		qTermVector = new double[] {2.0,1.0,0.0};
+		firstTermVector = new int[] {3,0,0};
+		secondTermVector = new int[] {2,1,1};
+		thirdTermVector = new int[] {1,1,1};
+		documentTerms = new TreeMap<String, Map<String, Short>>();
+		documentTerms.put("t1", Utils.convertIntArrtoDoubleArr(firstTermVector));
+		documentTerms.put("t2", Utils.convertIntArrtoDoubleArr(secondTermVector));
+		documentTerms.put("t3", Utils.convertIntArrtoDoubleArr(thirdTermVector));
+		
 		List<SemanticTermScore> termScore = new ArrayList<SemanticTermScore>();
 		termScore = classUnderTest.similarVectors(documentTerms, qTermVector);
 		Assert.assertEquals("result contains 3 items", 3, termScore.size());
@@ -64,11 +66,16 @@ public class TermEquivalentLogicTest {
 	
 	@Test
 	public void testConvertMapToVector () throws Exception {
+		List<String> list = Arrays.asList("alef", "beth", "gimel", "Daled", "Hei");
+		Model.getInstance().setModel(list);
 		
 		Map<String, Short> map = new HashMap<String, Short>();
 		map.put("alef", (short) 5);
 		map.put("gimel", (short) 2);
+		
 		double[] vectorOfTerm = Whitebox.<double[]>invokeMethod(classUnderTest, "convertMapToVector", map);
+		double[] expected = new double[]{5,0,2,0,0};
+		Assert.assertArrayEquals("result is not as expected", expected, vectorOfTerm, 0);
 	}
 	
 
