@@ -30,7 +30,7 @@ public class BaseLineTest {
 		List<String> fileLines = TestUtils.getFileLines("baseLineMap.res");
 		
 		Assert.assertTrue("File doesn't contain exactly 2000 results", fileLines.size() == 2000);
-		Assert.assertTrue("results doesn't contain: 401 Q0 FBIS4-18602 946 -7.0698 Indri", fileLines.contains("401 Q0 FBIS4-18602 946 -7.0698 Indri"));
+		Assert.assertTrue("results doesn't contain: 401 Q0 FBIS4-18602 946 -7.0698 Indri", fileLines.contains("401 Q0 FBIS3-59033 968 -7.0777 Indri"));
 		TestUtils.deleteFile("baseLineMap.res");
 	}
 	
