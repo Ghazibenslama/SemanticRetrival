@@ -11,7 +11,6 @@ import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.powermock.api.easymock.PowerMock;
@@ -23,7 +22,6 @@ import org.powermock.reflect.Whitebox;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.TextWindow;
-import technion.ir.se.windows.HalfDistanceBetweenQueryTermsStrategy;
 
 @PrepareForTest(HalfDistanceBetweenQueryTermsStrategy.class)
 public class HalfDistanceBetweenQueryTermsStrategyTest {
