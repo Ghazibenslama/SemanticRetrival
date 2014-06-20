@@ -22,7 +22,5 @@ echo at "C:" or "C:\worksapce"
 echo.
 
 :addMvnToPath
-@set JAVA_HOME=C:\Program Files\Java\jdk1.7.0_51
-
 @set PATH=%PATH%;%M2_HOME%\bin;
 @echo Apache Maven is ready for compilation!
