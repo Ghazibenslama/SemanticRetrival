@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -46,26 +45,6 @@ public class SemanticLogicTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void testConvertMaps() throws Exception {
-		HashMap<String, int[]> testMap = new HashMap<String, int[]>();
-		for (int i = 0; i < 30; i++) {
-			int[] intArray = new int[30];
-			for (int j = 0; j < 30; j++) {
-				intArray[j] = i*j;
-			}
-			testMap.put("q"+String.valueOf(i), intArray);
-		}
-		
-		Map<String, double[]> doubleMap = Whitebox.<Map<String, double[]>>invokeMethod(classUnderTest, "convertMaps", testMap);
-		for (Entry<String, double[]> entry : doubleMap.entrySet()) {
-			double[] doubleVector = entry.getValue();
-			int[] intMap = testMap.get(entry.getKey());
-			for (int i = 0; i < intMap.length; i++) {
-				assertEquals(intMap[i], doubleVector[i], 0);
-			}
-		}
-	}
 	
 	@Test
 	public void testGetTermAlternatives() throws Exception {
