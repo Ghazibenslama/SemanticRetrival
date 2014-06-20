@@ -40,8 +40,8 @@ public class Utils {
 	}
 	
 	public static String convertPathToExistingPath(String path, String filePrefix) {
-		String dir = StringUtils.substringBetween(path, "jar:file:/", "SemanticRetrival-");
-		dir += "classes" + filePrefix;
+		String dir = StringUtils.substringBetween(path, "file:/", "target");
+		dir += "target/test-classes" + filePrefix;
 		return dir;
 	}
 

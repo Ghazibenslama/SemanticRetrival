@@ -52,8 +52,6 @@ public class UtilsTest {
 		Utils.writeMapFile(stringBuilder,"prefix_baseLineMap");
 		String fileContnet = TestUtils.getFileContent("prefix_baseLineMap.res");
 		assertTrue("file content not correct", fileContnet.equals("Hello world"));
-		
-		
 	}
 	
 	@Test
@@ -62,9 +60,8 @@ public class UtilsTest {
 		String result;
 		result = Utils.readProperty("Eilon");
 		assertTrue("The returned result key property is not correct", result.equals("King"));
-		
 	}
-	@SuppressWarnings("deprecation")
+	
 	@Test
 	public void testconvertRetrivalResultListToResultFormatList()
 	{
@@ -94,12 +91,6 @@ public class UtilsTest {
 	public void testConvertPathToExistingPath() {
 		String path = "jar:file:/C:/Users/XPS_Sapir/Documents/GitHub/SemanticRetrival/target/SemanticRetrival-0.0.1-jar-with-dependencies.jar!/queries.txt";
 		String existingPath = Utils.convertPathToExistingPath(path, "/queries.txt");
-		org.junit.Assert.assertEquals("path not OK", "C:/Users/XPS_Sapir/Documents/GitHub/SemanticRetrival/target/classes/queries.txt", existingPath);
+		org.junit.Assert.assertEquals("path not OK", "C:/Users/XPS_Sapir/Documents/GitHub/SemanticRetrival/target/test-classes/queries.txt", existingPath);
 	}
- 
-	
-	
-	
-	
-
 }
