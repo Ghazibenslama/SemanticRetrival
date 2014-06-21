@@ -83,9 +83,10 @@ public class BaseLine {
 				Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
 				List<Query> alternativeQuries = logic.createAlternativeQuries(similarityVectors, query);
 				List<ResultFormat> resultFormatsList = logic.submitAlternativeQuries(alternativeQuries);
-				
-				StringBuilder builder = Utils.createMapFormatForQuery(resultFormatsList);
-				trecMap.append(builder.toString());
+				if (resultFormatsList != null) {
+					StringBuilder builder = Utils.createMapFormatForQuery(resultFormatsList);
+					trecMap.append(builder.toString());
+				}
 			}
 			
 			String fileName = createFileName(rules, "alternative");
