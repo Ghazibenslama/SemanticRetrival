@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
@@ -24,6 +25,7 @@ public class BaseLineTest {
 	}
 
 	@Test
+	@Ignore
 	public void testcreateBaseLine() throws IOException, URISyntaxException {
 		classUnderTest = new BaseLine();
 		classUnderTest.createBaseLine();
