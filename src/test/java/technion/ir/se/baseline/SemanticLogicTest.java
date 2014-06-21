@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.dao.SemanticTermScore;
 import technion.ir.se.indri.SearchEngine;
 
-@PrepareForTest(SemanticLogic.class)
+@PrepareForTest({SemanticLogic.class, SearchEngine.class})
 public class SemanticLogicTest {
 
 	private SemanticLogic classUnderTest;
@@ -57,18 +56,6 @@ public class SemanticLogicTest {
 		assertEquals("list doesn't contain expected element", "first", list.get(0));
 	}
 	
-	@Test
-	public void testRemoveTermsFromVectors() throws Exception {
-		HashMap<String, int[]> map = new HashMap<String, int[]>();
-		map.put("a", new int[] {1,2,3,4});
-		map.put("b", new int[] {1,2,3,4});
-		map.put("c", new int[] {1,2,3,4});
-		map.put("d", new int[] {1,2,3,4});
-		Whitebox.invokeMethod(classUnderTest, "removeTermsFromVectors", map, Arrays.asList("b","d"));
-		
-		assertTrue("map contains element that should have been removed", !map.containsKey("b"));
-		assertTrue("map contains element that should have been removed", !map.containsKey("d"));
-	}
 	
 	@Test
 	public void testFindQueryAlternatives() throws Exception {
@@ -138,7 +125,9 @@ public class SemanticLogicTest {
 		SearchEngine engine = PowerMockito.mock(SearchEngine.class);
 		PowerMockito.when(engine.runQuery(Mockito.anyInt(), Mockito.any(String[].class), Mockito.anyString()))
 			.thenReturn(q1List, q2List);
-		Whitebox.setInternalState(classUnderTest, "engine", engine);
+		PowerMock.mockStatic(SearchEngine.class);
+		EasyMock.expect(SearchEngine.getInstance()).andReturn(engine).anyTimes();
+		PowerMock.replay(SearchEngine.class);
 		
 		List<Query> alternativeQueries = Arrays.asList(new Query("001", "q1"), new Query("002", "q2"));
 		List<List<ResultFormat>> list = Whitebox.<List<List<ResultFormat>>>invokeMethod(classUnderTest, "submitAlternatives", alternativeQueries);
