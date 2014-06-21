@@ -70,10 +70,14 @@ public class SemanticLogic {
 		List<Query> alternatives = new ArrayList<Query>();
 		
 		for (String queryTermToReplace : queryTerms) {
-			List<SemanticTermScore> similarity = this.findSimilarity(similarityVectors, queryTermToReplace);
-			List<String> termAlternatives = this.getTermAlternatives(similarity);
-			List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
-			alternatives.addAll(queryAlternatives);
+			try {
+				List<SemanticTermScore> similarity = this.findSimilarity(similarityVectors, queryTermToReplace);
+				List<String> termAlternatives = this.getTermAlternatives(similarity);
+				List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
+				alternatives.addAll(queryAlternatives);
+			} catch (IllegalArgumentException e) {
+				System.err.println(String.format("Faield to execute finding alternative for term '%s' of query '%s'", queryTermToReplace, queryTerms));
+			}
 		}
 		return alternatives;
 	}
