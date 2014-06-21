@@ -1,1 +1,1 @@
-java -Xmx4g -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar target\SemanticRetrival-0.0.1-jar-with-dependencies.jar
+java -XX:+HeapDumpOnOutOfMemoryError -Xmx4608m -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar target\SemanticRetrival-0.0.1-jar-with-dependencies.jar per
