@@ -48,6 +48,7 @@ public class TermEquivalentLogic
 		}
 
 		Collections.sort(sortedSimilarityList);
+		Collections.reverse(sortedSimilarityList);
 		return sortedSimilarityList;
 	}
 
