@@ -64,6 +64,14 @@ public class SemanticTermScoreTest {
 	}
 
 	@Test
+	public void testCompareTo_doNotHaveScore() {
+		SemanticTermScore a = new SemanticTermScore();
+		SemanticTermScore b = new SemanticTermScore();
+		Assert.assertEquals("Both object don't have score, so they should be equal", 0l, a.compareTo(b));
+		Assert.assertEquals("Both object don't have score, so they should be equal", 0l, b.compareTo(a));
+	}
+	
+	@Test
 	public void testCompareTo_CollectionSort() {
 		SemanticTermScore a = new SemanticTermScore("a", 0.9);
 		SemanticTermScore b = new SemanticTermScore("b", 0.8);
@@ -80,6 +88,31 @@ public class SemanticTermScoreTest {
 		Collections.sort(list);
 		Assert.assertEquals("second object in list after sort should be a", a, list.get(1));
 		Assert.assertEquals("first object in list after sort should be b", b, list.get(0));
-		
+	}
+	
+	@Test
+	public void testEquals_withNull() {
+		SemanticTermScore a = new SemanticTermScore("a", 0.9);
+		Assert.assertFalse("Comparison with null should return false", a.equals(null));
+	}
+	
+	@Test
+	public void testEquals_withOtherClassInstance() {
+		SemanticTermScore a = new SemanticTermScore("a", 0.9);
+		Assert.assertFalse("Comparison with other class instance should return false", a.equals("a"));
+	}
+	
+	@Test
+	public void testEquals_withOtherEqualObject() {
+		SemanticTermScore a = new SemanticTermScore("a", 0.9);
+		SemanticTermScore b = new SemanticTermScore("b", 0.9);
+		Assert.assertTrue("Comparison with eqaul object should return true", a.equals(b));
+	}
+	
+	@Test
+	public void testEquals_withOtherNotEqualObject() {
+		SemanticTermScore a = new SemanticTermScore("a", 0.9);
+		SemanticTermScore b = new SemanticTermScore("b", 0.8);
+		Assert.assertFalse("Comparison with not eqaul object should return false", a.equals(b));
 	}
 }
