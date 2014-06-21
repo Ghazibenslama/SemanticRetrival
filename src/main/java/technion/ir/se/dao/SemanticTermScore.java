@@ -41,13 +41,13 @@ public class SemanticTermScore implements Comparable<SemanticTermScore>
 	@Override
 	public int compareTo(SemanticTermScore otherResultFormat) {
 		if (otherResultFormat == null ) {
-			return -1;
+			throw new NullPointerException(String.format("Tried to comapre %s with null", this.term));
 		}
 		
 		if (this.getSemanticScore() < otherResultFormat.getSemanticScore()) {
-			return 1;
-		} else if (this.getSemanticScore() > otherResultFormat.getSemanticScore()){ 
 			return -1;
+		} else if (this.getSemanticScore() > otherResultFormat.getSemanticScore()){ 
+			return 1;
 		}
 		return 0;
 	}
