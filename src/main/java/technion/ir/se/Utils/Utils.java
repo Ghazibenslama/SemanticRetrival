@@ -1,14 +1,12 @@
 package technion.ir.se.Utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,10 +25,9 @@ public class Utils {
 	private static Properties props = null;
 
 	public static List<Query> readQueries() throws IOException, URISyntaxException {
-		String filePrefix = "/queries.txt";
-		URL queriesFileUrl = Utils.class.getResource(filePrefix);
-		String path = Utils.convertPathToExistingPath(queriesFileUrl.toString(), filePrefix);
-		List<String> allLines = Files.readAllLines(Paths.get(path), Charset.defaultCharset());
+		String queirsFile = "/queries.txt";
+		InputStream queriesFile = Utils.class.getResourceAsStream(queirsFile);
+		List<String> allLines = Utils.readAllLines(queriesFile);
 		ArrayList<Query> queries = new ArrayList<Query>();
 		for (String line : allLines) {
 			String[] strings = line.split(":");
@@ -39,6 +36,16 @@ public class Utils {
 		return queries;
 	}
 	
+	private static List<String> readAllLines(InputStream queriesFile) throws IOException {
+		List<String> queriesList = new ArrayList<String>();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(queriesFile));
+		String line = "";
+		while ((line = reader.readLine()) != null) {
+			queriesList.add(line);
+		}
+		return queriesList;
+	}
+
 	public static String convertPathToExistingPath(String path, String filePrefix) {
 		String dir = StringUtils.substringBetween(path, "file:/", "target");
 		dir += "target/test-classes" + filePrefix;
