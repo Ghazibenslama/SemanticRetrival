@@ -74,7 +74,7 @@ public class SimilarityVectorsTest {
 	}
 
 	@Test
-	public void testBuildQueryVectors_BetweenQueryTermsStrategy() {
+	public void testBuildQueryVectors_BetweenQueryTermsStrategy() throws Exception {
 		prepareForBuildQueryVectorsTest();
 		
 		PowerMock.mockStaticPartial(Utils.class, "readProperty");
@@ -113,7 +113,7 @@ public class SimilarityVectorsTest {
 	}
 	
 	@Test
-	public void testBuildQueryVectors_HalfDistanceBetweenQueryTermsStrategy() {
+	public void testBuildQueryVectors_HalfDistanceBetweenQueryTermsStrategy() throws Exception {
 		prepareForBuildQueryVectorsTest();
 		
 		PowerMock.mockStaticPartial(Utils.class, "readProperty");
@@ -154,7 +154,7 @@ public class SimilarityVectorsTest {
 	}
 
 	@Test
-	public void testBuildQueryVectors_FixedWindowStrategy() {
+	public void testBuildQueryVectors_FixedWindowStrategy() throws Exception {
 		prepareForBuildQueryVectorsTest();
 		
 		PowerMock.mockStaticPartial(Utils.class, "readProperty");
@@ -211,7 +211,7 @@ public class SimilarityVectorsTest {
 	}
 	
 	@Test
-	public void testBuildFeedbackTermsVector() {
+	public void testBuildFeedbackTermsVector() throws Exception {
 		prepareForBuildQueryVectorsTest();
 		
 		PowerMock.mockStaticPartial(Utils.class, "readProperty");
@@ -234,20 +234,17 @@ public class SimilarityVectorsTest {
 		Assert.assertEquals("map of 'window' is not as expected", Short.valueOf( (short)1 ), mapOfWindow.get("without"));
 	}
 	
-	private void initDocumentsField(){
-		Document documentOne = new Document(Arrays.asList(DOC_ONE_CONTENT.split(" ")));
-		Document documentTwo = new Document(Arrays.asList(DOC_TWO_CONTENT.split(" ")));
-		Document documentThree = new Document(Arrays.asList(DOC_THREE_CONTENT.split(" ")));
-		Whitebox.setInternalState(classUnderTest, "documents", Arrays.asList(documentOne, documentTwo, documentThree));
+	private void initDocumentsField() throws Exception{
+		initDocumentsField(DOC_ONE_CONTENT, DOC_TWO_CONTENT, DOC_THREE_CONTENT);
 	}
 	
-	private void initDocumentsField(String... args){
+	private void initDocumentsField(String... args) throws Exception{
 		List<Document> documentList = new ArrayList<Document>();
 		for (int i = 0; i < args.length; i++) {
 			String document = args[i];
 			documentList.add( new Document(Arrays.asList(document.split(" "))) );
 		}
-		Whitebox.setInternalState(classUnderTest, "documents", documentList);
+		Whitebox.invokeMethod(classUnderTest, "createFeedback", documentList);
 	}
 	
 	private void initRowTermVectorField() {
@@ -266,7 +263,7 @@ public class SimilarityVectorsTest {
 		Model.getInstance().setModel(uniqueValues);
 	}
 	
-	private void prepareForBuildQueryVectorsTest() {
+	private void prepareForBuildQueryVectorsTest() throws Exception {
 		initDocumentsField();
 		initRowTermVectorField();
 	}

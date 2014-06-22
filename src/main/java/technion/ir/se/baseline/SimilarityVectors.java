@@ -1,6 +1,7 @@
 package technion.ir.se.baseline;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class SimilarityVectors {
 	
 	private static final String WINDOW_STRATEGY_KEY = "window.strategy";
 	private SearchEngine serchEngine;
-	private List<Document> documents;
+	private Feedback feedback;
 
 	public SimilarityVectors() {
 		serchEngine = SearchEngine.getInstance();
@@ -35,8 +36,10 @@ public class SimilarityVectors {
 			docIndriIDs.add(doc.getIndriDocumentId());
 		}
 		try {
-			documents = serchEngine.getDocumentsContet(docIndriIDs);
-			for (Document document : documents) {
+			List<Document> documentsContet = serchEngine.getDocumentsContet(docIndriIDs);
+			createFeedback(documentsContet);
+			
+			for (Document document : documentsContet) {
 				termsVector.addAll(document.getDocumentTermsStemed());
 			}
 		} catch (Exception e) {
@@ -68,22 +71,38 @@ public class SimilarityVectors {
 		return resultList;
 	}
 
+	/**
+	 * The method will calculate a frequency vector For each term in a window.<br>
+	 * That means the same window will be iterated several times, In each iteration a different
+	 * vector will be calculated.
+	 * @param allTermsInFeedback - All the existing terms (Not including query terms)
+	 * @param strategy - Windows strategy that is applied
+	 * @param windows - set of windows
+	 * @return
+	 */
 	private Map<String, Map<String, Short>> populateFeedbackVectors(
-			List<String> terms, AbstractStrategy strategy, List<TextWindow> windows) {
+			List<String> allTermsInFeedback, AbstractStrategy strategy, List<TextWindow> windows) {
 		
-		Map<String, Map<String, Short>> feedbackTermsMap = createTermsMap(terms);
+		Map<String, Map<String, Short>> feedbackTermsMap = createTermsMap(allTermsInFeedback);
 		
+		//pass all available windows
 		for (TextWindow textWidow : windows) {
 			List<String> termsInWindow = strategy.getTermsInWindow(textWidow);
-			List<String> uniqueTerms = Utils.getUniqueValues(termsInWindow);
-			for (String uniqueTerm : uniqueTerms) {
-				if(doesTermAppearsInTerms(terms, uniqueTerm)) {
-					for (int i = 0; i < uniqueTerms.size(); i++) {
-						String otherTerm = uniqueTerms.get(i);
-						if (!uniqueTerm.equals(otherTerm)) {
-							short frequency = findFrequencyOfOtherTerm(termsInWindow, otherTerm);
-							
-							updateTermFrequency(feedbackTermsMap, uniqueTerm, otherTerm, frequency);
+			List<String> uniqueTermsInWindow = Utils.getUniqueValues(termsInWindow);
+			HashMap<String, Short> windowFrequencyCache = new HashMap<String, Short>(uniqueTermsInWindow.size());
+			for (String subjectOfVectorFreq : uniqueTermsInWindow) {
+				//case term is not part of query
+				if(doesUniqueTermAppearsInTerms(allTermsInFeedback, subjectOfVectorFreq)) {
+					//iterate over each term in window
+					for (int i = 0; i < uniqueTermsInWindow.size(); i++) {
+						String someTermInWindow = uniqueTermsInWindow.get(i);
+						//Since we iterate all terms in window, we don't want to take into consideration
+						//the case if have encountered the current term
+						if (!subjectOfVectorFreq.equals(someTermInWindow)) {
+							//if value exist in cache, use it
+							short frequency = findFrequencyOfOtherTerm(termsInWindow,
+									windowFrequencyCache, someTermInWindow);
+							updateTermFrequency(feedbackTermsMap, subjectOfVectorFreq, someTermInWindow, frequency);
 						}
 					}
 				}
@@ -92,18 +111,20 @@ public class SimilarityVectors {
 		return feedbackTermsMap;
 	}
 
-	private boolean doesTermAppearsInTerms(List<String> terms, String uniqueTerm) {
-		return terms.contains(uniqueTerm);
+	private short findFrequencyOfOtherTerm(List<String> termsInWindow,
+			HashMap<String, Short> windowFrequencyCache, String someTermInWindow) {
+		short frequency;
+		if (windowFrequencyCache.containsKey(someTermInWindow)) {
+			frequency = windowFrequencyCache.get(someTermInWindow);
+		} else {
+			frequency = (short) Collections.frequency(termsInWindow, someTermInWindow);
+			windowFrequencyCache.put(someTermInWindow, frequency);
+		}
+		return frequency;
 	}
 
-	private short findFrequencyOfOtherTerm(List<String> termsInWindow, String otherTerm) {
-		short counter = 0;
-		for (String termInWindow : termsInWindow) {
-			if (termInWindow.equals(otherTerm)) {
-				counter++;
-			}
-		}
-		return counter;
+	private boolean doesUniqueTermAppearsInTerms(List<String> terms, String uniqueTerm) {
+		return terms.contains(uniqueTerm);
 	}
 
 	private Map<String, Map<String, Short>> populateQueryVectors(Query query, AbstractStrategy strategy,
@@ -142,8 +163,12 @@ public class SimilarityVectors {
 		mapOfQueryTerm.put(innerKey, newFrequency);
 	}
 
+	private void createFeedback(List<Document> documentsContet) {
+		this.feedback = new Feedback(documentsContet);
+	}
+	
 	private Feedback getFeedback() {
-		return new Feedback(documents);
+		return feedback;
 	}
 
 	private Map<String, Map<String, Short>> createTermsMap(List<String> terms) {
