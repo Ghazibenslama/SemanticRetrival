@@ -13,7 +13,7 @@ import technion.ir.se.indri.SearchEngine;
 
 public class BaseLine {
 	
-	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 10;
+	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 5;
 	private SearchEngine engine;
 	private List<Query> queries;
 	
@@ -24,7 +24,7 @@ public class BaseLine {
 	
 	public void createBaseLine() {
 		//http://iew3.technion.ac.il/~kurland/sigir12-tutorial.pdf
-		String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:50", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
+		String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:25", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
 		try {
 			queries = Utils.readQueries();
 			StringBuilder trecMap = new StringBuilder();
@@ -75,7 +75,7 @@ public class BaseLine {
 				queries = Utils.readQueries();
 			}
 			StringBuilder trecMap = new StringBuilder();
-			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:50", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
+			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:25", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
 			for (Query query : queries) {
 				
 				SemanticLogic logic = new SemanticLogic();

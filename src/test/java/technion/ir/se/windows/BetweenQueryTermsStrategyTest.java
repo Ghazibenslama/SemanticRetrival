@@ -19,7 +19,7 @@ import technion.ir.se.windows.BetweenQueryTermsStrategy;
 
 public class BetweenQueryTermsStrategyTest {
 
-	private BetweenQueryTermsStrategy classUnderTest;
+	private AbstractStrategy classUnderTest;
 	private Feedback feedback;
 	private Query query;
 	private static final String STORY = "my name is alon i come for moldova which was once part of russia in russia i was called alexy" +

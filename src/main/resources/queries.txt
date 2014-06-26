@@ -3,3 +3,8 @@
 304:endangered species mammals
 305:dangerous vehicles
 306:african civilian deaths
+307:new hydroelectric projects
+308:implant dentistry
+309:rap crime
+310:radio waves brain cancer
+311:industrial espionage

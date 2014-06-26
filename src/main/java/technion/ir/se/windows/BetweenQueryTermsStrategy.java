@@ -16,27 +16,44 @@ public class BetweenQueryTermsStrategy extends AbstractStrategy {
 	public List<TextWindow> getWindows(Feedback feedback, Query query) {
 		ArrayList<TextWindow> windows = new ArrayList<TextWindow>();
 		TreeSet<String> queryTerms = new TreeSet<String>(query.getQueryTerms());
-		List<String> terms = feedback.getTerms();
+		int lastTermInFeedbackIndex = feedback.getTerms().size()-1;
 		int windowStart = 0, windowEnd = 0; 
 		
-		while (windowEnd != (terms.size()-1)) {
-			windowEnd = calcWindowEnd(queryTerms, terms, windowStart);
-			windows.add(new TextWindow(windowStart, windowEnd));
-			windowStart = windowEnd + 1;
+		while (windowEnd != lastTermInFeedbackIndex) {
+			windowEnd = calcWindowEnd(queryTerms, feedback, windowStart);
+			if (windowEnd != -1) {
+				windows.add(new TextWindow(windowStart, windowEnd));
+				windowStart = windowEnd + 1;
+			} else {
+				windowStart = feedback.getNextDocumentStartingIndex(windowStart);
+				if (windowStart == -1) {
+					break;
+				}
+			}
 		}
 		return windows;
 	}
 
-	private int calcWindowEnd(Set<String> queryTerms, List<String> terms, int windowStart) {
+	/**
+	 * Return the end Index of the window
+	 * In case windowsEnd and windowStart are in different documents the returned value is -1
+	 * @param queryTerms
+	 * @param feedback
+	 * @param windowStart
+	 * @return
+	 */
+	private int calcWindowEnd(Set<String> queryTerms, Feedback feedback, int windowStart) {
 		List<Integer> list = new ArrayList<Integer>();
 		int startSerachIndex = windowStart;
-		List<String> subList = createSublistStartingCurrentTerm(terms, startSerachIndex);
+		List<String> terms = feedback.getTerms();
+		List<String> subList = createSublistStartingCurrentTerm(terms , startSerachIndex);
 		for (String queryTerm : queryTerms) {
 			list.add( calculateQueryTermPos(startSerachIndex, subList, queryTerm) );
 		}
 		Integer windowEnd = getIndexNotLessThan(list, windowStart);
 		windowEnd = (windowEnd == null) ? terms.size()-1 : windowEnd;
-		return windowEnd;
+		boolean indexesInSameDoc = this.doesIndexesInsameDocument(windowStart, windowEnd, feedback);
+		return indexesInSameDoc ? windowEnd : -1;
 	}
 
 	private int calculateQueryTermPos(int startSerachIndex, List<String> subList,
