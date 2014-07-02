@@ -1,6 +1,7 @@
 package technion.ir.se.baseline;
 
-import java.util.HashSet;
+import gnu.trove.set.hash.THashSet;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ public class SimilarityLogic {
 	 * @return Similarity of two vectors
 	 */
 	public double calculateSimilarity(Map<String, Short> vectorOne, Map<String, Short> vectorTwo) {
-		Set<String> both = new HashSet<String>(vectorOne.keySet());
+		Set<String> both = new THashSet<String>(vectorOne.keySet());
         both.retainAll(vectorTwo.keySet());
         
         double sclar = 0, norm1 = 0, norm2 = 0;
