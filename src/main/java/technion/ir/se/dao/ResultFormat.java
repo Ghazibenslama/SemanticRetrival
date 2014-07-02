@@ -70,13 +70,18 @@ public class ResultFormat implements Comparable<ResultFormat>{
 	@Override
 	public int compareTo(ResultFormat otherResultFormat) {
 		if (otherResultFormat == null ) {
-			return -1;
+			throw new NullPointerException(String.format("Tried to comapre %s with null", this.documentID));
 		}
-		
-		if (this.getScore() < otherResultFormat.getScore()) {
-			return 1;
-		} else if (this.getScore() > otherResultFormat.getScore()){ 
+
+		//case values are equal. Can also be that both values are null 
+		if (this.getScore() == otherResultFormat.getScore()) {
+			return 0;
+		} else if (this.getScore() < otherResultFormat.getScore()) {
+			//case this is smaller than other
 			return -1;
+		} else if (this.getScore() > otherResultFormat.getScore()) {
+			//case this is bigger than other
+			return 1;
 		}
 		return 0;
 	}

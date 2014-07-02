@@ -72,14 +72,24 @@ public class FusionLogic
 			}
 			
 			mergedResult = SortAndTrimResultsSize(mergedResult);
+			mergedResult = ArrangeRankOrder(mergedResult);
 			return mergedResult;
 		}
 
 		private List<ResultFormat> SortAndTrimResultsSize(List<ResultFormat> mergedResult) {
 			Collections.sort(mergedResult);
+			Collections.reverse(mergedResult);
 			if (mergedResult.size() > MAX_RESULTS) {
 				mergedResult = mergedResult.subList(0, MAX_RESULTS);
 			}
+			return mergedResult;
+		}
+		
+		private List<ResultFormat> ArrangeRankOrder(List<ResultFormat> mergedResult) {
+			for (int i = 1; i <= mergedResult.size(); i++) {
+				mergedResult.get(i - 1).setRank(i);
+			}
+			
 			return mergedResult;
 		}
 	}
