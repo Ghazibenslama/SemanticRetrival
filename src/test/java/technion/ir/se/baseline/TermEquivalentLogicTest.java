@@ -15,7 +15,6 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.Model.Model;
 import technion.ir.se.dao.SemanticTermScore;
@@ -75,17 +74,4 @@ public class TermEquivalentLogicTest {
 		Assert.assertFalse("Thirs Score not in range", termScore.get(2).getSemanticScore() < 0.77 ||
 														termScore.get(2).getSemanticScore() > 0.775 );
 	}
-	
-	@Test
-	public void testConvertMapToVector () throws Exception {
-		Map<String, Short> map = new HashMap<String, Short>();
-		map.put(ALEF, (short) 5);
-		map.put(GIMEL, (short) 2);
-		
-		double[] vectorOfTerm = Whitebox.<double[]>invokeMethod(classUnderTest, "convertMapToVector", map);
-		double[] expected = new double[]{5,0,2,0,0};
-		Assert.assertArrayEquals("result is not as expected", expected, vectorOfTerm, 0);
-	}
-	
-
 }
