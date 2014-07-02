@@ -1,4 +1,10 @@
 #################
+## Semantic Retrival
+#################
+SemanticRetrival*.jar
+/*.res
+
+#################
 ## Eclipse
 #################
 
