@@ -25,7 +25,7 @@ public class TermEquivalentLogic
 	
 	{
 		List<SemanticTermScore> sortedSimilarityList = new ArrayList <SemanticTermScore>();
-		SimilarityLogic logic = new SimilarityLogic();
+		SimilarityLogic similarityLogic = new SimilarityLogic();
 		
 		double[] queryVector = convertMapToVector(map.get(queryTerm));
 		for (Entry<String, Map<String, Short>> entry : map.entrySet())
@@ -35,7 +35,7 @@ public class TermEquivalentLogic
 				if (!entry.getKey().equals(queryTerm)) {
 					Map<String, Short> innerMap = entry.getValue();
 					double[] termVector = convertMapToVector(innerMap);
-					double similarityScore = logic.calculateSimilarity(queryVector, termVector);
+					double similarityScore = similarityLogic.calculateSimilarity(queryVector, termVector);
 					SemanticTermScore semanticTermScore = new SemanticTermScore(entry.getKey(), similarityScore);
 					sortedSimilarityList.add(semanticTermScore);
 				}
