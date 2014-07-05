@@ -1,5 +1,7 @@
 package technion.ir.se.baseline;
 
+import gnu.trove.map.hash.THashMap;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -173,9 +175,9 @@ public class SimilarityVectors {
 
 	private Map<String, Map<String, Short>> createTermsMap(List<String> terms) {
 		List<String> uniqueTerms = Utils.getUniqueValues(terms);
-		HashMap<String, Map<String, Short>> queryVectorsMap = new HashMap<String, Map<String, Short>>();
+		Map<String, Map<String, Short>> queryVectorsMap = new THashMap<String, Map<String, Short>>();
 		for (String term : uniqueTerms) {
-			queryVectorsMap.put(term, new HashMap<String, Short>());
+			queryVectorsMap.put(term, new THashMap<String, Short>());
 		}
 		return queryVectorsMap;
 	}
