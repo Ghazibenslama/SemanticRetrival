@@ -19,6 +19,10 @@ public class FusionLogicTest {
 	private List<ResultFormat> thirdListResultFormat;
 	private List<ResultFormat> fourthListResultFormat;
 	
+	private List<ResultFormat> fifthListResultFormat;
+	private List<ResultFormat> sixListResultFormat;
+	
+	
 	@Before
 	public void setUp() throws Exception {
 		classUnderTest = new FusionLogic();
@@ -48,6 +52,20 @@ public class FusionLogicTest {
 		fourthListResultFormat.add(new ResultFormat("310","8", 3, 3));
 		fourthListResultFormat.add(new ResultFormat("310","9", 4, 2));
 		fourthListResultFormat.add(new ResultFormat("310","10", 5, 1));
+		
+		fifthListResultFormat = new ArrayList<ResultFormat>();
+		fifthListResultFormat.add(new ResultFormat("310","52032", 1, -7.588));
+		fifthListResultFormat.add(new ResultFormat("310","66406", 2, -7.9));
+		fifthListResultFormat.add(new ResultFormat("310","21150", 3, -8));
+		fifthListResultFormat.add(new ResultFormat("310","44915", 4, -8.15));
+		fifthListResultFormat.add(new ResultFormat("310","59661", 5, -8.292));
+		
+		sixListResultFormat = new ArrayList<ResultFormat>();
+		sixListResultFormat.add(new ResultFormat("310","66406", 1, -7.33));
+		sixListResultFormat.add(new ResultFormat("310","59661", 2, -7.712));
+		sixListResultFormat.add(new ResultFormat("310","52032", 3, -7.815));
+		sixListResultFormat.add(new ResultFormat("310","67640", 4, -8.0883));
+		sixListResultFormat.add(new ResultFormat("310","44915", 5, -8.1349));
 		
 	}
 
@@ -98,5 +116,25 @@ public class FusionLogicTest {
 		Assert.assertEquals("rank of the nine element is not correct", 9, mergedResults2.get(8).getRank());
 		Assert.assertEquals("rank of the ten element is not correct", 10, mergedResults2.get(9).getRank());
 	}
+	
+	@Test
+	public void testMergeResultsDuplicate()
+	{
+		List<List<ResultFormat>> queryVariantsResults = new ArrayList<List<ResultFormat>>();
+		queryVariantsResults.add(fifthListResultFormat);
+		queryVariantsResults.add(sixListResultFormat);
+		List<ResultFormat> mergedResults = classUnderTest.mergeResults(queryVariantsResults);
+		
+		Assert.assertEquals("size of merged list is not correct", 6, mergedResults.size());
+		Assert.assertFalse("First document returned is not correct", mergedResults.get(0).equals("66406"));
+		Assert.assertFalse("Second document returned is not correct", mergedResults.get(0).equals("52032"));
+		Assert.assertFalse("Third document returned is not correct", mergedResults.get(0).equals("59661"));
+		Assert.assertFalse("Fourth document returned is not correct", mergedResults.get(0).equals("21150"));
+		Assert.assertFalse("Fifth document returned is not correct", mergedResults.get(0).equals("44915"));
+		Assert.assertFalse("Six document returned is not correct", mergedResults.get(0).equals("67640"));
+		
+		
+	}
+	
 
 }

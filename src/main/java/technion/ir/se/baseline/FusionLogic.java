@@ -56,7 +56,8 @@ public class FusionLogic
 					boolean isExist = false;
 					for (int iMerged = 0; iMerged < mergedResult.size(); iMerged++) 
 					{
-						if (resFormat.getDocumentID() == mergedResult.get(iMerged).getDocumentID())
+						if (checkDocumentIDEquivalence(mergedResult, resFormat,
+								iMerged))
 						{
 							isExist = true;
 							double newScore = resFormat.getScore() + mergedResult.get(iMerged).getScore();
@@ -74,6 +75,11 @@ public class FusionLogic
 			mergedResult = SortAndTrimResultsSize(mergedResult);
 			mergedResult = ArrangeRankOrder(mergedResult);
 			return mergedResult;
+		}
+
+		private boolean checkDocumentIDEquivalence(List<ResultFormat> mergedResult, ResultFormat resFormat,int iMerged)
+		{
+			return resFormat.getDocumentID().equals(mergedResult.get(iMerged).getDocumentID());
 		}
 
 		private List<ResultFormat> SortAndTrimResultsSize(List<ResultFormat> mergedResult) {
