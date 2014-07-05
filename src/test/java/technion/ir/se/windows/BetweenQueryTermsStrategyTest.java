@@ -1,6 +1,5 @@
 package technion.ir.se.windows;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -9,13 +8,15 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.reflect.Whitebox;
 
+import technion.ir.se.dao.Document;
 import technion.ir.se.dao.Feedback;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.TextWindow;
-import technion.ir.se.windows.BetweenQueryTermsStrategy;
+import technion.ir.se.exception.LocationNotFoundException;
 
 public class BetweenQueryTermsStrategyTest {
 
@@ -32,6 +33,9 @@ public class BetweenQueryTermsStrategyTest {
 		classUnderTest = new BetweenQueryTermsStrategy();
 		feedback = PowerMockito.mock(Feedback.class);
 		query = PowerMockito.mock(Query.class);
+		//
+		Document mockedDocument = PowerMockito.mock(Document.class);
+		PowerMockito.when(feedback.getDocumentOfIndex(Mockito.anyInt())).thenReturn(mockedDocument);
 	}
 
 	@After
@@ -65,10 +69,11 @@ public class BetweenQueryTermsStrategyTest {
 	}
 	
 	@Test
-	public void testGetWindows_checkWindowsEndPositions() {
+	public void testGetWindows_checkWindowsEndPositions() throws LocationNotFoundException {
 		List<String> story = Arrays.asList(STORY.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(story);
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
+		
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(0).getWindowEnd()));
 		Assert.assertEquals("last word in window should be moldova", "moldova", story.get(windows.get(1).getWindowEnd()));
@@ -95,11 +100,11 @@ public class BetweenQueryTermsStrategyTest {
 	@Test
 	public void testCalcWindowEnd() throws Exception {
 		HashSet<String> queryTerms = new HashSet<String>();
+		List<String> story = Arrays.asList(STORY.split(" "));
+		PowerMockito.when(feedback.getTerms()).thenReturn(story);
 		queryTerms.addAll(Arrays.asList("russia", "Moldova","alon"));
-		ArrayList<String> tokens = new ArrayList<String>();
-		tokens.addAll(Arrays.asList(STORY.split(" ")));
 		
-		Integer windowEnd = Whitebox.<Integer>invokeMethod(classUnderTest, "calcWindowEnd", queryTerms, tokens, 0);
+		Integer windowEnd = Whitebox.<Integer>invokeMethod(classUnderTest, "calcWindowEnd", queryTerms, feedback, 0);
 		Assert.assertEquals("didn't find window end", 3l, windowEnd.longValue());
 	}
 	
