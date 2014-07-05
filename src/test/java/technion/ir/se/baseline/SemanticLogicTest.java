@@ -25,6 +25,7 @@ import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.dao.SemanticTermScore;
+import technion.ir.se.exception.FileNameNotExtracted;
 import technion.ir.se.indri.SearchEngine;
 
 @PrepareForTest({SemanticLogic.class, SearchEngine.class})
@@ -181,7 +182,7 @@ public class SemanticLogicTest {
 		return list;
 	}
 
-	private List<RetrivalResult> createRetrivalResultList() {
+	private List<RetrivalResult> createRetrivalResultList() throws FileNameNotExtracted {
 		List<RetrivalResult> resultList = new ArrayList<RetrivalResult>();
 		int numberOfresults = (int) Math.ceil(Math.random() * (10));
 		for (int i = 0; i < numberOfresults; i++) {

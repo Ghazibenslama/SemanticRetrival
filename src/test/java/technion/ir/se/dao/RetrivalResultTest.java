@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import technion.ir.se.exception.FileNameNotExtracted;
+
 public class RetrivalResultTest {
 	RetrivalResult classUnderTest;
 
@@ -17,9 +19,16 @@ public class RetrivalResultTest {
 	}
 
 	@Test
-	public void testGetDocumentId() {
+	public void testGetDocumentId() throws FileNameNotExtracted {
 		classUnderTest = new RetrivalResult(0, 0, 0, 0, 0, 0, 0, "docs/FBIS/.\\FBIS4-41991.txt");
 		Assert.assertEquals("Didn't parse documentId correctly", "FBIS4-41991", classUnderTest.getDocumentId());
 	}
+	
+	@Test (expected = FileNameNotExtracted.class)
+	public void testGetDocumentIdNotExtracted() throws FileNameNotExtracted{
+		classUnderTest = new RetrivalResult(0, 0, 0, 0, 0, 0, 0, "docs/FBIS/.\\FBIS4-41991");
+	}
+	
+	
 
 }

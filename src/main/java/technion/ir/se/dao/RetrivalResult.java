@@ -2,6 +2,8 @@ package technion.ir.se.dao;
 
 import org.apache.commons.lang3.StringUtils;
 
+import technion.ir.se.exception.FileNameNotExtracted;
+
 public class RetrivalResult {
 	private double score;
 	private int indriDocId;
@@ -14,7 +16,7 @@ public class RetrivalResult {
 	private String documentId;
 	
 	public RetrivalResult(double score, int docid, int begin, int end, long number,
-			int ordinal, int parentOrdinal, String nameIdDisk) {
+			int ordinal, int parentOrdinal, String nameIdDisk) throws FileNameNotExtracted {
 		this.score = score;
 		this.indriDocId = docid;
 		this.begin = begin;
@@ -26,8 +28,15 @@ public class RetrivalResult {
 		this.documentId = extractDocumentId(nameIdDisk);
 	}
 	
-	private String extractDocumentId(String nameIdDisk) {
-		return StringUtils.substringBetween(nameIdDisk, "\\", ".txt");
+	private String extractDocumentId(String nameIdDisk) throws FileNameNotExtracted {
+		String documentId = StringUtils.substringBetween(nameIdDisk, "\\", ".txt");
+		if (documentId == null) 
+			{
+				throw new FileNameNotExtracted("file Name returned NULL");
+			}
+		
+		
+		return documentId;
 	}
 
 	public int getIndriDocumentId() {

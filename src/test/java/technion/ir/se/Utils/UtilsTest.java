@@ -19,6 +19,7 @@ import technion.ir.se.TestUtils;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
 import technion.ir.se.dao.RetrivalResult;
+import technion.ir.se.exception.FileNameNotExtracted;
 
 @PrepareForTest(Utils.class)
 @RunWith(PowerMockRunner.class)
@@ -63,7 +64,7 @@ public class UtilsTest {
 	}
 	
 	@Test
-	public void testconvertRetrivalResultListToResultFormatList()
+	public void testconvertRetrivalResultListToResultFormatList() throws FileNameNotExtracted
 	{
 		RetrivalResult retResult1 = new RetrivalResult(1, 2, 0, 30, 5, 5, 5, "\\SecondDoc.txt");
 		RetrivalResult retResult2 = new RetrivalResult(0.5, 2, 0, 30, 5, 5, 5, "\\FirstDoc.txt");
