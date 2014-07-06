@@ -49,7 +49,9 @@ public class BetweenQueryTermsStrategyTest {
 	
 	@Test
 	public void testGetWindows_hasSixWindows() {
-		PowerMockito.when(feedback.getTerms()).thenReturn(Arrays.asList(STORY.split(" ")));
+		List<String> story = Arrays.asList(STORY.split(" "));
+		PowerMockito.when(feedback.getTerms()).thenReturn(story);
+		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(story.size());
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("there should be 6 windows", 6l, windows.size());
@@ -57,7 +59,9 @@ public class BetweenQueryTermsStrategyTest {
 	
 	@Test
 	public void testGetWindows_checkWindowsSizes() {
-		PowerMockito.when(feedback.getTerms()).thenReturn(Arrays.asList(STORY.split(" ")));
+		List<String> terms = Arrays.asList(STORY.split(" "));
+		PowerMockito.when(feedback.getTerms()).thenReturn(terms);
+		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(terms.size());
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("there should be 4 windows", 4l, windows.get(0).getWindowSize());
@@ -72,6 +76,7 @@ public class BetweenQueryTermsStrategyTest {
 	public void testGetWindows_checkWindowsEndPositions() throws LocationNotFoundException {
 		List<String> story = Arrays.asList(STORY.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(story);
+		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(story.size());
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
@@ -87,6 +92,7 @@ public class BetweenQueryTermsStrategyTest {
 	public void testGetWindows_checkWindowsStartPositions() {
 		List<String> story = Arrays.asList(STORY.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(story);
+		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(story.size());
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		Assert.assertEquals("last word in window should be my", "my", story.get(windows.get(0).getWindowStart()));
@@ -136,5 +142,28 @@ public class BetweenQueryTermsStrategyTest {
 		Assert.assertEquals("'window' should be the starting word in second window", "window", sentaceTokens.get(secondWindows.getWindowStart()) );
 		Assert.assertEquals("'adir' should be the ending word in second window", "adir", sentaceTokens.get(secondWindows.getWindowEnd()) );
 	}
+	
+	@Test
+	public void testFindNextStartingIndex_windowBeginStartOfSentance() throws Exception {
+		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
+		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
+		
+		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "without", "adir"));
+		
+		Integer queryTermIndex = Whitebox.<Integer>invokeMethod(classUnderTest, "findNextStartingIndex", feedback, query, 1);
+		Assert.assertEquals("Didn't find the right position of 'without'", 2, queryTermIndex.longValue());
+	}
+	
+	@Test
+	public void testFindNextStartingIndex_windowBeginAtMiddleOfSentance() throws Exception {
+		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
+		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
+		
+		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "without", "adir"));
+		
+		Integer queryTermIndex = Whitebox.<Integer>invokeMethod(classUnderTest, "findNextStartingIndex", feedback, query, 3);
+		Assert.assertEquals("Didn't find the righr position of 'adir'", 5, queryTermIndex.longValue());
+	}
+
 
 }
