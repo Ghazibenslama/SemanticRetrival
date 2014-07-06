@@ -1,12 +1,13 @@
 package technion.ir.se.command;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import technion.ir.se.command.BuildIndexCommand;
 import technion.ir.se.exception.LocationNotFoundException;
 
 public class BuildIndexCommandTest {
@@ -21,6 +22,7 @@ public class BuildIndexCommandTest {
 	public void tearDown() throws Exception {
 	}
 
+	@Ignore
 	@Test
 	public void testExecuteCommand() throws LocationNotFoundException {
 		buildIndex = new BuildIndexCommand("IndriBuildIndex.exe", "buildIndex.xml");
@@ -34,6 +36,7 @@ public class BuildIndexCommandTest {
 		assertTrue("Index was not created", output.contains("Finished"));
 	}
 	
+	@Ignore
 	@Test
 	public void testExecuteCommand_WrongIndexSettingFile() throws LocationNotFoundException {
 		buildIndex = new BuildIndexCommand("IndriBuildIndex.exe", "build.xml");
