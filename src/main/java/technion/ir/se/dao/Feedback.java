@@ -14,6 +14,7 @@ import technion.ir.se.exception.LocationNotFoundException;
  *
  */
 public class Feedback {
+	private static final int NO_MORE_WINDOWS = -1;
 	private List<Document> documents;
 	private List<String> terms;
 	private TreeMap<Integer, Document> docsStartingIndex;
@@ -74,10 +75,15 @@ public class Feedback {
 		throw new LocationNotFoundException(String.format("Got index '%d' that is smaller that all documents starting index", index));
 	}
 
+	/**
+	 * The method returns the starting index of the next document, or -1 if there is no document.
+	 * @param windowStart
+	 * @return
+	 */
 	public int getNextDocumentStartingIndex(int windowStart) {
 		Integer higherKey = docsStartingIndex.higherKey(windowStart);
 		if (higherKey == null) {
-			return -1;
+			return NO_MORE_WINDOWS;
 		} else {
 			return higherKey;
 		}
