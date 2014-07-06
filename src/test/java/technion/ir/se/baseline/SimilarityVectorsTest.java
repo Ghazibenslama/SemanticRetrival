@@ -87,29 +87,20 @@ public class SimilarityVectorsTest {
 		Assert.assertTrue("no vectors were created", !queryVectors.isEmpty());
 		
 		Map<String, Short> mapOfSome = queryVectors.get("some");
-		Assert.assertEquals("size of map of 'some' is not as expected", 1, mapOfSome.size());
-		Assert.assertEquals("map of 'some' is not as expected", Short.valueOf( (short)1 ), mapOfSome.get("some"));
+		Assert.assertTrue("map should be empty since there are no windows on 1'st document", mapOfSome.isEmpty());
 
 		Map<String, Short> mapOfAdir = queryVectors.get("adir");
-		Assert.assertEquals("size of map of 'adir' is not as expected", 5, mapOfAdir.size());
-		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("query"));
-		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("window"));
-		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("without"));
-		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("adir"));
-		Assert.assertEquals("map of 'adir' is not as expected", Short.valueOf( (short)1 ), mapOfAdir.get("terms"));
+		Assert.assertTrue("map should be empty since there are no windows on 2'nd document", mapOfAdir.isEmpty());
 
 		Map<String, Short> mapOfNight = queryVectors.get("night");
-		Assert.assertEquals("size of map of 'night' is not as expected", 2, mapOfNight.size());
-		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("last"));
-		Assert.assertEquals("map of 'night' is not as expected", Short.valueOf( (short)1 ), mapOfNight.get("night"));
+		Assert.assertEquals("size of map of 'night' is not as expected", 3, mapOfNight.size());
+		Assert.assertEquals("map of 'night' doesn't contain expected element", Short.valueOf( (short)1 ), mapOfNight.get("last"));
+		Assert.assertEquals("map of 'night' doesn't contain expected element", Short.valueOf( (short)1 ), mapOfNight.get("show"));
 		
 		Map<String, Short> mapOfShow = queryVectors.get("show");
-		Assert.assertEquals("size of map of 'show' is not as expected", 5, mapOfShow.size());
-		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("I"));
-		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("saw"));
-		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("show"));
-		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("is"));
-		Assert.assertEquals("map of 'show' is not as expected", Short.valueOf( (short)1 ), mapOfShow.get("amzing!"));
+		Assert.assertEquals("size of map of 'show' is not as expected", 3, mapOfShow.size());
+		Assert.assertEquals("map of 'show' doesn't contain expected element", Short.valueOf( (short)1 ), mapOfShow.get("last"));
+		Assert.assertEquals("map of 'show' doesn't contain expected element", Short.valueOf( (short)1 ), mapOfShow.get("night"));
 	}
 	
 	@Test

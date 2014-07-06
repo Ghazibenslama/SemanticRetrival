@@ -23,6 +23,8 @@ public class BetweenQueryTermsStrategy extends AbstractStrategy {
 		int lastTermInFeedbackIndex = feedback.getTerms().size()-1;
 		int windowStart = 0, windowEnd = 0; 
 		
+		//TODO: Think if it is right not to create windows for documents who have
+		// only single query term
 		while (windowEnd != lastTermInFeedbackIndex) {
 			windowEnd = calcWindowEnd(queryTerms, feedback, windowStart);
 			if (windowEnd != TERMS_NOT_IS_THE_SAME_DOCUMENT) {
