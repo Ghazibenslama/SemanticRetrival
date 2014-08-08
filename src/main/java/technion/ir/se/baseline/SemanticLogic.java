@@ -15,11 +15,7 @@ import technion.ir.se.indri.SearchEngine;
 
 public class SemanticLogic {
 	
-	private static final int NUMBER_OF_ALTERNATIVES_PER_QUERT_TERM = 1;
-	private int numberOfAlternativesPerTerm;
-
 	public SemanticLogic() {
-		this.numberOfAlternativesPerTerm = NUMBER_OF_ALTERNATIVES_PER_QUERT_TERM;
 	}
 	
 	public Map<String, Map<String, Short>> createSimilarityVectors(List<RetrivalResult> retrivalResult, Query query) {
@@ -32,11 +28,8 @@ public class SemanticLogic {
 	
 	public List<Query> createAlternativeQuries(Map<String, Map<String, Short>> similarityVectors, Query query) {
 		List<Query> alternativeQuries = new ArrayList<Query>();
-		/*List<String> queryTerms = query.getQueryTerms();
 		
-		removeTermsFromVectors(similarityVectors, queryTerms);*/
 		alternativeQuries = findQueryAlternatives(similarityVectors, query);
-		
 		return alternativeQuries;
 	}
 	
@@ -67,19 +60,20 @@ public class SemanticLogic {
 
 	private List<Query> findQueryAlternatives(Map<String, Map<String, Short>> similarityVectors, Query query) {
 		List<String> queryTerms = query.getQueryTerms();
-		List<Query> alternatives = new ArrayList<Query>();
+		List<Query> alternativesList = new ArrayList<Query>();
+		AlternativesLogic alternatives = new AlternativesLogic();
 		
 		for (String queryTermToReplace : queryTerms) {
 			try {
 				List<SemanticTermScore> similarity = this.findSimilarity(similarityVectors, queryTermToReplace);
-				List<String> termAlternatives = this.getTermAlternatives(similarity);
+				List<String> termAlternatives = alternatives.getTermAlternatives(similarity, query.getQueryTerms().size());
 				List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
-				alternatives.addAll(queryAlternatives);
+				alternativesList.addAll(queryAlternatives);
 			} catch (IllegalArgumentException e) {
 				System.err.println(String.format("Faield to execute finding alternative for term '%s' of query '%s'", queryTermToReplace, queryTerms));
 			}
 		}
-		return alternatives;
+		return alternativesList;
 	}
 	
 	private List<SemanticTermScore> findSimilarity(Map<String, Map<String, Short>> similarityVectors, String queryTerm) {
@@ -112,13 +106,4 @@ public class SemanticLogic {
 		
 	}
 
-	private List<String> getTermAlternatives(List<SemanticTermScore> termScores) {
-		ArrayList<String> resultList = new ArrayList<String>(numberOfAlternativesPerTerm);
-		List<SemanticTermScore> subList = termScores.subList(0, numberOfAlternativesPerTerm);
-		for (SemanticTermScore semanticTermScore : subList) {
-			resultList.add( semanticTermScore.getTerm() );
-		}
-		return resultList;
-	}
-	
 }

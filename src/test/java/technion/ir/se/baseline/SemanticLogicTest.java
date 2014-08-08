@@ -44,18 +44,6 @@ public class SemanticLogicTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
-	
-	@Test
-	public void testGetTermAlternatives() throws Exception {
-		List<SemanticTermScore> termScores = new ArrayList<SemanticTermScore>();
-		termScores.add(new SemanticTermScore("first", 0.88));
-		termScores.add(new SemanticTermScore("second", 0.44));
-		termScores.add(new SemanticTermScore("third", 0.33));
-		List<String> list = Whitebox.<List<String>>invokeMethod(classUnderTest, "getTermAlternatives", termScores);
-		assertEquals("list size not as expected", 1l, list.size());
-		assertEquals("list doesn't contain expected element", "first", list.get(0));
-	}
 	
 	
 	@Test
@@ -77,7 +65,7 @@ public class SemanticLogicTest {
 		
 		List<Query> alternativeQueries = Whitebox.<List<Query>>invokeMethod(partialMock, "findQueryAlternatives", map, originalQuery);
 		
-		assertEquals("Number of created alternatives is not as expected", 3l, alternativeQueries.size());
+		assertEquals("Number of created alternatives is not as expected", 6l, alternativeQueries.size());
 		for (Query alternativeQuery : alternativeQueries) {
 			assertEquals("new query id is not the same as original", originalQuery.getId(), alternativeQuery.getId());
 		}
@@ -86,12 +74,12 @@ public class SemanticLogicTest {
 		assertTrue("query does contain 'alef2'", !q1.getQueryTerms().contains("alef2"));
 		assertTrue("query doest contain 'alef'", !q1.getQueryTerms().contains("alef"));
 		
-		Query q2 = alternativeQueries.get(1);
+		Query q2 = alternativeQueries.get(2);
 		assertTrue("query doesn't contain 'beth1'", q2.getQueryTerms().contains("beth1"));
 		assertTrue("query does contain 'beth2'", !q2.getQueryTerms().contains("beth2"));
 		assertTrue("query doest contain 'beth'", !q2.getQueryTerms().contains("beth"));
 		
-		Query q3 = alternativeQueries.get(2);
+		Query q3 = alternativeQueries.get(4);
 		assertTrue("query doesn't contain 'gimel2'", q3.getQueryTerms().contains("gimel2"));
 		assertTrue("query does contain 'gimel1'", !q3.getQueryTerms().contains("gimel1"));
 		assertTrue("query doest contain 'gimel'", !q3.getQueryTerms().contains("gimel"));
