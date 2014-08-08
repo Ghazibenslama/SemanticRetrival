@@ -35,35 +35,29 @@ public class SemanticTermScore implements Comparable<SemanticTermScore>
 		if (otherResultFormat == null ) {
 			throw new NullPointerException(String.format("Tried to comapre %s with null", this.term));
 		}
-		
-		//case values are equal. Can also be that both values are null 
-		if (this.getSemanticScore() == otherResultFormat.getSemanticScore()) {
-			return 0;
-		} else if (this.getSemanticScore() < otherResultFormat.getSemanticScore()) {
-			//case this is smaller than other
-			return -1;
-		} else if (this.getSemanticScore() > otherResultFormat.getSemanticScore()) {
-			//case this is bigger than other
-			return 1;
-		}
-		
-		return 0;
+		int compare = Double.compare(this.getSemanticScore(), otherResultFormat.getSemanticScore());
+		return compare;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(semanticScore);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((term == null) ? 0 : term.hashCode());
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof SemanticTermScore) {
-			SemanticTermScore other = (SemanticTermScore) obj;
-			if (this.getSemanticScore() == other.getSemanticScore()) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return super.equals(obj);
+		if (!(obj instanceof SemanticTermScore)) {
+			return false;
 		}
+		SemanticTermScore other = (SemanticTermScore) obj;
+		int areEquals = Double.compare(this.getSemanticScore(), other.getSemanticScore());
+		return (areEquals == 0) ? true : false;
 	}
-	
-	
 
 }
