@@ -16,33 +16,41 @@ public class BetweenQueryTermsStrategy extends AbstractStrategy {
 	private static final Integer TERMS_NOT_IS_THE_SAME_DOCUMENT = -1;
 	private static final Integer DIDNOT_FIND_SUCH_TERM = -1;
 
+	/* (non-Javadoc)
+	 * @see technion.ir.se.windows.IWindowSize#getWindows(technion.ir.se.dao.Feedback, technion.ir.se.dao.Query)
+	 * The method creates windows in a document only if it contains 2 or more query terms.
+	 * The windows are created between the query terms.
+	 * 
+	 * e.g.: if three query terms appear in a document in the following order: q1, q2 & q3
+	 * there will be two windows as followed:
+	 * 1) window #1 starting at q1 and ends at q2 (including).
+	 * 2) window #2 starting at q2 and ends at q3 (including).
+	 */
 	@Override
 	public List<TextWindow> getWindows(Feedback feedback, Query query) {
 		ArrayList<TextWindow> windows = new ArrayList<TextWindow>();
 		TreeSet<String> queryTerms = new TreeSet<String>(query.getQueryTerms());
 		int lastTermInFeedbackIndex = feedback.getTerms().size()-1;
-		int windowStart = 0, windowEnd = 0; 
+		int windowStart = 0, windowEnd = 0;
+		int startSearchQueryIndex = 0;
 		
-		//TODO: Think if it is right not to create windows for documents who have
-		// only single query term
-		while (windowEnd != lastTermInFeedbackIndex) {
+		while (windowEnd != lastTermInFeedbackIndex && startSearchQueryIndex < lastTermInFeedbackIndex) {
+			windowStart = findNextQueryTerm(queryTerms, feedback, startSearchQueryIndex);
+			if (windowStart == DIDNOT_FIND_SUCH_TERM) {
+				break;
+			}
 			windowEnd = calcWindowEnd(queryTerms, feedback, windowStart);
 			if (windowEnd != TERMS_NOT_IS_THE_SAME_DOCUMENT) {
 				windows.add(new TextWindow(windowStart, windowEnd));
-				windowStart = windowEnd + 1;
+				startSearchQueryIndex = windowEnd;
 			} else {
-				windowStart = findNextStartingIndex(feedback, query, windowStart);
-				if (windowStart == DIDNOT_FIND_SUCH_TERM) {
-					break;
+				if (windowStart > startSearchQueryIndex) {
+					startSearchQueryIndex = windowStart;
 				}
+				startSearchQueryIndex++;
 			}
 		}
 		return windows;
-	}
-
-	private int findNextStartingIndex(Feedback feedback, Query query, int windowStart) {
-		Integer nextQueryTerm = findNextQueryTerm(query.getQueryTerms(), feedback, windowStart);
-		return nextQueryTerm;
 	}
 
 	/**
@@ -55,9 +63,11 @@ public class BetweenQueryTermsStrategy extends AbstractStrategy {
 	 */
 	private int calcWindowEnd(Set<String> queryTerms, Feedback feedback, int windowStart) {
 		
-		Integer windowEnd = findNextQueryTerm(queryTerms, feedback, windowStart);
-		windowEnd = (windowEnd == DIDNOT_FIND_SUCH_TERM) ? feedback.getNumberOfTerms()-1 : windowEnd;
-		boolean indexesInSameDoc = this.doesIndexesInsameDocument(windowStart, windowEnd, feedback);
+		Integer windowEnd = findNextQueryTerm(queryTerms, feedback, windowStart + 1);
+		if (windowEnd == DIDNOT_FIND_SUCH_TERM) {
+			return TERMS_NOT_IS_THE_SAME_DOCUMENT;
+		}
+		boolean indexesInSameDoc = this.doesIndexesInSameDocument(windowStart, windowEnd, feedback);
 		return indexesInSameDoc ? windowEnd : TERMS_NOT_IS_THE_SAME_DOCUMENT;
 	}
 

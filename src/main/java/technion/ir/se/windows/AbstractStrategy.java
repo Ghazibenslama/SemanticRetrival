@@ -24,7 +24,7 @@ public abstract class AbstractStrategy implements IWindowSize {
 		return resultList;
 	}
 
-	protected boolean doesIndexesInsameDocument(int windowStart, Integer windowEnd,
+	protected boolean doesIndexesInSameDocument(int windowStart, Integer windowEnd,
 			Feedback feedback) {
 				try {
 					Document startIndexDocument = feedback.getDocumentOfIndex(windowStart);

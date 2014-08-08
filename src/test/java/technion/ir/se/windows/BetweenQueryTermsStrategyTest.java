@@ -54,7 +54,7 @@ public class BetweenQueryTermsStrategyTest {
 		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(story.size());
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
-		Assert.assertEquals("there should be 6 windows", 6l, windows.size());
+		Assert.assertEquals("there should be 4 windows", 4l, windows.size());
 	}
 	
 	@Test
@@ -64,12 +64,10 @@ public class BetweenQueryTermsStrategyTest {
 		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(terms.size());
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
-		Assert.assertEquals("there should be 4 windows", 4l, windows.get(0).getWindowSize());
-		Assert.assertEquals("there should be 4 windows", 4l, windows.get(1).getWindowSize());
-		Assert.assertEquals("there should be 6 windows", 6l, windows.get(2).getWindowSize());
-		Assert.assertEquals("there should be 2 windows", 2l, windows.get(3).getWindowSize());
-		Assert.assertEquals("there should be 9 windows", 9l, windows.get(4).getWindowSize());
-		Assert.assertEquals("there should be 4 windows", 4l, windows.get(5).getWindowSize());
+		Assert.assertEquals("there should be 5 windows", 5l, windows.get(0).getWindowSize());
+		Assert.assertEquals("there should be 7 windows", 7l, windows.get(1).getWindowSize());
+		Assert.assertEquals("there should be 3 windows", 3l, windows.get(2).getWindowSize());
+		Assert.assertEquals("there should be 10 windows", 10l, windows.get(3).getWindowSize());
 	}
 	
 	@Test
@@ -80,12 +78,10 @@ public class BetweenQueryTermsStrategyTest {
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
-		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(0).getWindowEnd()));
-		Assert.assertEquals("last word in window should be moldova", "moldova", story.get(windows.get(1).getWindowEnd()));
+		Assert.assertEquals("last word in window should be moldova", "moldova", story.get(windows.get(0).getWindowEnd()));
+		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(1).getWindowEnd()));
 		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(2).getWindowEnd()));
-		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(3).getWindowEnd()));
-		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(4).getWindowEnd()));
-		Assert.assertEquals("last word in window should be it", "it", story.get(windows.get(5).getWindowEnd()));
+		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(3).getWindowEnd()));
 	}
 	
 	@Test
@@ -95,12 +91,10 @@ public class BetweenQueryTermsStrategyTest {
 		PowerMockito.when(feedback.getNumberOfTerms()).thenReturn(story.size());
 		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("russia", "Moldova","alon"));
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
-		Assert.assertEquals("last word in window should be my", "my", story.get(windows.get(0).getWindowStart()));
-		Assert.assertEquals("last word in window should be i", "i", story.get(windows.get(1).getWindowStart()));
-		Assert.assertEquals("last word in window should be which", "which", story.get(windows.get(2).getWindowStart()));
-		Assert.assertEquals("last word in window should be in", "in", story.get(windows.get(3).getWindowStart()));
-		Assert.assertEquals("last word in window should be i", "i", story.get(windows.get(4).getWindowStart()));
-		Assert.assertEquals("last word in window should be and", "and", story.get(windows.get(5).getWindowStart()));
+		Assert.assertEquals("last word in window should be alon", "alon", story.get(windows.get(0).getWindowStart()));
+		Assert.assertEquals("last word in window should be moldova", "moldova", story.get(windows.get(1).getWindowStart()));
+		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(2).getWindowStart()));
+		Assert.assertEquals("last word in window should be russia", "russia", story.get(windows.get(3).getWindowStart()));
 	}
 	
 	@Test
@@ -122,48 +116,24 @@ public class BetweenQueryTermsStrategyTest {
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		
 		TextWindow firstWindow = windows.get(0);
-		Assert.assertEquals("there should be 1 windows", 1l, firstWindow.getWindowSize());
-		Assert.assertEquals("First window should contain a single world", firstWindow.getWindowStart(), firstWindow.getWindowEnd());
-		Assert.assertEquals("'some' should be only word in first window", "some", sentaceTokens.get(firstWindow.getWindowEnd()));
-		Assert.assertEquals("'some' should be only word in first window", "some", sentaceTokens.get(firstWindow.getWindowStart()));
+		Assert.assertEquals("Size of windows should be 6", 6l, firstWindow.getWindowSize());
+		Assert.assertEquals("First window start at index 0", 0, firstWindow.getWindowStart());
+		Assert.assertEquals("First window should end at index 5", 5, firstWindow.getWindowEnd());
 	}
 	
 	@Test
 	public void testGetWindows_queryTermIsFirstInFeefback_testSecondWindow() {
 		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
 		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
-		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "adir"));
+		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "query", "adir"));
 		List<TextWindow> windows = classUnderTest.getWindows(feedback, query);
 		
-		TextWindow secondWindows = windows.get(1);
-		Assert.assertEquals("there should be 5 windows", 5l, secondWindows.getWindowSize());
-		Assert.assertEquals("second window didn't start correctly", 1l, secondWindows.getWindowStart());
-		Assert.assertEquals("second window didn't end correctly", 5l, secondWindows.getWindowEnd());
-		Assert.assertEquals("'window' should be the starting word in second window", "window", sentaceTokens.get(secondWindows.getWindowStart()) );
-		Assert.assertEquals("'adir' should be the ending word in second window", "adir", sentaceTokens.get(secondWindows.getWindowEnd()) );
+		TextWindow secondWindow = windows.get(1);
+		Assert.assertEquals("there should be 3 windows", 3l, secondWindow.getWindowSize());
+		Assert.assertEquals("second window didn't start correctly", 3l, secondWindow.getWindowStart());
+		Assert.assertEquals("second window didn't end correctly", 5l, secondWindow.getWindowEnd());
+		Assert.assertEquals("'window' should be the starting word in second query", "query", sentaceTokens.get(secondWindow.getWindowStart()) );
+		Assert.assertEquals("'adir' should be the ending word in second window", "adir", sentaceTokens.get(secondWindow.getWindowEnd()) );
 	}
 	
-	@Test
-	public void testFindNextStartingIndex_windowBeginStartOfSentance() throws Exception {
-		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
-		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
-		
-		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "without", "adir"));
-		
-		Integer queryTermIndex = Whitebox.<Integer>invokeMethod(classUnderTest, "findNextStartingIndex", feedback, query, 1);
-		Assert.assertEquals("Didn't find the right position of 'without'", 2, queryTermIndex.longValue());
-	}
-	
-	@Test
-	public void testFindNextStartingIndex_windowBeginAtMiddleOfSentance() throws Exception {
-		List<String> sentaceTokens = Arrays.asList(SENTANCE.split(" "));
-		PowerMockito.when(feedback.getTerms()).thenReturn(sentaceTokens);
-		
-		PowerMockito.when(query.getQueryTerms()).thenReturn(Arrays.asList("some", "without", "adir"));
-		
-		Integer queryTermIndex = Whitebox.<Integer>invokeMethod(classUnderTest, "findNextStartingIndex", feedback, query, 3);
-		Assert.assertEquals("Didn't find the righr position of 'adir'", 5, queryTermIndex.longValue());
-	}
-
-
 }
