@@ -1,13 +1,18 @@
 package technion.ir.se.baseline;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.MutualInformation;
+import technion.ir.se.dao.Query;
+import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
 
 public class MutualInformationLogicTest {
@@ -16,7 +21,6 @@ public class MutualInformationLogicTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
 		SearchEngine engine = PowerMockito.mock(SearchEngine.class);
 		classUnderTest = new MutualInformationLogic(engine);
 	}
@@ -91,4 +95,24 @@ public class MutualInformationLogicTest {
 		Assert.assertEquals("result should have been 0", 0, result, DELTA);
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFindPhrases() throws Exception {
+		SearchEngine engine = PowerMockito.mock(SearchEngine.class);
+		classUnderTest = new MutualInformationLogic(engine);
+		PowerMockito.when(engine.documentCount(Mockito.eq("alpha"))).thenReturn((long) 130000);
+		PowerMockito.when(engine.documentCount(Mockito.eq("betha"))).thenReturn((long) 130000);
+		PowerMockito.when(engine.documentCount(Mockito.eq("charlie"))).thenReturn((long) 20);
+		
+		PowerMockito.when(engine.documentCount()).thenReturn((long) 130000);
+		
+		List<RetrivalResult> mockList = PowerMockito.mock(List.class);
+		PowerMockito.when(mockList.size()).thenReturn(130000, 2);
+		PowerMockito.when(engine.runQuery(Mockito.anyInt(), Mockito.any(String[].class), Mockito.anyString())).
+			thenReturn(mockList);
+		
+		Query q = new Query( "1", "alpha betha charlie");
+		List<List<String>> phrasesList = classUnderTest.findPhrases(q);
+	}
+
 }

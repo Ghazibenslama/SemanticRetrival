@@ -26,8 +26,8 @@ public class MutualInformationLogic {
 		for (int i = 0; i < queryTerms.size() -1 ; i++) {
 			String termA = queryTerms.get(i);
 			String termB = queryTerms.get(i+1);
-			long termADocFreq = engine.documentStemCount(termA);
-			long termBDocFreq = engine.documentStemCount(termB);
+			long termADocFreq = engine.documentCount(termA);
+			long termBDocFreq = engine.documentCount(termB);
 			String pairQuery = String.format(QUERY_TEMPLATE, termA, termB);
 			int numOfDocuments = engine.documentCount().intValue();
 			List<RetrivalResult> mutualDocumentList = engine.runQuery(numOfDocuments, QUERY_RULE, pairQuery);
