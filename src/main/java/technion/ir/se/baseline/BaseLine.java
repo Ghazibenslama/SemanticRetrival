@@ -81,14 +81,15 @@ public class BaseLine {
 				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
 				if (results.isEmpty()){
 					System.out.println("didnt find any feedback document at first retrieval.query:" + query.getQueryText());
-				} else {
-					Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
-					List<Query> alternativeQuries = logic.createAlternativeQuries(similarityVectors, query);
-					List<ResultFormat> resultFormatsList = logic.submitAlternativeQuries(alternativeQuries);
-					if (resultFormatsList != null) {
-						StringBuilder builder = Utils.createMapFormatForQuery(resultFormatsList);
-						trecMap.append(builder.toString());
-					}
+					continue;
+				} 
+
+				Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
+				List<Query> alternativeQuries = logic.createAlternativeQuries(similarityVectors, query);
+				List<ResultFormat> resultFormatsList = logic.submitAlternativeQuries(alternativeQuries);
+				if (resultFormatsList != null) {
+					StringBuilder builder = Utils.createMapFormatForQuery(resultFormatsList);
+					trecMap.append(builder.toString());
 				}
 			}
 			
