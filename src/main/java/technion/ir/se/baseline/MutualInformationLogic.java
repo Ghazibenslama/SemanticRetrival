@@ -70,17 +70,18 @@ public class MutualInformationLogic {
 	}
 
 	private double calcMuaualInformationScore(MutualInformation mi) {
-		double calcOne = calcformula(mi.getMutualCompProb(), mi.getTermACompProb(), mi.getTermBCompProb());
-		double calcTwo = calcformula(mi.getOnlyTermAExist(), mi.getTermAProb(), mi.getTermBCompProb());
-		double calcThree = calcformula(mi.getOnlyTermBExists(), mi.getTermACompProb(), mi.getTermBProb());
-		double calcFour = calcformula(mi.getMutualProb(), mi.getTermAProb(), mi.getTermBProb());
+		double calcOne = calcFormula(mi.getMutualCompProb(), mi.getTermACompProb(), mi.getTermBCompProb());
+		double calcTwo = calcFormula(mi.getOnlyTermAExist(), mi.getTermAProb(), mi.getTermBCompProb());
+		double calcThree = calcFormula(mi.getOnlyTermBExists(), mi.getTermACompProb(), mi.getTermBProb());
+		double calcFour = calcFormula(mi.getMutualProb(), mi.getTermAProb(), mi.getTermBProb());
 		
 		return calcOne + calcTwo + calcThree + calcFour;
 		
 	}
 
-	private double calcformula(double mutualProb, double aProb, double bProb) {
-		return mutualProb *  Math.log(mutualProb / (aProb * bProb) );
+	private double calcFormula(double mutualProb, double aProb, double bProb) {
+		double result = mutualProb *  Math.log(mutualProb / (aProb * bProb) );
+		return Double.isNaN(result) ? 0 : result;
 	}
 
 	private double calcMutualcompProb(MutualInformation mi) {
@@ -88,16 +89,20 @@ public class MutualInformationLogic {
 	}
 
 	private double calcOnlyTermBExists(MutualInformation mi) {
-		return (mi.getTermBProb() - mi.getMutualProb() ) / mi.getNumberOfDocuments();
+		return calcOnlyOneTermExists(mi.getTermBProb(), mi);
+	}
+	
+	private double calcOnlyTermAExists(MutualInformation mi) {
+		return calcOnlyOneTermExists(mi.getTermAProb(), mi);
 	}
 
-	private double calcOnlyTermAExists(MutualInformation mi) {
-		return (mi.getTermAProb() - mi.getMutualProb() ) / mi.getNumberOfDocuments();
+	private double calcOnlyOneTermExists(double termProb, MutualInformation mi) {
+		double result = (termProb - mi.getMutualProb() ) / mi.getNumberOfDocuments();
+		return testForInfinite(result);
 	}
 
 	private double calcMutualProb(int mutualDocumentsSize, long numberOfDocuments) {
 		return calcTermProb(mutualDocumentsSize, numberOfDocuments);
-		
 	}
 
 	private double calcTermBProb(long termBDocFreq, long numberOfDocuments) {
@@ -111,7 +116,12 @@ public class MutualInformationLogic {
 	}
 
 	private double calcTermProb(double termDocFreq, double numberOfDocuments) {
-		return termDocFreq/numberOfDocuments;
+		double result = termDocFreq/numberOfDocuments;
+		return testForInfinite(result);
+	}
+
+	private double testForInfinite(double result) {
+		return Double.isInfinite(result) ? 0 : result;
 	}
 	
 }
