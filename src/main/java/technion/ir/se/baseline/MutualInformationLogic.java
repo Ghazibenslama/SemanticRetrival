@@ -10,9 +10,9 @@ import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
 
 public class MutualInformationLogic {
-	private static final String QUERY_TEMPLATE = "#band(%s %s)";
+	private static final String QUERY_TEMPLATE = "#band(%s %s)";//#band - use for finding documents which contain both term A and B
 	private SearchEngine engine;
-	private final String[] QUERY_RULE = new String[]{"method:tfidf"};
+	private final String[] QUERY_RULE = new String[]{"method:tfidf"};//We chose random rule in order to get all documents (the rank isn't important)
 	private final double THRESHOLD = 8;
 
 	public MutualInformationLogic(SearchEngine engine) {
@@ -35,6 +35,7 @@ public class MutualInformationLogic {
 			MutualInformation mi = new MutualInformation(termADocFreq, termBDocFreq, mutualDocumentsSize, numOfDocuments);
 			
 			double muaualInformationScore = calcMuaualInformation(mi);
+			// if bigger than Threshold, the terms are dependent
 			if (muaualInformationScore > THRESHOLD) {
 				resultLists.add( new ArrayList<String>(Arrays.asList(termA, termB)) );
 			}

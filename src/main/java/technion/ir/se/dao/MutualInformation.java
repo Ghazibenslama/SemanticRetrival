@@ -1,17 +1,17 @@
 package technion.ir.se.dao;
 
 public class MutualInformation {
-	private long termADocFreq;
-	private long termBDocFreq;
-	private int mutualDocumentsSize;
-	private long numberOfDocuments;
+	private long termADocFreq;//c(a=1)
+	private long termBDocFreq;//c(b=1)
+	private int mutualDocumentsSize;//c(a=1,b=1)
+	private long numberOfDocuments;//N
 	
-	private double termAProb;
-	private double termBProb;
-	private double mutualProb;
-	private double mutualCompProb;
-	private double termAExistsTermBNotExistsProb;
-	private double termBExistsTermANotExistsProb;
+	private double termAProb;// P(a=1)
+	private double termBProb;//p(b=1)
+	private double mutualProb;// p(a=1,b=1)
+	private double mutualCompProb;// p(a=0,b=0)
+	private double termAExistsTermBNotExistsProb;//p(a=1,b=0)
+	private double termBExistsTermANotExistsProb;//p(a=0,b=1)
 	
 	
 	public MutualInformation(long termADocFreq, long termBDocFreq,
