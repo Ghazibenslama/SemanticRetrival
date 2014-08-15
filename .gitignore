@@ -3,6 +3,7 @@
 #################
 SemanticRetrival*.jar
 /*.res
+semanticRetrival.log
 
 #################
 ## Eclipse
