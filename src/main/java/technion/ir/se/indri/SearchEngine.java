@@ -84,6 +84,10 @@ public class SearchEngine {
 		return queryEnvironment.documentStemCount(term);
 	}
 	
+	public long documentCount(String term) throws Exception {
+		return queryEnvironment.documentCount(term);
+	}
+	
 	public Long documentCount() throws Exception {
 		return Long.valueOf(queryEnvironment.documentCount());
 	}
