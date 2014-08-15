@@ -11,10 +11,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.Model.Model;
 import technion.ir.se.dao.SemanticTermScore;
@@ -73,5 +75,23 @@ public class TermEquivalentLogicTest {
 		
 		Assert.assertFalse("Thirs Score not in range", termScore.get(2).getSemanticScore() < 0.77 ||
 														termScore.get(2).getSemanticScore() > 0.775 );
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testTermEquivalentLogic_ScoreNan() throws VectorLengthException 
+	{
+		outerMap.put(QUERY_TERM, ImmutableMap.of(ALEF, (short)2, BETH, (short)1));
+		outerMap.put(ALEF, ImmutableMap.of(ALEF, (short) 3, BETH, (short)0, GIMEL, (short)0));
+		outerMap.put(BETH, ImmutableMap.of(ALEF, (short) 2, BETH, (short)1, GIMEL, (short)1));
+		outerMap.put(GIMEL, ImmutableMap.of(ALEF, (short) 1, BETH, (short)1, GIMEL, (short)1));
+		
+		SimilarityLogic similarityLogic = PowerMockito.mock(SimilarityLogic.class);
+		PowerMockito.when(similarityLogic.calculateSimilarity(Mockito.anyMap(), Mockito.anyMap())).thenReturn(Double.NaN);
+		Whitebox.setInternalState(classUnderTest, "similarityLogic", similarityLogic);
+		
+		List<SemanticTermScore> termScore = classUnderTest.similarVectors(outerMap, QUERY_TERM);
+		
+		Assert.assertTrue("a SemanticTermScore with soce of 'Nan' was inserted to list", termScore.isEmpty());
 	}
 }

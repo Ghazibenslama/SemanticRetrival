@@ -80,8 +80,6 @@ public class SemanticLogic {
 		TermEquivalentLogic equivalentLogic = new TermEquivalentLogic();
 		List<SemanticTermScore> similarVectors = null;
 		
-//		Map<String, double[]> termVectors = convertMaps(similarityVectors);
-//		double[] queryTermVector = termVectors.get(queryTerm);
 		try {
 			similarVectors = equivalentLogic.similarVectors(similarityVectors , queryTerm);
 		} catch (VectorLengthException e) {
