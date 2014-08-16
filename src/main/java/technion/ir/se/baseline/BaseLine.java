@@ -22,6 +22,9 @@ public class BaseLine {
 	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 5;
 	private SearchEngine engine;
 	private List<Query> queries;
+
+	private FusionMutualInformationLogic fusionMutualLogic;
+	private SemanticLogic semanticLogic;
 	
 	public BaseLine() {
 		engine = SearchEngine.getInstance();
@@ -88,30 +91,22 @@ public class BaseLine {
 			Map<String, List<List<String>>> pairRelatedMap = prLogic.clacRelatedPairs();
 			
 			for (Query query : queries) {
-				SemanticLogic logic = new SemanticLogic();
+				semanticLogic = new SemanticLogic();
 				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
 				if (results.isEmpty()){
 					logger.info("didnt find any feedback document at first retrieval.query:" + query.getQueryText());
 					continue;
 				} 
-
-				Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
-				//add fusionMutualVectors to similarityVectors - added by Eilon
-				FusionMutualInformationLogic fusionMutualLogic = new FusionMutualInformationLogic(similarityVectors);
-				for (Entry<String, List<List<String>>> entry : pairRelatedMap.entrySet()) {
-					Map<String, Map<String, Short>> fusionRelatedSimilarityResult = fusionMutualLogic.fusionRelatedTermsSimilarity( entry.getValue() );
-					similarityVectors.putAll(fusionRelatedSimilarityResult);
-				}
+				Map<String, Map<String, Short>> similarityVectors = semanticLogic.createSimilarityVectors(results, query);
+				fusionMutualLogic = new FusionMutualInformationLogic(similarityVectors);
+				
+				updateSimilarityVectorsWithPhrases(pairRelatedMap, similarityVectors);
 				
 				List<Query> pharseQueryList = fusionMutualLogic.createPharseQuery(pairRelatedMap, query);
-				List<Query> alternativeQuries = new ArrayList<Query>();
+				List<Query> alternativeQuries = createAlternativeQuries(similarityVectors, pharseQueryList);
 				alternativeQuries.add(query);
-				for (Query pharseQuery : pharseQueryList) {
-					List<Query> alternativeQuriesForPhrase = logic.createAlternativeQuries(similarityVectors, pharseQuery);
-					alternativeQuries.addAll(alternativeQuriesForPhrase);
-				}
 				
-				List<ResultFormat> resultFormatsList = logic.submitAlternativeQuries(alternativeQuries);
+				List<ResultFormat> resultFormatsList = semanticLogic.submitAlternativeQuries(alternativeQuries);
 				if (resultFormatsList != null) {
 					StringBuilder builder = Utils.createMapFormatForQuery(resultFormatsList);
 					trecMap.append(builder.toString());
@@ -133,6 +128,27 @@ public class BaseLine {
 		}
 		
 
+	}
+
+	private List<Query> createAlternativeQuries( Map<String, Map<String, Short>> similarityVectors,
+			List<Query> pharseQueryList) {
+		
+		List<Query> alternativeQuries = new ArrayList<Query>();
+		
+		for (Query pharseQuery : pharseQueryList) {
+			List<Query> alternativeQuriesForPhrase = semanticLogic.createAlternativeQuries(similarityVectors, pharseQuery);
+			alternativeQuries.addAll(alternativeQuriesForPhrase);
+		}
+		return alternativeQuries;
+	}
+
+	private void updateSimilarityVectorsWithPhrases(
+			Map<String, List<List<String>>> pairRelatedMap,
+			Map<String, Map<String, Short>> similarityVectors) {
+		for (Entry<String, List<List<String>>> entry : pairRelatedMap.entrySet()) {
+			Map<String, Map<String, Short>> fusionRelatedSimilarityResult = fusionMutualLogic.fusionRelatedTermsSimilarity( entry.getValue() );
+			similarityVectors.putAll(fusionRelatedSimilarityResult);
+		}
 	}
 
 }
