@@ -117,14 +117,11 @@ public class BaseLine {
 			Utils.writeMapFile(trecMap, fileName);
 			
 		} catch (IOException e) {
-			System.err.println("failed to read queris or write file");
-			e.printStackTrace();
+			logger.fatal("failed to read queris or write file", e);
 		} catch (URISyntaxException e) {
-			System.err.println("failed to read queris");
-			e.printStackTrace();
+			logger.fatal("failed to read queris", e);
 		} catch (Exception e) {
-			System.err.println("failed to run query");
-			e.printStackTrace();
+			logger.fatal("failed to run query", e);
 		}
 		
 
