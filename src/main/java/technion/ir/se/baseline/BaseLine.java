@@ -2,8 +2,10 @@ package technion.ir.se.baseline;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Query;
@@ -76,6 +78,11 @@ public class BaseLine {
 			}
 			StringBuilder trecMap = new StringBuilder();
 			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:25", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
+			//get mutual related pairs from mutual information
+			MutualInformationLogic mil = new MutualInformationLogic(engine);
+			PairsRelatedLogic prLogic = new PairsRelatedLogic(mil, queries);
+			Map<String, List<List<String>>> pairRelatedMap = prLogic.clacRelatedPairs();
+			
 			for (Query query : queries) {
 				SemanticLogic logic = new SemanticLogic();
 				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
@@ -85,6 +92,15 @@ public class BaseLine {
 				} 
 
 				Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
+				//add fusionMutualVectors to similarityVectors - added by Eilon
+				for (Entry<String, List<List<String>>> entry : pairRelatedMap.entrySet())
+				{
+					FusionMutualInformationLogic fusionMutualLogic = new FusionMutualInformationLogic(entry.getValue(), similarityVectors);
+					Map<String, Map<String, Short>> fusionRelatedSimilarityResult = fusionMutualLogic.fusionRelatedTermsSimilarity();
+					similarityVectors.putAll(fusionRelatedSimilarityResult);
+				}
+				
+				
 				List<Query> alternativeQuries = logic.createAlternativeQuries(similarityVectors, query);
 				List<ResultFormat> resultFormatsList = logic.submitAlternativeQuries(alternativeQuries);
 				if (resultFormatsList != null) {
@@ -106,7 +122,33 @@ public class BaseLine {
 			System.err.println("failed to run query");
 			e.printStackTrace();
 		}
-	}
+		
 
+	}
+	//TODO - יצירת שאילתא המכילה צמדים של מילים.
+	private List<Query> createPharseQuery (Map<String, List<List<String>>> pairRelatedMap , Query query)
+	{
+		List<Query> PharseQueryList = new ArrayList<Query>();
+		if (!pairRelatedMap.containsKey(query.getId()))
+				{
+					PharseQueryList.add (query);
+					return PharseQueryList;
+				}
+		for (Entry<String, List<List<String>>> entry : pairRelatedMap.entrySet())
+		{
+			List<String> queryTerms = new ArrayList<String>();
+			for (int i = 0; i < entry.getValue().size(); i++) 
+			{
+				queryTerms.add(entry.getValue().get(0).get(0)+ "+" + entry.getValue().get(0).get(1));
+				for (i=2; i< query.getQueryTerms().size(); i++)
+				{
+					queryTerms.add(query.getQueryTerms().get(i));
+				}
+			}
+		}
+		return PharseQueryList;
+		
+		
+	}
 
 }

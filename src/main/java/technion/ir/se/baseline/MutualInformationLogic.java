@@ -13,7 +13,8 @@ public class MutualInformationLogic {
 	private static final String QUERY_TEMPLATE = "#band(%s %s)";//#band - use for finding documents which contain both term A and B
 	private SearchEngine engine;
 	private final String[] QUERY_RULE = new String[]{"method:tfidf"};//We chose random rule in order to get all documents (the rank isn't important)
-	private final double THRESHOLD = 8;
+	private final double THRESHOLD = 0.2;// 0 - return all
+	private String queryID;
 
 	public MutualInformationLogic(SearchEngine engine) {
 		this.engine = engine;
@@ -34,9 +35,11 @@ public class MutualInformationLogic {
 			int mutualDocumentsSize = mutualDocumentList.size();
 			MutualInformation mi = new MutualInformation(termADocFreq, termBDocFreq, mutualDocumentsSize, numOfDocuments);
 			
-			double muaualInformationScore = calcMuaualInformation(mi);
+			double mutualInformationScore = calcMuaualInformation(mi);
+			//added by Eilon - saving parameters
+			setQueryID(query.getId());
 			// if bigger than Threshold, the terms are dependent
-			if (muaualInformationScore > THRESHOLD) {
+			if (mutualInformationScore > THRESHOLD) {
 				resultLists.add( new ArrayList<String>(Arrays.asList(termA, termB)) );
 			}
 		}
@@ -123,5 +126,16 @@ public class MutualInformationLogic {
 	private double testForInfinite(double result) {
 		return Double.isInfinite(result) ? 0 : result;
 	}
+	
+	public String getQueryID()
+	{
+		return this.queryID;
+	}
+	
+	public void setQueryID(String ID)
+	{
+		this.queryID = ID;
+	}
+
 	
 }

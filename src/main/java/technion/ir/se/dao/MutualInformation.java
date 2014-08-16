@@ -1,6 +1,8 @@
 package technion.ir.se.dao;
 
 public class MutualInformation {
+
+	
 	private long termADocFreq;//c(a=1)
 	private long termBDocFreq;//c(b=1)
 	private int mutualDocumentsSize;//c(a=1,b=1)
@@ -94,5 +96,5 @@ public class MutualInformation {
 		return 1 - this.termBProb;
 	}
 	
-	
+
 }

@@ -1,18 +1,16 @@
 package technion.ir.se.baseline;
 import gnu.trove.map.hash.THashMap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class FusionMutualInformationLogic {
-	ArrayList<List<String>> relatedTermsList;
+	List<List<String>> relatedTermsList;
 	Map<String, Map<String, Short>> similarityVectors;
 
-	public FusionMutualInformationLogic (ArrayList<List<String>> resultLists, Map<String, Map<String, Short>> similarityVectors )
+	public FusionMutualInformationLogic (List<List<String>> resultLists, Map<String, Map<String, Short>> similarityVectors )
 	{
 		this.relatedTermsList = resultLists;
 		this.similarityVectors = similarityVectors;
