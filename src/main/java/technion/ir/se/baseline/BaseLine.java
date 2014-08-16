@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
+
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
@@ -15,6 +17,8 @@ import technion.ir.se.indri.SearchEngine;
 
 public class BaseLine {
 	
+    static final Logger logger = Logger.getLogger(BaseLine.class);
+
 	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 5;
 	private SearchEngine engine;
 	private List<Query> queries;
@@ -87,21 +91,26 @@ public class BaseLine {
 				SemanticLogic logic = new SemanticLogic();
 				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
 				if (results.isEmpty()){
-					System.out.println("didnt find any feedback document at first retrieval.query:" + query.getQueryText());
+					logger.info("didnt find any feedback document at first retrieval.query:" + query.getQueryText());
 					continue;
 				} 
 
 				Map<String, Map<String, Short>> similarityVectors = logic.createSimilarityVectors(results, query);
 				//add fusionMutualVectors to similarityVectors - added by Eilon
-				for (Entry<String, List<List<String>>> entry : pairRelatedMap.entrySet())
-				{
-					FusionMutualInformationLogic fusionMutualLogic = new FusionMutualInformationLogic(entry.getValue(), similarityVectors);
-					Map<String, Map<String, Short>> fusionRelatedSimilarityResult = fusionMutualLogic.fusionRelatedTermsSimilarity();
+				FusionMutualInformationLogic fusionMutualLogic = new FusionMutualInformationLogic(similarityVectors);
+				for (Entry<String, List<List<String>>> entry : pairRelatedMap.entrySet()) {
+					Map<String, Map<String, Short>> fusionRelatedSimilarityResult = fusionMutualLogic.fusionRelatedTermsSimilarity( entry.getValue() );
 					similarityVectors.putAll(fusionRelatedSimilarityResult);
 				}
 				
+				List<Query> pharseQueryList = fusionMutualLogic.createPharseQuery(pairRelatedMap, query);
+				List<Query> alternativeQuries = new ArrayList<Query>();
+				alternativeQuries.add(query);
+				for (Query pharseQuery : pharseQueryList) {
+					List<Query> alternativeQuriesForPhrase = logic.createAlternativeQuries(similarityVectors, pharseQuery);
+					alternativeQuries.addAll(alternativeQuriesForPhrase);
+				}
 				
-				List<Query> alternativeQuries = logic.createAlternativeQuries(similarityVectors, query);
 				List<ResultFormat> resultFormatsList = logic.submitAlternativeQuries(alternativeQuries);
 				if (resultFormatsList != null) {
 					StringBuilder builder = Utils.createMapFormatForQuery(resultFormatsList);
@@ -124,31 +133,6 @@ public class BaseLine {
 		}
 		
 
-	}
-	//TODO - יצירת שאילתא המכילה צמדים של מילים.
-	private List<Query> createPharseQuery (Map<String, List<List<String>>> pairRelatedMap , Query query)
-	{
-		List<Query> PharseQueryList = new ArrayList<Query>();
-		if (!pairRelatedMap.containsKey(query.getId()))
-				{
-					PharseQueryList.add (query);
-					return PharseQueryList;
-				}
-		for (Entry<String, List<List<String>>> entry : pairRelatedMap.entrySet())
-		{
-			List<String> queryTerms = new ArrayList<String>();
-			for (int i = 0; i < entry.getValue().size(); i++) 
-			{
-				queryTerms.add(entry.getValue().get(0).get(0)+ "+" + entry.getValue().get(0).get(1));
-				for (i=2; i< query.getQueryTerms().size(); i++)
-				{
-					queryTerms.add(query.getQueryTerms().get(i));
-				}
-			}
-		}
-		return PharseQueryList;
-		
-		
 	}
 
 }
