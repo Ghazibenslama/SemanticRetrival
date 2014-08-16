@@ -1,6 +1,5 @@
 package technion.ir.se.baseline;
 
-import static org.junit.Assert.*;
 import gnu.trove.map.hash.THashMap;
 
 import java.util.ArrayList;
@@ -12,6 +11,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import technion.ir.se.dao.Query;
+
+import com.google.common.collect.ImmutableMap;
 
 public class FusionMutualInformationLogicTest {
 
@@ -27,7 +30,7 @@ public class FusionMutualInformationLogicTest {
 	@Before
 	public void setUp() throws Exception {
 		InitializeParameters();
-		classUnderTest = new FusionMutualInformationLogic(resultLists, similarityVectors);
+		classUnderTest = new FusionMutualInformationLogic(similarityVectors);
 	}
 
 	@After
@@ -63,7 +66,7 @@ public class FusionMutualInformationLogicTest {
 	@Test
 	public void fusionRelatedTermsSimilarityTest() 
 	{
-		Map<String,Map<String,Short>> fusionRelatedTermsSimilarityResult = classUnderTest.fusionRelatedTermsSimilarity();
+		Map<String,Map<String,Short>> fusionRelatedTermsSimilarityResult = classUnderTest.fusionRelatedTermsSimilarity( resultLists );
 		
 		Assert.assertEquals("size of merged list is not correct", 3, fusionRelatedTermsSimilarityResult.size());
 		Assert.assertFalse("The key name is not corrrect", !fusionRelatedTermsSimilarityResult.containsKey("Eilon Sapir"));
@@ -94,5 +97,68 @@ public class FusionMutualInformationLogicTest {
 		similarityVectors.put("Sapir", secondSimilarityVector);
 		similarityVectors.put("Topaz", thirdSimilarityVector);
 		similarityVectors.put("Eyal", forthSimilarityVector);
+	}
+	
+	@Test
+	public void testCreatePharseQuery_queryNotFusion() {
+		Map<String, List<List<String>>> pairRelatedMap = ImmutableMap.of("2", Arrays.asList(Arrays.asList("san", "fransisco")));
+		Query query = new Query("5", "san Andress GTA");
+
+		List<Query> list = classUnderTest.createPharseQuery(pairRelatedMap, query);
+		Assert.assertEquals("List should have <1> members", Integer.valueOf(1), Integer.valueOf(list.size()));
+		Assert.assertTrue("List doesn't contain the original query", list.contains(query));
+	}
+	
+	@Test
+	public void testCreatePharseQuery_queryShouldFusion() {
+		Map<String, List<List<String>>> pairRelatedMap = ImmutableMap.of("2", Arrays.asList(Arrays.asList("san", "fransisco")));
+		Query query = new Query("2", "san fransisco bridge");
+
+		List<Query> list = classUnderTest.createPharseQuery(pairRelatedMap, query);
+		Assert.assertEquals("List should have <1> members", Integer.valueOf(1), Integer.valueOf(list.size()));
+		Query newQuery = list.get(0);
+		Assert.assertEquals("List should contain query with key of original query", query.getId() ,newQuery.getId());
+		Assert.assertFalse("List should't contain original query", list.contains(query));
+	}
+	
+	@Test
+	public void testCreatePharseQuery_queryShouldFusionTestContent() {
+		Map<String, List<List<String>>> pairRelatedMap = ImmutableMap.of("2", Arrays.asList(Arrays.asList("san", "fransisco")));
+		Query query = new Query("2", "san fransisco bridge");
+
+		List<Query> list = classUnderTest.createPharseQuery(pairRelatedMap, query);
+		Query newQuery = list.get(0);
+		List<String> queryTerms = newQuery.getQueryTerms();
+		Assert.assertTrue("new Query doesn't contain <bridge>", queryTerms.contains("bridge"));
+		Assert.assertTrue("new Query doesn't contain <san fransisco>", queryTerms.contains("san fransisco"));
+	}
+	
+	@Test
+	public void testCreatePharseQuery_mixed() {
+		Map<String, List<List<String>>> pairRelatedMap = ImmutableMap.of(
+				"2", Arrays.asList(Arrays.asList("san", "fransisco"), Arrays.asList("los", "angeles")),
+				"9", Arrays.asList(Arrays.asList("man", "united")));
+		Query query = new Query("2", "san fransisco city of los angeles united");
+
+		List<Query> list = classUnderTest.createPharseQuery(pairRelatedMap, query);
+		Assert.assertEquals("List should have <2> members", Integer.valueOf(2), Integer.valueOf(list.size()));
+		Assert.assertEquals("List should contain query with key of original query", query.getId(), list.get(0).getId());
+		Assert.assertEquals("List should contain query with key of original query", query.getId(), list.get(1).getId());
+		Assert.assertFalse("List should't contain original query", list.contains(query));
+		List<String> queryOneTerms = list.get(0).getQueryTerms();
+		Assert.assertTrue(queryOneTerms + " doesn't contain all terms" , queryOneTerms.contains("los") && 
+				queryOneTerms.contains("angeles") &&
+				queryOneTerms.contains("san fransisco") );
+		Assert.assertFalse(queryOneTerms + " contains unwanted terms", queryOneTerms.contains("san") && 
+				queryOneTerms.contains("fransisco") );
+		
+		List<String> queryTwoTerms = list.get(1).getQueryTerms();
+		
+		Assert.assertTrue(queryTwoTerms + " doesn't contain all terms" , queryTwoTerms.contains("los angeles") && 
+				queryTwoTerms.contains("san") &&
+				queryTwoTerms.contains("fransisco") );
+		Assert.assertFalse(queryTwoTerms + " contains unwanted terms", queryTwoTerms.contains("los") && 
+				queryTwoTerms.contains("angeles") );
+		
 	}
 }
