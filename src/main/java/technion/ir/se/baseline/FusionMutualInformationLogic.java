@@ -10,9 +10,7 @@ import java.util.Map.Entry;
 import technion.ir.se.dao.Query;
 
 public class FusionMutualInformationLogic {
-	private List<List<String>> relatedTermsList;
 	private Map<String, Map<String, Short>> similarityVectors;
-	
 	private final String KEY_TEMPLATE = "%s %s";
 
 	public FusionMutualInformationLogic ( Map<String, Map<String, Short>> similarityVectors ) {
@@ -35,31 +33,24 @@ public class FusionMutualInformationLogic {
 				FusionSimilarityVectors.put(newKey, fusionResult);
 			}
 		}
-		
-		
-		
 		return FusionSimilarityVectors;
 	}
 	
 	public Map<String, Short> fusionTwoSimilarityVectors(
 			Map<String, Short> firstSimilarityVector,
-			Map<String, Short> secondSimilarityVector)
-	{
-		if (firstSimilarityVector == null)
-		{
+			Map<String, Short> secondSimilarityVector) {
+		
+		if (firstSimilarityVector == null) {
 			return secondSimilarityVector;
 		}
-		if (secondSimilarityVector == null)
-		{
+		if (secondSimilarityVector == null) {
 			return firstSimilarityVector;
 		}
-		
-		Map<String,Short> combinedResult = new HashMap<String,Short>(secondSimilarityVector);
-		
-		for (Entry<String, Short> entry : firstSimilarityVector.entrySet())
-		{
-			if (combinedResult.containsKey(entry.getKey()))
-				
+
+		Map<String, Short> combinedResult = new HashMap<String, Short>(secondSimilarityVector);
+
+		for (Entry<String, Short> entry : firstSimilarityVector.entrySet()) {
+			if (combinedResult.containsKey(entry.getKey())) {
 				combinedResult.put(entry.getKey(), (short) (combinedResult.get(entry.getKey()) + entry.getValue()));
 			} else {
 				combinedResult.put(entry.getKey(), (short) entry.getValue());
@@ -79,7 +70,7 @@ public class FusionMutualInformationLogic {
 				List<String> originalQueryTerms = new ArrayList<String>( query.getQueryTerms() );
 				originalQueryTerms.removeAll(pair);
 				ArrayList<String> newQueryTerms = new ArrayList<String>(originalQueryTerms);
-				newQueryTerms.add(String.format(KEY_FORMAT, pair.get(0), pair.get(1)));
+				newQueryTerms.add(String.format(KEY_TEMPLATE, pair.get(0), pair.get(1)));
 				pharseQueryList.add(new Query(queryID, newQueryTerms));
 			}
 		}
