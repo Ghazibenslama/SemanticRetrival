@@ -1,7 +1,6 @@
 package technion.ir.se.trec.eval;
 
 import java.util.List;
-import java.util.Set;
 
 import technion.ir.se.dao.QrelsRecord;
 import technion.ir.se.exception.RecordsNotExistsException;
@@ -17,13 +16,13 @@ public class AveragePercisionCalculator {
 	
 	public double calcAveragePercisionSocre(String queryID) throws RecordsNotExistsException {
 		List<QrelsRecord> qrelRankedDocuments = qerls.getRankedDocuments(queryID);
-		Set<QrelsRecord> relevantDocuments = goldResults.getRelevantDocuments(queryID);
 		
 		double releventDocsFound = 0;
 		double docIndex = 1;
 		double percisionSum = 0;
+			
 		for (QrelsRecord qrelsRecord : qrelRankedDocuments) {
-			if (relevantDocuments.contains(qrelsRecord)) {
+			if (goldResults.isDocumentRelevent(qrelsRecord)) {
 				releventDocsFound++;
 				percisionSum+= releventDocsFound / docIndex;
 			}

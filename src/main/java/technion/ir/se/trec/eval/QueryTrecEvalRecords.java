@@ -36,9 +36,4 @@ public class QueryTrecEvalRecords {
 		return this.rankedRecords;
 	}
 	
-//	public List<QrelsRecord> getRankedDocuments() {
-//		List<QrelsRecord> list = new ArrayList<QrelsRecord>( this.rankedRecords.values() );
-//		return list;
-//	}
-	
 }
