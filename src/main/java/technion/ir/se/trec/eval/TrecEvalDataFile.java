@@ -64,5 +64,16 @@ public class TrecEvalDataFile {
 		ArrayList<QrelsRecord> list = new ArrayList<QrelsRecord>( rankedDocuments.values() );
 		return list;
 	}
+	
+	public boolean isDocumentRelevent(QrelsRecord record) throws RecordsNotExistsException {
+		String queryID = record.getQueryID();
+		Set<QrelsRecord> relevantDocumentsForQuery = this.getRelevantDocuments(queryID);
+		for (QrelsRecord releventDoc : relevantDocumentsForQuery) {
+			if (releventDoc.getDocumentID().equals(record.getDocumentID())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
