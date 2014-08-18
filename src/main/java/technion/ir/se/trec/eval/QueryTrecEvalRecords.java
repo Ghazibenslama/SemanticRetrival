@@ -32,4 +32,8 @@ public class QueryTrecEvalRecords {
 		return new ArrayList<QrelsRecord>(rankedRecords.values());
 	}
 	
+	public TreeMap<Integer, QrelsRecord> getRankedDocuments() {
+		return this.rankedRecords;
+	}
+	
 }

@@ -1,18 +1,25 @@
 package technion.ir.se.trec.eval;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 
 import technion.ir.se.dao.QrelsRecord;
 import technion.ir.se.dao.RelevenceType;
+import technion.ir.se.exception.RecordsNotExistsException;
 
 public class TrecEvalDataFileTest {
 	
 	private TrecEvalDataFile classUnderTest;
+	
 
 	@Before
 	public void setUp() throws Exception {
@@ -89,5 +96,36 @@ public class TrecEvalDataFileTest {
 		
 		int numberOfReleventRecordsQTwo = recordsForQueryTwo.getRelevenceRecords().size();
 		Assert.assertEquals("There should be <1> relevent records", 1, numberOfReleventRecordsQTwo);
+	}
+	
+	@Test
+	public void testIsDocumentRelevent() throws RecordsNotExistsException {
+		Set<QrelsRecord> relDocs = generateRelDocs();
+		
+		classUnderTest = PowerMockito.spy(classUnderTest);
+		PowerMockito.doReturn(relDocs).when(classUnderTest).getRelevantDocuments(Mockito.anyString());
+		
+		QrelsRecord recordUnderTest = new QrelsRecord("xxx", "doc-3", 77, RelevenceType.YES);
+		boolean isDocumentRelevent = classUnderTest.isDocumentRelevent(recordUnderTest);
+		Assert.assertTrue("replied 'False' for relevent recorf", isDocumentRelevent);
+	}
+	
+	@Test
+	public void testIsDocumentRelevent_negative() throws RecordsNotExistsException {
+		Set<QrelsRecord> relDocs = generateRelDocs();
+		
+		classUnderTest = PowerMockito.spy(classUnderTest);
+		PowerMockito.doReturn(relDocs).when(classUnderTest).getRelevantDocuments(Mockito.anyString());
+		
+		QrelsRecord recordUnderTest = new QrelsRecord("xxx", "doc-4", 77, RelevenceType.YES);
+		boolean isDocumentRelevent = classUnderTest.isDocumentRelevent(recordUnderTest);
+		Assert.assertFalse("replied 'True' for relevent recorf", isDocumentRelevent);
+	}
+	
+	private Set<QrelsRecord> generateRelDocs() {
+		List<QrelsRecord> list = Arrays.asList(new QrelsRecord("mock_query_id","doc-1", -1, RelevenceType.YES), 
+				new QrelsRecord("mock_query_id","doc-2", -1, RelevenceType.YES),
+				new QrelsRecord("mock_query_id","doc-3", -1, RelevenceType.YES));
+		return new HashSet<QrelsRecord>(list);
 	}
 }
