@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import technion.ir.se.Model.Model;
 import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Query;
@@ -14,7 +16,7 @@ import technion.ir.se.exception.VectorLengthException;
 import technion.ir.se.indri.SearchEngine;
 
 public class SemanticLogic {
-	
+	static final Logger logger = Logger.getLogger(BaseLine.class);
 	public SemanticLogic() {
 	}
 	
@@ -98,6 +100,7 @@ public class SemanticLogic {
 			int replacmentIndex = newQueryTerms.indexOf(queryTermToReplace);
 			newQueryTerms.set(replacmentIndex, term);
 			Query q = new Query(originalQuery.getId(), newQueryTerms);
+			logger.info("QueryID:"+" "+originalQuery.getId()+" "+"alternative: "+ newQueryTerms.toString());
 			result.add(q);
 		}
 		return result;

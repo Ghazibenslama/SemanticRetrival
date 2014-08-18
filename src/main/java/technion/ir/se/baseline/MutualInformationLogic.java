@@ -4,16 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import technion.ir.se.dao.MutualInformation;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
 
 public class MutualInformationLogic {
+	static final Logger logger = Logger.getLogger(BaseLine.class);
 	private static final String QUERY_TEMPLATE = "#band(%s %s)";//#band - use for finding documents which contain both term A and B
 	private SearchEngine engine;
 	private final String[] QUERY_RULE = new String[]{"method:tfidf"};//We chose random rule in order to get all documents (the rank isn't important)
-	private final double THRESHOLD = 0.2;// 0 - return all
+	private final double THRESHOLD = 0.5;// 0 - return all
 	private String queryID;
 
 	public MutualInformationLogic(SearchEngine engine) {
@@ -40,6 +43,7 @@ public class MutualInformationLogic {
 			setQueryID(query.getId());
 			// if bigger than Threshold, the terms are dependent
 			if (mutualInformationScore > THRESHOLD) {
+				logger.info("PairPhraseIDC: " + query.getId()+" "+ termA +" "+termB);
 				resultLists.add( new ArrayList<String>(Arrays.asList(termA, termB)) );
 			}
 		}

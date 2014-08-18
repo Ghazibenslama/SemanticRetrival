@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
+
 import technion.ir.se.dao.Query;
 
 public class FusionMutualInformationLogic {
+	static final Logger logger = Logger.getLogger(BaseLine.class);
 	private Map<String, Map<String, Short>> similarityVectors;
 	private final String KEY_TEMPLATE = "%s %s";
 
@@ -74,6 +77,7 @@ public class FusionMutualInformationLogic {
 				pharseQueryList.add(new Query(queryID, newQueryTerms));
 			}
 		}
+		
 		return pharseQueryList;
 	}
 }
