@@ -55,15 +55,17 @@ public class TrecEvalDataFile {
 		}
 	}
 	
-	public Set<QrelsRecord> getRelevantDocuments(String queryID) throws RecordsNotExistsException {
-		return this.getRecordsForQuery(queryID).getRelevenceRecords();
+	public int getNumberOfDocuments(String queryID) {
+		try {
+			return this.getRecordsForQuery(queryID).getRecords().size();
+		} catch (RecordsNotExistsException e) {
+			logger.error("tried to fetch number of documents for queryID #" + queryID, e);
+			return 0;
+		}
 	}
 	
-	public List<QrelsRecord> getRankedDocuments(String queryID) throws RecordsNotExistsException {
-		QueryTrecEvalRecords recordsForQuery = this.getRecordsForQuery(queryID);
-		TreeMap<Integer,QrelsRecord> rankedDocuments = recordsForQuery.getRankedDocuments();
-		ArrayList<QrelsRecord> list = new ArrayList<QrelsRecord>( rankedDocuments.values() );
-		return list;
+	public Set<QrelsRecord> getRelevantDocuments(String queryID) throws RecordsNotExistsException {
+		return this.getRecordsForQuery(queryID).getRelevenceRecords();
 	}
 	
 	public boolean isDocumentRelevent(QrelsRecord record) throws RecordsNotExistsException {
