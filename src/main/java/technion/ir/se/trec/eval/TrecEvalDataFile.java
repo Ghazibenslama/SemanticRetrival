@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -74,6 +75,20 @@ public class TrecEvalDataFile {
 			}
 		}
 		return false;
+	}
+	
+	public List<QrelsRecord> getRankedDocuments(String queryID, int numberOfDos) throws RecordsNotExistsException {
+		TreeMap<Integer,QrelsRecord> rankedDocuments = this.getRecordsForQuery(queryID).getRankedDocuments();
+		int numberOfDocsReturned = numberOfDos;
+		
+		if (!rankedDocuments.containsKey(numberOfDos)) {
+			numberOfDocsReturned = rankedDocuments.floorKey(numberOfDos);
+			String messageFor = "There aren't #%d relevent documents for query: '%s'. Instead returning #%d documents";
+			logger.info(String.format(messageFor, numberOfDos, queryID, numberOfDocsReturned) );
+		}
+		
+		NavigableMap<Integer,QrelsRecord> headMap = rankedDocuments.headMap(numberOfDocsReturned, true);
+		return new ArrayList<QrelsRecord>(headMap.values());
 	}
 
 }

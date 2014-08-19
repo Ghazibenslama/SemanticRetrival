@@ -3,7 +3,9 @@ package technion.ir.se.trec.eval;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -11,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+
+import com.google.common.collect.ImmutableMap;
 
 import technion.ir.se.dao.QrelsRecord;
 import technion.ir.se.dao.RelevenceType;
@@ -120,6 +124,40 @@ public class TrecEvalDataFileTest {
 		QrelsRecord recordUnderTest = new QrelsRecord("xxx", "doc-4", 77, RelevenceType.YES);
 		boolean isDocumentRelevent = classUnderTest.isDocumentRelevent(recordUnderTest);
 		Assert.assertFalse("replied 'True' for relevent recorf", isDocumentRelevent);
+	}
+	
+	@Test
+	public void testGetRankedDocuments_requestMoreDocsThanExists() throws RecordsNotExistsException {
+		Map<Integer, QrelsRecord> map = ImmutableMap.of(1, new QrelsRecord("0", "xx", 1, null), 2, new QrelsRecord("0", "xd", 2, null));
+		TreeMap<Integer, QrelsRecord> rankedDocuments = new TreeMap<Integer, QrelsRecord>(map);
+		
+		QueryTrecEvalRecords mock = PowerMockito.mock(QueryTrecEvalRecords.class);
+		PowerMockito.when(mock.getRankedDocuments()).thenReturn(rankedDocuments);
+		
+		classUnderTest = PowerMockito.spy(classUnderTest);
+		PowerMockito.doReturn(mock).when(classUnderTest).getRecordsForQuery(Mockito.anyString());
+		
+		List<QrelsRecord> rankedDocumentsResponse = classUnderTest.getRankedDocuments("0", 5);
+		Assert.assertEquals("Result should contain only <2> documents", 2, rankedDocumentsResponse.size());
+		Assert.assertEquals("first record doc ID is not as expected", "xx", rankedDocumentsResponse.get(0).getDocumentID());
+		Assert.assertEquals("second record doc ID is not as expected", "xd", rankedDocumentsResponse.get(1).getDocumentID());
+	}
+	
+	@Test
+	public void testGetRankedDocuments_requestLessDocsThanExists() throws RecordsNotExistsException {
+		Map<Integer, QrelsRecord> map = ImmutableMap.of(1, new QrelsRecord("0", "xx", 1, null), 2, new QrelsRecord("0", "xd", 2, null),
+			3, new QrelsRecord("0", "xd", 3, null));
+		TreeMap<Integer, QrelsRecord> rankedDocuments = new TreeMap<Integer, QrelsRecord>(map);
+		
+		QueryTrecEvalRecords mock = PowerMockito.mock(QueryTrecEvalRecords.class);
+		PowerMockito.when(mock.getRankedDocuments()).thenReturn(rankedDocuments);
+		
+		classUnderTest = PowerMockito.spy(classUnderTest);
+		PowerMockito.doReturn(mock).when(classUnderTest).getRecordsForQuery(Mockito.anyString());
+		
+		List<QrelsRecord> rankedDocumentsResponse = classUnderTest.getRankedDocuments("0", 1);
+		Assert.assertEquals("Result should contain only <1> documents", 1, rankedDocumentsResponse.size());
+		Assert.assertEquals("first record doc ID is not as expected", "xx", rankedDocumentsResponse.get(0).getDocumentID());
 	}
 	
 	private Set<QrelsRecord> generateRelDocs() {
