@@ -17,7 +17,6 @@ import technion.ir.se.indri.SearchEngine;
 
 public class SemanticLogic {
 	private final Logger logger = Logger.getLogger(SemanticLogic.class);
-	private final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 20;
 	public SemanticLogic() {
 	}
 	
@@ -53,7 +52,7 @@ public class SemanticLogic {
 		for (Query query : alternativeQueries) {
 			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:50", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
 			SearchEngine engine = SearchEngine.getInstance();
-			List<RetrivalResult> queryResults = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
+			List<RetrivalResult> queryResults = engine.runQuery(BaseLine.NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
 			List<ResultFormat> list = Utils.convertRetrivalResultListToResultFormatList(queryResults, query);
 			alternativesResults.add(list);
 		}
