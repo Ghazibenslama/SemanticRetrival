@@ -7,6 +7,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.asm.util.CheckAnnotationAdapter;
+import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.ResultFormat;
 
@@ -21,6 +23,8 @@ public class FusionLogicTest {
 	
 	private List<ResultFormat> fifthListResultFormat;
 	private List<ResultFormat> sixListResultFormat;
+	
+	private List<ResultFormat> checkNormalizedResultFormat;
 	
 	
 	@Before
@@ -67,6 +71,8 @@ public class FusionLogicTest {
 		sixListResultFormat.add(new ResultFormat("310","67640", 4, -8.0883));
 		sixListResultFormat.add(new ResultFormat("310","44915", 5, -8.1349));
 		
+		checkNormalizedResultFormat = new ArrayList<ResultFormat>();
+		checkNormalizedResultFormat.add (new ResultFormat("349","1",1,-7.499));
 	}
 
 	@After
@@ -134,6 +140,16 @@ public class FusionLogicTest {
 		Assert.assertFalse("Six document returned is not correct", mergedResults.get(0).equals("67640"));
 		
 		
+	}
+	
+	@Test
+	public void normalizeMaxMinTest() throws Exception
+	{
+		List<ResultFormat> checkList = new ArrayList<ResultFormat>();
+		checkList = checkNormalizedResultFormat;
+		Whitebox.invokeMethod(classUnderTest,"normalizeMaxMin",checkList);
+		Assert.assertFalse("the score is NAN", Double.isNaN(checkList.get(0).getScore()));//failed if the condition is True
+	
 	}
 	
 
