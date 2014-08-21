@@ -1,6 +1,8 @@
 package technion.ir.se.trec.eval;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.After;
@@ -31,9 +33,10 @@ public class AveragePercisionCalculatorTest {
 	}
 
 	private List<QrelsRecord> generateRankedDocuments(String queryID) {
-		return Arrays.asList(new QrelsRecord(queryID,"doc-1", 1, RelevenceType.YES), 
+		List<QrelsRecord> asList = Arrays.asList(new QrelsRecord(queryID,"doc-1", 1, RelevenceType.YES), 
 				new QrelsRecord(queryID,"doc-8", 2, RelevenceType.YES),
 				new QrelsRecord(queryID,"doc-3", 3, RelevenceType.YES));
+		return new ArrayList<QrelsRecord>(asList);
 		
 	}
 	
@@ -93,5 +96,31 @@ public class AveragePercisionCalculatorTest {
 		double APSocre = classUnderTest.calcAveragePercisionSocre(queryID);
 		Assert.assertEquals("Avreage Percision score should be <0>", 1, APSocre, 0.000);
 	}
+	
+	@Test
+	public void testGetNumberOfReleventRetrivedResults_noMatching() throws RecordsNotExistsException {
+		QueryTrecEvalRecords mockQueryTrecEvalRecords = PowerMockito.mock(QueryTrecEvalRecords.class);
+		PowerMockito.when(mockQueryTrecEvalRecords.getRecords()).thenReturn( this.generateRankedDocuments("1") );
+		PowerMockito.when(qerls.getRecordsForQuery(Mockito.anyString())).thenReturn(mockQueryTrecEvalRecords);
+		
+		PowerMockito.when(goldResults.getRelevantDocuments(Mockito.anyString())).thenReturn(new HashSet<QrelsRecord>( this.generateRankedDocuments("3") ));
+		
+		int retrivedDocsThatRelevent = classUnderTest.getNumberOfReleventRetrivedResults("1");
+		Assert.assertEquals("There should be <0> relevent docs", 0, retrivedDocsThatRelevent);
+	}
+	
+	@Test
+	public void testGetNumberOfReleventRetrivedResults_allMatching() throws RecordsNotExistsException {
+		QueryTrecEvalRecords mockQueryTrecEvalRecords = PowerMockito.mock(QueryTrecEvalRecords.class);
+		PowerMockito.when(mockQueryTrecEvalRecords.getRecords()).thenReturn( this.generateRankedDocuments("1") );
+		PowerMockito.when(qerls.getRecordsForQuery(Mockito.anyString())).thenReturn(mockQueryTrecEvalRecords);
+		
+		PowerMockito.when(goldResults.getRelevantDocuments(Mockito.anyString())).thenReturn(new HashSet<QrelsRecord>( this.generateRankedDocuments("1") ));
+		
+		int retrivedDocsThatRelevent = classUnderTest.getNumberOfReleventRetrivedResults("1");
+		Assert.assertEquals("There should be <3> relevent docs", 3, retrivedDocsThatRelevent);
+	}
+	
+	
 
 }
