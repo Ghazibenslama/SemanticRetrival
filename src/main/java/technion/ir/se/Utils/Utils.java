@@ -10,11 +10,14 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
@@ -23,6 +26,9 @@ import technion.ir.se.dao.RetrivalResult;
 public class Utils {
 	private static final String MAP_FORMAT = "%s Q0 %s %d %.4f Indri";
 	private static Properties props = null;
+	
+	private static final Logger logger = Logger.getLogger(Utils.class);
+
 
 	public static List<Query> readQueries() throws IOException, URISyntaxException {
 		String queirsFile = "/queries.txt";
@@ -74,16 +80,16 @@ public class Utils {
 		return builder;
 	}
 
-	public static void writeMapFile(StringBuilder trecMap, String filePrefix) throws IOException {
-		File mapFile = new File(filePrefix + ".res");
-		verifyFileWasCreated(mapFile);
-		FileUtils.writeStringToFile(mapFile,trecMap.toString());
+	public static void writeFile(StringBuilder trecMap, String filePrefix, String fileExtension) throws IOException {
+		File file = new File(filePrefix + fileExtension);
+		verifyFileWasCreated(file);
+		FileUtils.writeStringToFile(file,trecMap.toString());
 	}
 
-	private static void verifyFileWasCreated(File mapFile) throws IOException,
+	private static void verifyFileWasCreated(File file) throws IOException,
 			FileNotFoundException {
-		if (!mapFile.exists()) {
-			boolean wasFileCreated = mapFile.createNewFile();
+		if (!file.exists()) {
+			boolean wasFileCreated = file.createNewFile();
 			if (!wasFileCreated) {
 				throw new FileNotFoundException("Failed to create MAP file");
 			}
@@ -136,5 +142,20 @@ public class Utils {
 			i++;
 		}
 		return resultFormatList;
+	}
+
+	public static void writeTrainingResultsInCsv(
+			Map<Integer, Double> trainingResult) {
+		StringBuilder builder = new StringBuilder();
+		String lineFormat = "%s, %s\n";
+		builder.append(String.format(lineFormat, "Mu", "MAP"));
+		for (Entry<Integer, Double> entry : trainingResult.entrySet()) {
+			builder.append(String.format(lineFormat, entry.getKey(), entry.getValue()));
+		}
+		try {
+			writeFile(builder, "Mu_Training", ".csv");
+		} catch (IOException e) {
+			logger.fatal("Failed to run training results to disk", e);
+		}
 	}
 }

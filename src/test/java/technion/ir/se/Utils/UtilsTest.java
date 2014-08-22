@@ -50,7 +50,7 @@ public class UtilsTest {
 	public void testwriteMapFile() throws IOException{
 		
 		StringBuilder stringBuilder = new StringBuilder("Hello world");
-		Utils.writeMapFile(stringBuilder,"prefix_baseLineMap");
+		Utils.writeFile(stringBuilder,"prefix_baseLineMap", ".res");
 		String fileContnet = TestUtils.getFileContent("prefix_baseLineMap.res");
 		assertTrue("file content not correct", fileContnet.equals("Hello world"));
 	}
