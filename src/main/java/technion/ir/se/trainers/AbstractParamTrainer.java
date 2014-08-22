@@ -59,6 +59,10 @@ public abstract class AbstractParamTrainer implements IParamTrainer {
 				logger.debug("Retrived docs: " + calculator.getNumberOfRetrivedResults(queryID));
 				logger.debug("Gold docs: " + calculator.getNumberOfGoldResults(queryID));
 				logger.debug("relevant docs: " + calculator.getNumberOfReleventRetrivedResults(queryID));
+				
+				if (Double.isNaN(avgPercision) || Double.isInfinite(avgPercision)) {
+					return 0;
+				}
 				return avgPercision;
 			}
 
