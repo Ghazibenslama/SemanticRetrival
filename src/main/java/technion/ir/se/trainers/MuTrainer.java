@@ -33,7 +33,7 @@ public class MuTrainer extends AbstractParamTrainer {
 			TrecEvalDataFile goldResults = parser.convertFile(FBIS_QRELS_FILE);
 			double sumOfAvgPer = 0;
 			
-			for (int lambda = 3000; lambda <= 3000; lambda+= 25) {
+			for (int lambda = 100; lambda <= 4000; lambda+= 25) {
 				logger.info("Traing parameter 'Mu'with value of " + lambda);
 				RM3Rule rule = new RM3Rule(lambda);
 				for (Query query : queries) {

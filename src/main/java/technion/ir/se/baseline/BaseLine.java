@@ -19,7 +19,7 @@ import technion.ir.se.trainers.ParamTrainerFactory;
 
 public class BaseLine {
 	
-    private static final String PARAM_VALUE = "For %s value of '%d' MAP score is: '%s'";
+    private static final String MAP_FILE_EXTENSION = ".res";
 
 	private final Logger logger = Logger.getLogger(BaseLine.class);
 
@@ -41,9 +41,7 @@ public class BaseLine {
 			IParamTrainer trainer = ParamTrainerFactory.factory(parameterType, queries, NUMBER_OF_DOCUMNETS_TO_RETRIVE);
 			Map<Integer, Double> trainingResult = trainer.train();
 			
-			for (Map.Entry<Integer, Double> entry : trainingResult.entrySet()) {
-				logger.debug(String.format(PARAM_VALUE, parameterType, entry.getKey(), entry.getValue()));
-			}
+			Utils.writeTrainingResultsInCsv(trainingResult);
 			
 		} catch (IOException e) {
 			logger.error("failed to read queris", e);
@@ -65,7 +63,7 @@ public class BaseLine {
 				trecMap.append(mapFormatForQuery.toString());
 			}
 			String fileName = "baseLineMap";
-			Utils.writeMapFile(trecMap, fileName);
+			Utils.writeFile(trecMap, fileName, MAP_FILE_EXTENSION);
 		} catch (IOException e) {
 			logger.error("failed to read queris or write file", e);
 		} catch (URISyntaxException e) {
@@ -132,7 +130,7 @@ public class BaseLine {
 			}
 			
 			String fileName = createFileName(rules, "alternative");
-			Utils.writeMapFile(trecMap, fileName);
+			Utils.writeFile(trecMap, fileName, MAP_FILE_EXTENSION);
 			
 		} catch (IOException e) {
 			logger.fatal("failed to read queris or write file", e);
