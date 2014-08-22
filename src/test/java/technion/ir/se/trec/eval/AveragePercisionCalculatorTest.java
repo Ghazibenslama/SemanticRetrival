@@ -57,7 +57,7 @@ public class AveragePercisionCalculatorTest {
 		String queryID = "5";
 		PowerMockito.when(qerls.getRankedDocuments(Mockito.eq(queryID), Mockito.anyInt())).thenReturn( generateRankedDocuments(queryID) );
 		PowerMockito.when(goldResults.isDocumentRelevent(Mockito.any(QrelsRecord.class))).thenReturn(true, true, false);
-		PowerMockito.when(qerls.getNumberOfDocuments(queryID)).thenReturn( 3 );
+		PowerMockito.when(goldResults.getNumberOfRelevantDocuments(queryID)).thenReturn(3);
 		
 		double APSocre = classUnderTest.calcAveragePercisionSocre(queryID);
 		Assert.assertEquals("Avreage Percision score should be <0.6666>", 0.6666, APSocre, 0.0001);
@@ -68,7 +68,7 @@ public class AveragePercisionCalculatorTest {
 		String queryID = "5";
 		PowerMockito.when(qerls.getRankedDocuments(Mockito.eq(queryID), Mockito.anyInt())).thenReturn( generateRankedDocuments(queryID) );
 		PowerMockito.when(goldResults.isDocumentRelevent(Mockito.any(QrelsRecord.class))).thenReturn(false, true, false);
-		PowerMockito.when(qerls.getNumberOfDocuments(queryID)).thenReturn( 3 );
+		PowerMockito.when(goldResults.getNumberOfRelevantDocuments(queryID)).thenReturn(3);
 		
 		double APSocre = classUnderTest.calcAveragePercisionSocre(queryID);
 		Assert.assertEquals("Avreage Percision score should be <0.1666>", 0.1666, APSocre, 0.0001);
@@ -79,7 +79,7 @@ public class AveragePercisionCalculatorTest {
 		String queryID = "5";
 		PowerMockito.when(qerls.getRankedDocuments(Mockito.eq(queryID), Mockito.anyInt())).thenReturn( generateRankedDocuments(queryID) );
 		PowerMockito.when(goldResults.isDocumentRelevent(Mockito.any(QrelsRecord.class))).thenReturn(false, false, false);
-		PowerMockito.when(qerls.getNumberOfDocuments(queryID)).thenReturn( 3 );
+		PowerMockito.when(goldResults.getNumberOfRelevantDocuments(queryID)).thenReturn(3);
 		
 		double APSocre = classUnderTest.calcAveragePercisionSocre(queryID);
 		Assert.assertEquals("Avreage Percision score should be <0>", 0, APSocre, 0.000);
@@ -91,8 +91,8 @@ public class AveragePercisionCalculatorTest {
 		PowerMockito.when(qerls.getRankedDocuments(Mockito.eq(queryID), Mockito.anyInt())).thenReturn( generateRankedDocuments(queryID) );
 		
 		PowerMockito.when(goldResults.isDocumentRelevent(Mockito.any(QrelsRecord.class))).thenReturn(true, true, true);
-		PowerMockito.when(qerls.getNumberOfDocuments(queryID)).thenReturn( 3 );
-		
+		PowerMockito.when(goldResults.getNumberOfRelevantDocuments(queryID)).thenReturn(3);
+
 		double APSocre = classUnderTest.calcAveragePercisionSocre(queryID);
 		Assert.assertEquals("Avreage Percision score should be <0>", 1, APSocre, 0.000);
 	}
