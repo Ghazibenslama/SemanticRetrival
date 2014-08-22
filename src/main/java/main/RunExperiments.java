@@ -17,7 +17,8 @@ public class RunExperiments {
 		}
 		BaseLine baseLine = new BaseLine();
 //		baseLine.createBaseLine();
-		baseLine.createAlternatives();
+//		baseLine.createAlternatives();
+		baseLine.trainBaseLine("MU");
 	}
 
 }

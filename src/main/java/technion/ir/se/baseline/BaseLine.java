@@ -14,12 +14,16 @@ import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
+import technion.ir.se.trainers.IParamTrainer;
+import technion.ir.se.trainers.ParamTrainerFactory;
 
 public class BaseLine {
 	
-    static final Logger logger = Logger.getLogger(BaseLine.class);
+    private static final String PARAM_VALUE = "For %s value of '%d' MAP score is: '%s'";
 
-	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 5;
+	private final Logger logger = Logger.getLogger(BaseLine.class);
+
+	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 1000;
 	private SearchEngine engine;
 	private List<Query> queries;
 
@@ -31,9 +35,27 @@ public class BaseLine {
 		queries = null;
 	}
 	
+	public void trainBaseLine(String parameterType) {
+		try {
+			queries = Utils.readQueries();
+			IParamTrainer trainer = ParamTrainerFactory.factory(parameterType, queries, NUMBER_OF_DOCUMNETS_TO_RETRIVE);
+			Map<Integer, Double> trainingResult = trainer.train();
+			
+			for (Map.Entry<Integer, Double> entry : trainingResult.entrySet()) {
+				logger.debug(String.format(PARAM_VALUE, parameterType, entry.getKey(), entry.getValue()));
+			}
+			
+		} catch (IOException e) {
+			logger.error("failed to read queris", e);
+		} catch (URISyntaxException e) {
+			logger.error("failed to read queris", e);
+		}
+
+		
+	}
 	public void createBaseLine() {
 		//http://iew3.technion.ac.il/~kurland/sigir12-tutorial.pdf
-		String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:25", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
+		String[] rules = new String[]{ "method:dir", "mu:1000"};
 		try {
 			queries = Utils.readQueries();
 			StringBuilder trecMap = new StringBuilder();
@@ -45,16 +67,12 @@ public class BaseLine {
 			String fileName = "baseLineMap";
 			Utils.writeMapFile(trecMap, fileName);
 		} catch (IOException e) {
-			System.err.println("failed to read queris or write file");
-			e.printStackTrace();
+			logger.error("failed to read queris or write file", e);
 		} catch (URISyntaxException e) {
-			System.err.println("failed to read queris");
-			e.printStackTrace();
+			logger.error("failed to read queris", e);
 		} catch (Exception e) {
-			System.err.println("failed to run query");
-			e.printStackTrace();
+			logger.error("failed to run query", e);
 		}
-		
 		
 	}
 	

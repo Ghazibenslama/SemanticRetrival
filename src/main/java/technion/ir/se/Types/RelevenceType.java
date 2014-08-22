@@ -1,4 +1,4 @@
-package technion.ir.se.dao;
+package technion.ir.se.Types;
 
 public enum RelevenceType {
 	YES, NO;
