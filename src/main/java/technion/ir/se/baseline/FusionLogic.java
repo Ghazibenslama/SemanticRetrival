@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import technion.ir.se.dao.ResultFormat;
 
 public class FusionLogic {
-	private static final int MAX_RESULTS = 5;
+	private static final int MAX_RESULTS = 1000;
 
 	/**
 	 * @param resultFormat
