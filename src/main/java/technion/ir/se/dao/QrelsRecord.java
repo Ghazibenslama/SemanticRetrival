@@ -1,5 +1,7 @@
 package technion.ir.se.dao;
 
+import technion.ir.se.Types.RelevenceType;
+
 public class QrelsRecord {
 	private String documentID;
 	private Integer rank;
@@ -60,6 +62,10 @@ public class QrelsRecord {
 		} else if (!queryID.equals(other.queryID))
 			return false;
 		return true;
+	}
+
+	public void setRank(int rank) {
+		this.rank = rank;
 	}
 	
 	

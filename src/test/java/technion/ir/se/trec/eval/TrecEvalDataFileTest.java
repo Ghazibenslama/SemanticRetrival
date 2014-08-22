@@ -16,8 +16,8 @@ import org.powermock.api.mockito.PowerMockito;
 
 import com.google.common.collect.ImmutableMap;
 
+import technion.ir.se.Types.RelevenceType;
 import technion.ir.se.dao.QrelsRecord;
-import technion.ir.se.dao.RelevenceType;
 import technion.ir.se.exception.RecordsNotExistsException;
 
 public class TrecEvalDataFileTest {

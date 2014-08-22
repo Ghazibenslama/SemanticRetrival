@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 
+import technion.ir.se.Types.RelevenceType;
 import technion.ir.se.dao.QrelsRecord;
-import technion.ir.se.dao.RelevenceType;
 
 public class QueryTrecEvalRecords {
 	private Set<QrelsRecord> releventRecords;
@@ -18,8 +18,8 @@ public class QueryTrecEvalRecords {
 		rankedRecords = new TreeMap<Integer, QrelsRecord>();
 	}
 	public void add(QrelsRecord record) {
-		rankedRecords.put(record.getRank(), record);
 		if (RelevenceType.YES == record.isRelevence() ) {
+			rankedRecords.put(record.getRank(), record);
 			releventRecords.add(record);
 		}
 	}

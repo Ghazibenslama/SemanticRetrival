@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
+import technion.ir.se.Types.RelevenceType;
 import technion.ir.se.dao.QrelsRecord;
-import technion.ir.se.dao.RelevenceType;
 import technion.ir.se.exception.RecordsNotExistsException;
 
 public class AveragePercisionCalculatorTest {

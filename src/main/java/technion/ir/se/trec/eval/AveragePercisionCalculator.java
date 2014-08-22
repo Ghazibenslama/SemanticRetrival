@@ -40,7 +40,7 @@ public class AveragePercisionCalculator {
 			docIndex++;
 		}
 		
-		int numOfDocs = rankedDocuments.size();
+		int numOfDocs = goldResults.getNumberOfRelevantDocuments(queryID);
 		return percisionSum / numOfDocs; 
 	}
 	
