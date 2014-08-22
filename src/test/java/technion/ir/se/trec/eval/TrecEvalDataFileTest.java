@@ -55,12 +55,7 @@ public class TrecEvalDataFileTest {
 		
 		QueryTrecEvalRecords recordsForQuery = classUnderTest.getRecordsForQuery("200");
 
-
-		QrelsRecord qrelsRecord = recordsForQuery.getRecords().get(0);
-		Assert.assertEquals("Returned record is not the same as entered", record, qrelsRecord);
-		
-		int numberOfReleventRecords = recordsForQuery.getRelevenceRecords().size();
-		Assert.assertEquals("There should be <0> relevent records", 0, numberOfReleventRecords);
+		Assert.assertTrue("There shoudln't be any records", recordsForQuery.getRecords().isEmpty());
 	}
 	
 	@Test
@@ -73,7 +68,7 @@ public class TrecEvalDataFileTest {
 		QueryTrecEvalRecords recordsForQuery = classUnderTest.getRecordsForQuery("200");
 		
 		List<QrelsRecord> records = recordsForQuery.getRecords();
-		Assert.assertTrue("Returned records is not the same as entered", records.contains(recordOne));
+		Assert.assertFalse("Returned records should not contain this record", records.contains(recordOne));
 		Assert.assertTrue("Returned records is not the same as entered", records.contains(recordTwo));
 		
 		int numberOfReleventRecords = recordsForQuery.getRelevenceRecords().size();
@@ -91,7 +86,7 @@ public class TrecEvalDataFileTest {
 		QueryTrecEvalRecords recordsForQueryTwo = classUnderTest.getRecordsForQuery("8");
 		
 		List<QrelsRecord> QueryOneRecords = recordsForQueryOne.getRecords();
-		Assert.assertTrue("Returned records is not the same as entered", QueryOneRecords.contains(recordOne));
+		Assert.assertFalse("Returned records should not contain that record", QueryOneRecords.contains(recordOne));
 		List<QrelsRecord> QueryTwoRecords = recordsForQueryTwo.getRecords();
 		Assert.assertTrue("Returned records is not the same as entered", QueryTwoRecords.contains(recordTwo));
 		
