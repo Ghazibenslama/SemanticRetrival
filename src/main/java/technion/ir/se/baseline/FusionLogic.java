@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import technion.ir.se.dao.ResultFormat;
 
 public class FusionLogic {
