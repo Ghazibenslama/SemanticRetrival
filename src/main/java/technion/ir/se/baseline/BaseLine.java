@@ -104,7 +104,7 @@ public class BaseLine {
 			//get mutual related pairs from mutual information
 			MutualInformationLogic mil = new MutualInformationLogic(engine);
 			PairsRelatedLogic prLogic = new PairsRelatedLogic(mil, queries);
-			Map<String, List<List<String>>> pairRelatedMap = prLogic.clacRelatedPairs();
+			Map<String, List<List<String>>> pairRelatedMap = prLogic.findRelatedPairs();
 			
 			for (Query query : queries) {
 				semanticLogic = new SemanticLogic();
