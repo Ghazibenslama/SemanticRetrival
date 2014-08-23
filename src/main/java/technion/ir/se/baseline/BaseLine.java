@@ -100,7 +100,7 @@ public class BaseLine {
 				queries = Utils.readQueries();
 			}
 			StringBuilder trecMap = new StringBuilder();
-			String[] rules = new String[]{ "method:dir", "mu:1000", "fbDocs:25", "fbTerms:50", "fbOrigWeight:0.3", "fbMu:0"};
+			String[] rules = new String[]{ "method:dir", "mu:1000"};
 			//get mutual related pairs from mutual information
 			MutualInformationLogic mil = new MutualInformationLogic(engine);
 			PairsRelatedLogic prLogic = new PairsRelatedLogic(mil, queries);

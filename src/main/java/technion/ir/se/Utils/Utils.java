@@ -28,6 +28,7 @@ public class Utils {
 	private static Properties props = null;
 	
 	private static final Logger logger = Logger.getLogger(Utils.class);
+	public static String RESULT_LINE_FORMAT = "%s, %s\n";
 
 
 	public static List<Query> readQueries() throws IOException, URISyntaxException {
@@ -80,10 +81,15 @@ public class Utils {
 		return builder;
 	}
 
-	public static void writeFile(StringBuilder trecMap, String filePrefix, String fileExtension) throws IOException {
+	public static File writeFile(StringBuilder trecMap, String filePrefix, String fileExtension) throws IOException {
 		File file = new File(filePrefix + fileExtension);
+		return Utils.writeFile(trecMap, file);
+	}
+	
+	public static File writeFile(StringBuilder trecMap, File file) throws IOException {
 		verifyFileWasCreated(file);
 		FileUtils.writeStringToFile(file,trecMap.toString());
+		return file;
 	}
 
 	private static void verifyFileWasCreated(File file) throws IOException,
@@ -144,16 +150,13 @@ public class Utils {
 		return resultFormatList;
 	}
 
-	public static void writeTrainingResultsInCsv(
-			Map<Integer, Double> trainingResult) {
-		StringBuilder builder = new StringBuilder();
-		String lineFormat = "%s, %s\n";
-		builder.append(String.format(lineFormat, "Mu", "MAP"));
+	public static void writeTrainingResultsInCsv(Map<Integer, Double> trainingResult, 
+			StringBuilder builder, String fileName) {
 		for (Entry<Integer, Double> entry : trainingResult.entrySet()) {
-			builder.append(String.format(lineFormat, entry.getKey(), entry.getValue()));
+			builder.append(String.format(RESULT_LINE_FORMAT, entry.getKey(), entry.getValue()));
 		}
 		try {
-			writeFile(builder, "Mu_Training", ".csv");
+			writeFile(builder, fileName, ".csv");
 		} catch (IOException e) {
 			logger.fatal("Failed to run training results to disk", e);
 		}
