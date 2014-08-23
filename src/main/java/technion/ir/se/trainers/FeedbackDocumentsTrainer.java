@@ -26,8 +26,8 @@ public class FeedbackDocumentsTrainer extends AbstractParamTrainer {
 	}
 	
 	@Override
-	public Map<Integer, Double> train() {
-		Map<Integer, Double> scores = new HashMap<Integer, Double>();
+	public Map<Double, Double> train() {
+		Map<Double, Double> scores = new HashMap<Double, Double>();
 		try {
 			TrecEvalDataFile goldResults = parser.convertFile(FBIS_QRELS_FILE);
 			double sumOfAvgPer = 0;
@@ -39,7 +39,7 @@ public class FeedbackDocumentsTrainer extends AbstractParamTrainer {
 					double avgPercisionForQuery = runQuery(goldResults, rule, query);
 					sumOfAvgPer += avgPercisionForQuery;
 				}
-				scores.put(parameter, sumOfAvgPer/queries.size());
+				scores.put((double) parameter, sumOfAvgPer/queries.size());
 				sumOfAvgPer = 0;
 			}
 		} catch (FileNotFoundException e) {

@@ -37,7 +37,7 @@ public abstract class AbstractParamTrainer implements IParamTrainer {
 	}
 	
 	@Override
-	public abstract Map<Integer, Double> train();
+	public abstract Map<Double, Double> train();
 	
 	public void setQueries(List<Query> queries) {
 		this.queries = queries;

@@ -27,8 +27,8 @@ public class MuTrainer extends AbstractParamTrainer {
 	}
 
 	@Override
-	public Map<Integer, Double> train() {
-		Map<Integer, Double> scores = new HashMap<Integer, Double>();
+	public Map<Double, Double> train() {
+		Map<Double, Double> scores = new HashMap<Double, Double>();
 		try {
 			TrecEvalDataFile goldResults = parser.convertFile(FBIS_QRELS_FILE);
 			double sumOfAvgPer = 0;
@@ -41,7 +41,7 @@ public class MuTrainer extends AbstractParamTrainer {
 					sumOfAvgPer += avgPercisionForQuery;
 				}
 				double meanAvgPer = sumOfAvgPer/queries.size();
-				scores.put(lambda, meanAvgPer);
+				scores.put((double) lambda, meanAvgPer);
 				sumOfAvgPer = 0;
 			}
 		} catch (FileNotFoundException e) {

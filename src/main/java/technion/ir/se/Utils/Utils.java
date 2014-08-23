@@ -150,9 +150,9 @@ public class Utils {
 		return resultFormatList;
 	}
 
-	public static void writeTrainingResultsInCsv(Map<Integer, Double> trainingResult, 
+	public static void writeTrainingResultsInCsv(Map<Double, Double> trainingResult, 
 			StringBuilder builder, String fileName) {
-		for (Entry<Integer, Double> entry : trainingResult.entrySet()) {
+		for (Entry<Double, Double> entry : trainingResult.entrySet()) {
 			builder.append(String.format(RESULT_LINE_FORMAT, entry.getKey(), entry.getValue()));
 		}
 		try {
