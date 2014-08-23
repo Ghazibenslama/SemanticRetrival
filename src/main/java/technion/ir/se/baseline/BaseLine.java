@@ -1,5 +1,6 @@
 package technion.ir.se.baseline;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -14,46 +15,27 @@ import technion.ir.se.dao.Query;
 import technion.ir.se.dao.ResultFormat;
 import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
-import technion.ir.se.trainers.IParamTrainer;
-import technion.ir.se.trainers.ParamTrainerFactory;
 
 public class BaseLine {
 	
     private static final String MAP_FILE_EXTENSION = ".res";
+    private FusionMutualInformationLogic fusionMutualLogic;
+    private SemanticLogic semanticLogic;
+    private final Logger logger = Logger.getLogger(BaseLine.class);
 
-	private final Logger logger = Logger.getLogger(BaseLine.class);
+    protected SearchEngine engine;
+    protected List<Query> queries;
 
 	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 1000;
-	private SearchEngine engine;
-	private List<Query> queries;
 
-	private FusionMutualInformationLogic fusionMutualLogic;
-	private SemanticLogic semanticLogic;
-	
 	public BaseLine() {
 		engine = SearchEngine.getInstance();
 		queries = null;
 	}
 	
-	public void trainBaseLine(String parameterType) {
-		try {
-			queries = Utils.readQueries();
-			IParamTrainer trainer = ParamTrainerFactory.factory(parameterType, queries, NUMBER_OF_DOCUMNETS_TO_RETRIVE);
-			Map<Integer, Double> trainingResult = trainer.train();
-			
-			Utils.writeTrainingResultsInCsv(trainingResult);
-			
-		} catch (IOException e) {
-			logger.error("failed to read queris", e);
-		} catch (URISyntaxException e) {
-			logger.error("failed to read queris", e);
-		}
-
-		
-	}
 	public void createBaseLine() {
 		//http://iew3.technion.ac.il/~kurland/sigir12-tutorial.pdf
-		String[] rules = new String[]{ "method:dir", "mu:1000"};
+		String[] rules = new String[]{ "method:dir", "mu:1500"};
 		try {
 			queries = Utils.readQueries();
 			StringBuilder trecMap = new StringBuilder();
@@ -94,7 +76,7 @@ public class BaseLine {
 		return fileName;
 	}
 	
-	public void createAlternatives() {
+	public final File createAlternatives() {
 		try {
 			if (queries == null) {
 				queries = Utils.readQueries();
@@ -102,9 +84,7 @@ public class BaseLine {
 			StringBuilder trecMap = new StringBuilder();
 			String[] rules = new String[]{ "method:dir", "mu:1000"};
 			//get mutual related pairs from mutual information
-			MutualInformationLogic mil = new MutualInformationLogic(engine);
-			PairsRelatedLogic prLogic = new PairsRelatedLogic(mil, queries);
-			Map<String, List<List<String>>> pairRelatedMap = prLogic.findRelatedPairs();
+			Map<String, List<List<String>>> pairRelatedMap = this.findRelatedQueriesTerms();
 			
 			for (Query query : queries) {
 				semanticLogic = new SemanticLogic();
@@ -129,8 +109,7 @@ public class BaseLine {
 				}
 			}
 			
-			String fileName = createFileName(rules, "alternative");
-			Utils.writeFile(trecMap, fileName, MAP_FILE_EXTENSION);
+			return this.writeResultsToFile(trecMap, rules);
 			
 		} catch (IOException e) {
 			logger.fatal("failed to read queris or write file", e);
@@ -139,8 +118,20 @@ public class BaseLine {
 		} catch (Exception e) {
 			logger.fatal("failed to run query", e);
 		}
-		
+		return null;
+	}
 
+	protected File writeResultsToFile(StringBuilder trecMap, String[] rules)
+			throws IOException {
+		String fileName = createFileName(rules, "alternative");
+		return Utils.writeFile(trecMap, fileName, MAP_FILE_EXTENSION);
+	}
+
+	protected Map<String, List<List<String>>> findRelatedQueriesTerms() {
+		MutualInformationLogic mil = new MutualInformationLogic(engine);
+		PairsRelatedLogic prLogic = new PairsRelatedLogic(mil, queries);
+		Map<String, List<List<String>>> pairRelatedMap = prLogic.findRelatedPairs();
+		return pairRelatedMap;
 	}
 
 	private List<Query> createAlternativeQuries( Map<String, Map<String, Short>> similarityVectors,
