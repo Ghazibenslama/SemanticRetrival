@@ -12,7 +12,7 @@ import technion.ir.se.dao.RetrivalResult;
 import technion.ir.se.indri.SearchEngine;
 
 public class MutualInformationLogic {
-	static final Logger logger = Logger.getLogger(BaseLine.class);
+	private final Logger logger = Logger.getLogger(MutualInformationLogic.class);
 	private static final String QUERY_TEMPLATE = "#band(%s %s)";//#band - use for finding documents which contain both term A and B
 	private SearchEngine engine;
 	private final String[] QUERY_RULE = new String[]{"method:tfidf"};//We chose random rule in order to get all documents (the rank isn't important)
