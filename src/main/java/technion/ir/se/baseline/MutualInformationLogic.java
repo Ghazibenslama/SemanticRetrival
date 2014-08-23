@@ -24,8 +24,13 @@ public class MutualInformationLogic {
 	}
 	
 	public List<List<String>> findPhrases(Query query) throws Exception {
+		return findPhrasesInternal(query, THRESHOLD);
+	}
+
+	private List<List<String>> findPhrasesInternal(Query query, double threshold) throws Exception {
 		ArrayList<List<String>> resultLists = new ArrayList<List<String>>();
 		List<String> queryTerms = query.getQueryTerms();
+		this.setQueryID(query.getId());
 		
 		for (int i = 0; i < queryTerms.size() -1 ; i++) {
 			String termA = queryTerms.get(i);
@@ -34,20 +39,23 @@ public class MutualInformationLogic {
 			long termBDocFreq = engine.documentCount(termB);
 			String pairQuery = String.format(QUERY_TEMPLATE, termA, termB);
 			int numOfDocuments = engine.documentCount().intValue();
+			
 			List<RetrivalResult> mutualDocumentList = engine.runQuery(numOfDocuments, QUERY_RULE, pairQuery);
 			int mutualDocumentsSize = mutualDocumentList.size();
 			MutualInformation mi = new MutualInformation(termADocFreq, termBDocFreq, mutualDocumentsSize, numOfDocuments);
 			
 			double mutualInformationScore = calcMuaualInformation(mi);
-			//added by Eilon - saving parameters
-			setQueryID(query.getId());
 			// if bigger than Threshold, the terms are dependent
-			if (mutualInformationScore > THRESHOLD) {
+			if (mutualInformationScore > threshold) {
 				logger.info("PairPhraseIDC: " + query.getId()+" "+ termA +" "+termB);
 				resultLists.add( new ArrayList<String>(Arrays.asList(termA, termB)) );
 			}
 		}
 		return resultLists;
+	}
+	
+	public List<List<String>> findPhrases(Query query, double threshold) throws Exception {
+		return findPhrasesInternal(query, threshold);
 	}
 	
 	private double calcMuaualInformation(MutualInformation mi) {
