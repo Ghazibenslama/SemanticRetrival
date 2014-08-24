@@ -19,7 +19,7 @@ public class PairsRelatedLogicThreshold extends PairsRelatedLogic {
 
 	@Override
 	protected List<List<String>> findPhrases(Query query) throws Exception {
-		logger.info("finding phrases with threshold: " + threshold);
+		logger.debug("finding phrases with threshold: " + threshold);
 		return mil.findPhrases(query, threshold);
 	}
 
