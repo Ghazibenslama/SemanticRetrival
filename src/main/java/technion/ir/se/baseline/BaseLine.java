@@ -82,7 +82,7 @@ public class BaseLine {
 				queries = Utils.readQueries();
 			}
 			StringBuilder trecMap = new StringBuilder();
-			String[] rules = new String[]{ "method:dir", "mu:1000"};
+			String[] rules = new String[]{ "method:dir", "mu:1500"};
 			//get mutual related pairs from mutual information
 			Map<String, List<List<String>>> pairRelatedMap = this.findRelatedQueriesTerms();
 			
