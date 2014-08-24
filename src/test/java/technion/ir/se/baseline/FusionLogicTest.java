@@ -7,7 +7,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.asm.util.CheckAnnotationAdapter;
 import org.powermock.reflect.Whitebox;
 
 import technion.ir.se.dao.ResultFormat;
