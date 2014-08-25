@@ -44,7 +44,11 @@ public class MutualInformationTrainer extends BaseLine implements IParamTrainer 
 				AveragePercisionCalculator calculator = new AveragePercisionCalculator(searchEngineResults, goldResults);
 				double sumOfAvgPer = 0;
 				for (Query query : queries) {
-					sumOfAvgPer += calculator.calcAveragePercisionSocre(query.getId());
+					double socre = calculator.calcAveragePercisionSocre(query.getId());
+					logger.debug("score of query #" + query.getId() + " is: " + socre);
+					if (!Double.isNaN(socre) && !Double.isInfinite(socre)) {
+						sumOfAvgPer += socre;
+					}
 				}
 				double meanAvgPer = sumOfAvgPer/queries.size();
 				scores.put(threshold, meanAvgPer);
