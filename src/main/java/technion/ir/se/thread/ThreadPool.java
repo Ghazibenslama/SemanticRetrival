@@ -53,6 +53,9 @@ public class ThreadPool {
 			}
 		}
 		logger.info(String.format("Extrarcted total of #%d files", filesExtracted));
+		if (!threadPool.isTerminated()) {
+			threadPool.shutdown();
+		}
 		return result;
 	}
 }
