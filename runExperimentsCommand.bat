@@ -1,1 +1,1 @@
-"C:\Program Files\Java\sapjvm_7\bin\java.exe" -XX:+HeapDumpOnOutOfMemoryError -Xmx4608m -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -jar target\SemanticRetrival-0.0.1-jar-with-dependencies.jar per
+"C:\Program Files\Java\sapjvm_7\bin\java.exe" -XX:+HeapDumpOnOutOfMemoryError -Xmx4608m -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=4000,suspend=n -Dlog4j.configuration=file:./log4j.properties -jar target\SemanticRetrival-0.0.1-jar-with-dependencies.jar per
