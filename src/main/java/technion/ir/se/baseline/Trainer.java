@@ -19,7 +19,7 @@ public class Trainer {
 	public void trainBaseLine(String parameterType) {
 		try {
 			List<Query> queries = Utils.readQueries();
-			IParamTrainer trainer = ParamTrainerFactory.factory(parameterType, queries, BaseLine.NUMBER_OF_DOCUMNETS_TO_RETRIVE);
+			IParamTrainer trainer = ParamTrainerFactory.factory(parameterType, queries, BaseLine.THOUSAND);
 			Map<Double, Double> trainingResult = trainer.train();
 			
 			StringBuilder builder = new StringBuilder();

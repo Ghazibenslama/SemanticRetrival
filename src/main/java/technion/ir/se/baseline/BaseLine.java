@@ -26,7 +26,8 @@ public class BaseLine {
     protected SearchEngine engine;
     protected List<Query> queries;
 
-	public static final int NUMBER_OF_DOCUMNETS_TO_RETRIVE = 1000;
+	public static final int THOUSAND = 1000;
+	public static final int ONE_HUNDRED = 100;
 
 	public BaseLine() {
 		engine = SearchEngine.getInstance();
@@ -40,7 +41,7 @@ public class BaseLine {
 			queries = Utils.readQueries();
 			StringBuilder trecMap = new StringBuilder();
 			for (Query query : queries) {
-				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
+				List<RetrivalResult> results = engine.runQuery(THOUSAND, rules, query.getQueryText());
 				StringBuilder mapFormatForQuery = Utils.createMapFormatForQuery(query.getId(), results);
 				trecMap.append(mapFormatForQuery.toString());
 			}
@@ -76,7 +77,7 @@ public class BaseLine {
 		return fileName;
 	}
 	
-	public final File createAlternatives() {
+	public final File createAlternatives(int numOfDocs) {
 		try {
 			if (queries == null) {
 				queries = Utils.readQueries();
@@ -88,7 +89,7 @@ public class BaseLine {
 			
 			for (Query query : queries) {
 				semanticLogic = new SemanticLogic();
-				List<RetrivalResult> results = engine.runQuery(NUMBER_OF_DOCUMNETS_TO_RETRIVE, rules, query.getQueryText());
+				List<RetrivalResult> results = engine.runQuery(numOfDocs, rules, query.getQueryText());
 				if (results.isEmpty()){
 					logger.info("didnt find any feedback document at first retrieval.query:" + query.getQueryText());
 					continue;
