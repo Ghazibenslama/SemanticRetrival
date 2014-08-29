@@ -18,7 +18,7 @@ public class SearchEngine {
 	//collection name
 	public String COLLECTION;
 	//the path to the documents index folder
-	public String DOCUMENTS_INDEX_DIR = "C:\\Temp\\InformationRetrival\\testIndexDir";
+	public String DOCUMENTS_INDEX_DIR = "C:\\Temp\\InformationRetrival\\testIndexDir_FBIS";
 	//the path to the entities index folder
 	public String ENTITIES_INDEX_DIR;
 	
