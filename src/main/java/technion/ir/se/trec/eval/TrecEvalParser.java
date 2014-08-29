@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -24,19 +26,28 @@ public class TrecEvalParser {
 
 	
     public TrecEvalDataFile convertFile(String fileNameToConvert) throws FileNotFoundException, IOException {
-    	String path = TrecEvalParser.class.getResource(fileNameToConvert).getPath();
+    	InputStream path = TrecEvalParser.class.getResourceAsStream(fileNameToConvert);
     	logger.info("Trying to parse file: " + path);
-    	File fileToConvert = new File(path);
-    	if (fileToConvert.exists() ) {
-    		return this.convertFile(fileToConvert);
+    	if ( path!= null ) {
+    		return this.convertFile(path);
     	}
     	throw new FileNotFoundException(fileNameToConvert + " doesn't exists");
     		
     }
     
-    public TrecEvalDataFile convertFile(File fileToConvert) throws FileNotFoundException, IOException {
+    public TrecEvalDataFile convertFile(File fileToConvert) throws IOException {
+    	InputStreamReader fileReader = new FileReader(fileToConvert);
+    	return this.convertFile(fileReader);
+    }
+    
+    public TrecEvalDataFile convertFile(InputStream stream) throws IOException {
+    	InputStreamReader streamReader = new InputStreamReader(stream);
+    	return this.convertFile(streamReader);
+    }
+    
+    private TrecEvalDataFile convertFile(InputStreamReader stream) throws FileNotFoundException, IOException {
     	TrecEvalDataFile dataFile = new TrecEvalDataFile();
-    	try (BufferedReader br = new BufferedReader(new FileReader(fileToConvert))){
+    	try (BufferedReader br = new BufferedReader( stream )){
     		String line = br.readLine();
     		int rank = 0;
     		while (line != null) {
