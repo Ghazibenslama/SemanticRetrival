@@ -71,7 +71,8 @@ public class SemanticLogic {
 				List<Query> queryAlternatives = this.createQueryAlternatives(query, queryTermToReplace, termAlternatives);
 				alternativesList.addAll(queryAlternatives);
 			} catch (IllegalArgumentException e) {
-				System.err.println(String.format("Faield to execute finding alternative for term '%s' of query '%s'", queryTermToReplace, queryTerms));
+				String message = String.format("Faield to execute finding alternative for term '%s' of query '%s'", queryTermToReplace, queryTerms);
+				logger.error(message, e);
 			}
 		}
 		return alternativesList;
@@ -99,7 +100,7 @@ public class SemanticLogic {
 			int replacmentIndex = newQueryTerms.indexOf(queryTermToReplace);
 			newQueryTerms.set(replacmentIndex, term);
 			Query q = new Query(originalQuery.getId(), newQueryTerms);
-			logger.info("QueryID:"+" "+originalQuery.getId()+" "+"alternative: "+ newQueryTerms.toString());
+			logger.debug("QueryID:"+" "+originalQuery.getId()+" "+"alternative: "+ newQueryTerms.toString());
 			result.add(q);
 		}
 		return result;
