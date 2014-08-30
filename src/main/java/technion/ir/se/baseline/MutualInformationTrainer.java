@@ -34,7 +34,7 @@ public class MutualInformationTrainer extends BaseLine implements IParamTrainer 
 			String qrelsFileName = Utils.readProperty("qrels.file");
 			logger.debug("Finshed reading qrels file: " + qrelsFileName);
 			TrecEvalDataFile goldResults = parser.convertFile(qrelsFileName);
-			for (double threshold = 0.1; threshold <= 0.6; threshold+=0.1) {
+			for (double threshold = 0.05; threshold <= 0.55; threshold+=0.05) {
 				this.threshold = threshold;
 				logger.info("About to run Training of MutualInformationTrainer with threshold=" + this.threshold);
 				File mutualInformationResults = this.createAlternatives(5);
