@@ -9,6 +9,7 @@ import lemurproject.indri.QueryEnvironment;
 import lemurproject.indri.ScoredExtentResult;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
 
 import technion.ir.se.dao.Document;
 import technion.ir.se.dao.RetrivalResult;
@@ -18,10 +19,12 @@ public class SearchEngine {
 	//collection name
 	public String COLLECTION;
 	//the path to the documents index folder
-	public String DOCUMENTS_INDEX_DIR = "C:\\Temp\\InformationRetrival\\testIndexDir_FBIS";
+	public String DOCUMENTS_INDEX_DIR = "C:\\Temp\\InformationRetrival\\testIndexDir_LATIMES";
 	//the path to the entities index folder
 	public String ENTITIES_INDEX_DIR;
 	
+	private final Logger logger = Logger.getLogger(SearchEngine.class);
+
 	private QueryEnvironment queryEnvironment;
 	private static SearchEngine instance = null;
 	
@@ -51,6 +54,11 @@ public class SearchEngine {
 		List<RetrivalResult> retrivedDocuments = new ArrayList<RetrivalResult>();
 
 		queryEnvironment.setScoringRules(rules);
+		logger.debug("Running query: " + query);
+		if (query.contains("[") || query.contains("]")) {
+			logger.info(String.format("Didn't submit query '%s' since in contains illegal chars", query));
+			return retrivedDocuments;
+		}
 		ScoredExtentResult[] results = queryEnvironment.runQuery(query, numOfInitialDocuments);
 		String[] fileNamesInDisk = retrivedDocumentsNames(results);
 		
