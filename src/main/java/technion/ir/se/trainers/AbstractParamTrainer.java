@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import technion.ir.se.Utils.Utils;
 import technion.ir.se.dao.Query;
 import technion.ir.se.dao.RM3Rule;
 import technion.ir.se.dao.RetrivalResult;
@@ -19,7 +20,7 @@ public abstract class AbstractParamTrainer implements IParamTrainer {
 	protected final int MU = 1000;
 	protected List<Query> queries;
 	protected int numOfDocsToRetrive;
-	protected final String FBIS_QRELS_FILE = "/2004relevanceFBIS.qrels";
+	protected String FBIS_QRELS_FILE;
 	protected TrecEvalParser parser;
 	
     private final Logger logger = Logger.getLogger(AbstractParamTrainer.class);
@@ -27,6 +28,7 @@ public abstract class AbstractParamTrainer implements IParamTrainer {
 
 	public AbstractParamTrainer() {
 		this.parser = new TrecEvalParser();
+		FBIS_QRELS_FILE = Utils.readProperty("qrels.file");
 		
 	}
 	
